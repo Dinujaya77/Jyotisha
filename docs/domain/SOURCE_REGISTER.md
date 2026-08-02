@@ -1,0 +1,32 @@
+# Source Register
+
+| Field | Value |
+|---|---|
+| Status | Awaiting Approval |
+| Version | 1.1-draft |
+| Last updated | 2026-08-02 |
+| Owner role | Business Analyst |
+| Approval state | SRC-001–SRC-011 roles approved under PA-001; SRC-012–SRC-018 evidence roles recorded under approved CR-001; traditional authority remains pending |
+
+| ID | Source | Type/context | Supports | Reliability and limits | State |
+|---|---|---|---|---|---|
+| SRC-001 | Stakeholder Phase A decisions, 2026-08-01 | Product/domain decision | Selected V1.0 profile, location, privacy, scope, validation gates | Authoritative for product choice, not historical fact | Confirmed |
+| SRC-002 | [Michio Yano, Brill analysis of Āryabhaṭīya 3.15–16](https://www.cc.kyoto-su.ac.jp/~yanom/pdf/yano_papers/Yano_2021_%28Zysk_FS%29_offprint.pdf) | Scholarly translation/analysis | Seven-ruler order and sunrise weekday lords | Strong scholarly support; does not alone establish selected seasonal duration | Proposed source |
+| SRC-003 | [Online English Bṛhat Parāśara Horā Śāstra](https://vedpuran.net/wp-content/uploads/2021/04/brihat_parashara_hora_shastra_english_v.pdf) | Online translated text | Conflicting equal-24/local-mean-time interpretation | Edition/translation provenance and applicability need expert review; variation only | Provisional |
+| SRC-004 | [U.S. Naval Observatory rise/set definitions](https://aa.usno.navy.mil/faq/RST_defs) | Official astronomy reference | Upper-limb/refraction convention, 90.8333°, observational limitations | Authoritative for selected astronomical convention | Proposed source |
+| SRC-005 | [NREL Solar Position Algorithm report](https://docs.nrel.gov/docs/fy08osti/34302.pdf) | Technical algorithm reference | Candidate solar implementation/independent comparison | Algorithm choice, license, integration, and exact rise/set mapping await architecture | Candidate only |
+| SRC-006 | [IANA Time Zone Database](https://www.iana.org/time-zones) | Authoritative civil-time database | IANA zone identifiers/rule history | Use versioned platform rules; not a coordinate-to-zone service | Proposed source |
+| SRC-007 | [Sri Lanka Time & Frequency authority](https://measurementsdept.gov.lk/index.php?Itemid=194&id=56&lang=en&option=com_content&view=article) | Sri Lankan government source | Sri Lanka standard civil time | Primary national source | Proposed source |
+| SRC-008 | [Drik Panchang Hora](https://www.drikpanchang.com/muhurat/hora.html) | Contemporary practitioner/comparison site | Modern seasonal-Hora presentation and variation evidence | Never sole authority or copied implementation | Comparative only |
+| SRC-009 | Trusted Sri Lankan practitioner, printed Panchanga, or approved traditional authority | External domain validation | V1.0 traditional comparison | Not yet nominated; release blocker | Pending |
+| SRC-010 | [Android foreground/approximate location guidance](https://developer.android.com/develop/sensors-and-location/location/permissions) | Official Android documentation | Coarse/fine foreground permission model | Architecture/requirements evidence, not Jyotisha source | Proposed source |
+| SRC-011 | [AndroidX LocationManagerCompat](https://developer.android.com/reference/androidx/core/location/LocationManagerCompat) | Official AndroidX API reference | Candidate one-shot cancellable current location | Final implementation choice awaits architecture approval | Candidate only |
+| SRC-012 | Stakeholder Change Request CR-001 and USR-DOM-001, 2026-08-01 | Product/domain request | Desired ruler aliases, fixed 60/12-minute behavior, Ravi example, Rahu allocation, validation questions | Authoritative for desired product behavior; not independent traditional evidence | User supplied |
+| SRC-013 | [Subha.lk — Kala Hora and divisions](https://subha.lk/blogs/737) | Sri Lankan practitioner/commercial article | Main and Panchama cycles, five 12-minute subdivisions, cross-boundary relationship, local correction, day/night Rahu claims | Detailed and locally relevant, but internally mixes seasonal and fixed descriptions; not conclusive authority | Provisional practitioner evidence |
+| SRC-014 | [Prabhashwara Astrology — Tatkal Kala Hora](https://prabhashwarastrology.blogspot.com/2018/09/blog-post_76.html) | Sri Lankan practitioner blog | Actual-sunrise start, fixed 60-minute periods, explicit 06:35–07:35 example, weekday lord first | Direct explanation but self-published; does not resolve following-sunrise mismatch | Provisional practitioner evidence |
+| SRC-015 | [Lankadeepa practitioner article — Hora/Panchama tables](https://www.lankadeepa.lk/Rasawitha/%E0%B6%A2%E0%B7%80%E0%B6%AD%E0%B6%BA-%E0%B6%A2%E0%B6%BA-%E0%B6%9C%E0%B6%B1%E0%B6%B1-%E0%B7%83%E0%B6%B6-%E0%B7%80%E0%B6%BD%E0%B7%80%E0%B6%9A-%E0%B6%B8%E0%B6%B1%E0%B6%B1/57-532173) | Named-practitioner newspaper article | Fixed main table, Panchama matrix, conventional Rahu times | Better publication provenance than an anonymous calculator, but not a primary textual or approved practitioner authority | Corroborative only |
+| SRC-016 | [Drik Panchang — Rahu Kalam](https://www.drikpanchang.com/panchang/rahu-kaal.html) | Contemporary practitioner/comparison site | Daylight eighths, weekday allocation, daytime focus/night variation context | Multi-market comparative evidence; not specifically authoritative for Sri Lankan practice | Comparative only |
+| SRC-017 | [Kendra.lk — Rahu Kalaya](https://kendra.lk/rahu-kalaya/) and [rahukalaya.lk](https://rahukalaya.lk/) | Sri Lankan commercial calculators | Current Sri Lankan day/night presentation and location/date dependency | Demonstrates practice, not derivation or authority; implementation cannot be copied | Comparative only |
+| SRC-018 | [Sunday Times — State Astrologers Committee/Aapa Panchanga context](https://www.sundaytimes.lk/240407/columns/awesome-star-wars-break-out-over-this-years-auspicious-times-to-eat-554241.html) | Sri Lankan journalism | Existence and importance of contested printed/practitioner authorities | Context only; does not establish CR-001 formulas | Contextual |
+
+The competitor `jothishya.lk` may inform feature comparison only; it is not registered as a calculation authority and must not be copied. No directly inspected printed Panchanga or primary source in SRC-012–SRC-018 resolves the fixed system's following-sunrise mismatch. SRC-009 must specifically confirm CP-002 coverage, the 35-cell matrix, day/night behavior, nighttime Rahu (if ever proposed), and canonical Sinhala terminology.

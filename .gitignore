@@ -1,6 +1,9 @@
 *.iml
 .gradle
+/.gradle-codex/
+/.android-codex/
 /local.properties
+/.idea/
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -9,7 +12,29 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+**/build/
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# Repository-local tool caches
+/.kotlin/
+/Microsoft/Windows/PowerShell/ModuleAnalysisCache
+
+# Signing material and credentials
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+signing-*.properties
+.env
+.env.*
+!.env.example
+credentials*.json
+/secrets/
+
+# Private or temporary delivery data
+/private-test-data/
+/.codex/tmp/
+/.codex/output/
