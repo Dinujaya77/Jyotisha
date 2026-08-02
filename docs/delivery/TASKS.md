@@ -6,7 +6,7 @@
 | Version | 1.0 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator; Project Manager read-only reviewer |
-| Approval state | DP-001 Approved on 2026-08-02; all tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
+| Approval state | DP-001 Approved on 2026-08-02; V1-M1-01 Done; all other tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
 
 Each row is one focused Codex session where practical. `Tests` always lists unit, UI/integration, and manual verification. Only the Android Developer may normally edit production Android/Gradle files; independent QA and Lead acceptance follow Developer verification.
 
@@ -14,7 +14,7 @@ Each row is one focused Codex session where practical. `Tests` always lists unit
 
 | ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
 |---|---|---|---|---|---|---|---|
-| V1-M1-01 | NFR-009, NFR-012, NFR-013; ADR-006/007 | DA-004 + DP-001 Approved; Proposed until explicit start | Existing Gradle/app tree, read-mostly | Record exact SDK, package, dependency, source-set, Manifest, backup, and check baseline; produce the smallest normalization delta; no opportunistic rename/dependency | Existing tests; existing smoke compile; diff/status/generated-output audit | Medium | Hidden baseline assumptions |
+| V1-M1-01 | NFR-009, NFR-012, NFR-013; ADR-006/007 | **Done 2026-08-02**; DA-004 + DP-001 Approved; explicitly started by owner; independent QA passed and Lead accepted | Existing Gradle/app tree, read-mostly | Recorded exact SDK, package, dependency, source-set, Manifest, backup, and check baseline; normalization delta was zero because each mutation belongs to a later approved task; no opportunistic rename/dependency | Existing unit test passed; lint/debug/test-APK smoke compilation passed; diff/status/generated-output/privacy audit passed; independent QA rerun passed; connected execution unavailable because no device/emulator was attached | Medium | Baseline assumptions recorded; device execution remains a later gate |
 | V1-M1-02 | NFR-009, NFR-013; ADR-006/007 | Owner-approved app name/namespace/application ID; **Blocked** | `app/build.gradle.kts`, Manifest, Kotlin/test packages, strings/theme names | Replace `com.example.*` and inconsistent Jyotisha/Jyothisha spelling once with stable owner-controlled identity; all packages/tests compile; clean install identity recorded | Renamed unit tests; install/launch; APK/package inspection | Medium | Update lineage and costly rework |
 | V1-M1-03 | NFR-009, NFR-012; DEP-011–013; ADR-006 | DA-004 + DP-001 Approved; Proposed; V1-M1-01 evidence first | Version catalogue, app Gradle, dependency register | Set provisional minSdk 26; add only exact approved Lifecycle artifacts after resolution/transitive/licence/API-26/APK/advisory evidence; defer DEP-014 DataStore to V1-M4-03; stop if a direct coroutine artifact is needed | Baseline unit tests; API-26 test APK compile; dependency graph/size/licence audit | Medium | Transitive/version/API conflict |
 | V1-M1-04 | NFR-009–012; all later suites | V1-M1-03; Proposed | `app/src/test`, `app/src/androidTest`, test config | Replace template tests with minimal deterministic clock/zone/repository/provider/UI-state fakes and standard focused/full commands; no new plugin or private coordinates | Fake-contract tests; launcher smoke; unit/lint/assemble commands | Medium | Oversized test framework |
@@ -96,4 +96,4 @@ Each row is one focused Codex session where practical. `Tests` always lists unit
 
 ## Start and completion rules
 
-DA-004 and DP-001 are Approved, so M1–M4 are eligible to begin through explicitly assigned non-blocked tasks. V1-M1-01 is the first bounded development task; coding has not started. M5 is no longer profile-blocked because PA-004 is Approved, but still needs the accepted M1 quality baseline. M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated. No row becomes Ready or In Progress until the Lead explicitly starts it.
+DA-004 and DP-001 are Approved. V1-M1-01 is Done on `milestone/M1-android-foundation`; its audited baseline produced no Android or Gradle change. V1-M1-02 remains Blocked on the owner-selected application name, namespace, and application ID. Other tasks remain Proposed or Blocked until explicitly started. M5 still needs the accepted M1 quality baseline; M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated.

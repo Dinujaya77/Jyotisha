@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; task mapping does not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 Done; remaining task mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -76,5 +76,6 @@
 | PA-004 | Approved 2026-08-02; SOLAR-001 package; checkpoint `44d248d` |
 | DA-004 | Approved 2026-08-02; exact phrase `APPROVE VERSION 1.0 UI` explicitly received |
 | DP-001 | Approved 2026-08-02; M1–M9 and V1-M1-01–V1-M9-05; exact phrase `APPROVE DELIVERY PLAN` explicitly received |
+| V1-M1-01 | Done 2026-08-02 on `milestone/M1-android-foundation`; NFR-009/NFR-012/NFR-013 and ADR-006/007 baseline recorded; Developer and independent QA unit/lint/debug/test-APK compilation and repository audits passed; zero Android/Gradle normalization delta; Lead accepted |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. Coding remains not started until the Lead explicitly starts V1-M1-01 or another dependency-eligible task.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 has been explicitly started and completed; no later task is authorized by that completion.
