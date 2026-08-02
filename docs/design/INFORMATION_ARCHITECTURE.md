@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 0.3 |
+| Status | Ready |
+| Version | 0.5 |
 | Last updated | 2026-08-02 |
 | Owner role | UI/UX Designer |
-| Approval state | CR-001/Option C approved; architecture and direction approvals remain pending |
+| Approval state | PA-002 architecture and DA-001 Direction A approved; detailed IA/component decisions remain part of the later UI specification gate |
 
 ## Navigation model
 
@@ -25,13 +25,14 @@ No public deep links are proposed. System Back from a child flow returns to its 
 | IA ID | Destination/state | User goal | Main content/actions | Requirement/story references |
 |---|---|---|---|---|
 | IA-001 | First-use location introduction | Understand why location helps and continue without coercion | Plain-language rationale; `Use current location`; `Choose a town`; `Continue with Colombo default`; privacy summary | FR-004–FR-006, FR-010; US-003–US-005 |
-| IA-002 | Now dashboard | Identify the current Hora, its end, and what follows | Location/provenance; current Hora; remaining time; start/end; next Hora; calculated sunrise/sunset; warning and refresh/use-current action; Day link | FR-001, FR-003, FR-007–FR-009, FR-011; US-001, US-006–US-009 |
+| IA-002 | Now dashboard | Identify the current Seasonal Planetary Hora, its end, and what follows | Location/provenance; dominant Seasonal Planetary Hora; remaining time; start/end; next Hora; calculated sunrise/sunset; subordinate Rahu state when approved; warning and refresh/use-current action; Day link | FR-001, FR-003, FR-007–FR-009, FR-011, FR-012; US-001, US-006–US-011 |
 | IA-003 | Day timeline | Inspect the complete Hora day | Hora-day date range; calculated anchors; 12 Day and 12 Night rows; textual current marker; return-to-current action | FR-002, FR-003, FR-008, FR-011; US-002, US-008 |
 | IA-004 | Location selection | Choose current device or bundled Sri Lankan town | Current-location state/action; active selection; town list; Colombo default; concise precision/freshness labels | FR-004–FR-007, FR-009; US-003–US-006 |
 | IA-005 | Location rationale/recovery | Recover from denied, unavailable, disabled, timeout, null, or failed retrieval | Explanation; retry where appropriate; town/default/retained fallback; optional Settings action | FR-004, FR-005, FR-007, FR-009; US-003, US-004 |
 | IA-006 | Method | Judge how the result was produced | Seasonal-Hora method; ruler sequence; boundaries; solar convention/limits; location/zone/profile/engine; privacy; sources; neutral timing-only scope | FR-003, FR-008–FR-011; US-007–US-010 |
 | IA-007 | Solar result unavailable | Understand why no trustworthy result can be shown | No fabricated Hora; safe reason; active location/method details; retry/reselect; retain earlier result only where CR-010 permits | FR-001, FR-003, FR-007–FR-010; US-006, US-007 |
-| IA-008 | Secondary timing-system detail | Inspect a non-primary approved system without interleaving timelines | Explicit system name/profile/status; separate current summary/timeline; return to primary result | FR-012–FR-015, NFR-015; US-011–US-013 | Approved requirement concept; implementation/profile/design-gated |
+| IA-008 | V1.0 Rahu status/detail | Understand the separately calculated daytime Rahu state without weakening the primary answer | Explicit Rahu state, approved profile/provenance, start/end and next transition when valid, typed unavailable reason, recovery/Method action | FR-012, NFR-015; US-011 | Approved requirement; implementation blocked on CP-003/RK and UI approval |
+| IA-009 | Future V1.1 Kala/Panchama concept | Explain the approved future allocation without presenting a working feature | Clearly labelled non-functional concept and Method link only; no live ruler, time, timeline, selector, or enabled action | FR-013–FR-015, NFR-015; US-012, US-013 | Future concept; implementation Blocked on CP-002/KH/PK and later UI approval |
 
 ## Now hierarchy
 
@@ -40,18 +41,19 @@ The visual and semantic order is:
 1. Screen heading and applicable Hora-day date.
 2. Location/provenance row with its required action.
 3. Concise stale, fallback, clock, or refresh-failure notice when applicable.
-4. Dominant **Current Hora** group: textual label, ruler name, remaining duration, local start/end, and explicit next ruler.
+4. Dominant **Seasonal Planetary Hora** group: textual label, ruler name, remaining duration, local start/end, and explicit next ruler.
 5. Calculated astronomical sunrise and sunset anchors.
-6. Upcoming-Hora preview and `View all 24 Horas`.
-7. Method/profile link.
+6. Subordinate Rahu status after CP-003/RK approval; otherwise the explicit profile-not-approved state. Rahu never displaces or invalidates a valid Seasonal Planetary Hora.
+7. Upcoming-Hora preview and `View all 24 Horas`.
+8. Method/profile link.
 
 Coordinates stay out of the primary dashboard. Retrieval progress or a recoverable warning must not blank or partially replace a still-valid calculation.
 
-## CR-001 conditional hierarchy
+## Approved Option C hierarchy
 
-Recommended Option C preserves the existing seasonal-Hora primary hierarchy for Version 1.0 and adds Rahu after the solar anchors as a subordinate status: `Upcoming today`, `Active now`, `Completed today`, or `Unavailable`, with start/end and textual/icon meaning that does not rely on colour. Rahu never appears in the seven-ruler list. The seasonal timeline remains Day; fixed Kala/Panchama is deferred to Version 1.1.
+Approved Option C preserves Seasonal Planetary Hora as the Version 1.0 primary hierarchy and adds Rahu after the solar anchors only after CP-003/RK approval. Its explicit states are `Active now`, `Later today`, `Completed today`, `Calculating Rahu Kalaya…`, `Unavailable — location unavailable`, `Unavailable — calculated sunrise or sunset unavailable`, and `Calculation method not approved`. Valid states show start/end and the next relevant transition with text plus icon/outline/weight; invalid/pending states show no guessed or mixed-context time. Rahu never appears in the seven-ruler list. The Seasonal Planetary Hora timeline remains Day; fixed Kala/Panchama is a non-functional Version 1.1 concept.
 
-If CP-002 is later approved and Option B becomes the primary experience, Now uses this order:
+Only after CP-002/KH/PK and a later Version 1.1 UI approval may a functional Kala/Panchama experience use this future order:
 
 1. Heading and applicable civil date.
 2. Location/provenance and active zone.
@@ -63,13 +65,13 @@ If CP-002 is later approved and Option B becomes the primary experience, Now use
 8. `View full Kala and Panchama timeline`.
 9. Clearly labelled secondary Seasonal Planetary Hora/Method action.
 
-Do not create four equally dominant cards. Main Kala and Panchama are a parent/child result and publish atomically; Rahu is a separate concurrent interval; seasonal Hora is a distinct system.
+This future order is not a Version 1.0 screen or navigation destination. Do not create four equally dominant cards. Main Kala and Panchama are a parent/child result and publish atomically; Rahu is a separate concurrent interval; Seasonal Planetary Hora is a distinct system.
 
 The future Day view groups each approved main Kala as a disclosure heading containing its approved five Panchamas. Initially expand the current parent. `Go to current` scrolls without unexpectedly moving TalkBack focus. Do not hard-code 24 parents/120 subdivisions while KH-005 is unresolved. Day/Night headings appear only if CP-002 approves that distinction. Option A would require a clearly labelled system selector and two non-interleaved timelines; it is not recommended.
 
 The future combined card and timeline must support reviewed English/Sinhala primary names, wrapping rather than truncation, compact-phone single-column flow, 200% font, reduced motion, and no fixed height. Secondary aliases belong in Method rather than every row. At a Panchama boundary announce once; at a coincident main/Panchama boundary combine the announcement. Countdown ticks are not live regions.
 
-Per-system validity remains independent: an unapproved rule shows no live authoritative time; missing inputs identify the affected system; a prior coherent snapshot may remain with warning; one valid system is not relabelled unavailable because another failed.
+Per-system validity remains independent: an unapproved rule shows no live authoritative time; missing inputs identify the affected system; a prior coherent snapshot may remain only when explicitly labelled previous with its provenance; one valid system is not relabelled unavailable because another failed. Rahu pending/location/solar/profile states retain the independently valid Seasonal Planetary Hora and keep recovery plus Method accessible.
 
 ## Key flows
 
@@ -125,4 +127,4 @@ Now → Day initially positions the current interval visibly without unexpectedl
 
 ## Deferred to approved UI specification
 
-Exact components, copy, breakpoints, measurements, typography, colors, shapes, motion, town-picker behavior, Settings conditions, previews, and accessibility evidence remain unapproved. `UI_SPEC.md` must not proceed until architecture, one direction, terminology, and relevant calculation profiles/rules are approved.
+Exact components, copy, breakpoints, measurements, typography, colors, shapes, motion, town-picker behavior, Settings conditions, previews, and accessibility evidence remain unapproved. A detailed `UI_SPEC.md` may be prepared only after explicit authorization; PA-002 and DA-001 prerequisites are satisfied, while approved terminology and CP-003/RK evidence remain necessary before Rahu can function.

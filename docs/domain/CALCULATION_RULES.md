@@ -58,7 +58,7 @@ On a material location, clock, date, zone, profile, or engine change, calculate 
 - Material movement: at least 10 km centre-to-centre.
 - Meaningful accuracy improvement: at least 50 m and at least 25% better than saved accuracy.
 - Invalid, negative, or future timestamps are stale.
-- Maximum acceptable reported uncertainty and stored-precise-fix handling after permission downgrade remain architecture decisions before implementation.
+- Maximum acceptable reported uncertainty and stored-precise-fix handling after permission downgrade are approved PA-002 architecture decisions; implementation evidence remains required.
 
 ## Integrity rule
 
@@ -116,25 +116,27 @@ Proposed membership is `[start,end)`, matching the repository-wide deterministic
 
 ## Proposed CP-003 daytime Rahu rules
 
+Candidate bundle: `RK-v0.2`, paired only with `CP-003-v0.2`. The rules are Proposed, and the package is Blocked from approval until PA-003 evidence prerequisites are complete.
+
 ### RK-001 — Daylight partition
 
-Using one approved immutable solar snapshot, partition `[sunrise,sunset)` into eight ordered segments. For integer nanosecond daylight duration `D`, boundary `i` is `sunrise + floor(D × i / 8)` for `i = 0..7`, and boundary 8 is exactly sunset. Compute from the common anchor with overflow-safe arithmetic. State: **Awaiting Approval**.
+Using one approved immutable CP-001-convention solar snapshot for the selected location/zone/civil date, require `sunrise < sunset` and partition `[sunrise,sunset)` into eight ordered segments. For integer nanosecond daylight duration `D`, boundary `i` is `sunrise + floor(D × i / 8)` for `i = 0..7`, and boundary 8 is exactly sunset. Compute from the common anchor with overflow-safe quotient/remainder arithmetic. Invalid chronology or overflow returns typed unavailable with no partial intervals. State: **Proposed; PA-003 Blocked**.
 
 ### RK-002 — Weekday allocation
 
-Select Sunday segment 8, Monday 2, Tuesday 7, Wednesday 5, Thursday 6, Friday 4, or Saturday 3. Use the weekday of the local civil date whose sunrise begins the daylight interval. State: **Strongly corroborated, awaiting selected-tradition approval**.
+Select Sunday segment 8, Monday 2, Tuesday 7, Wednesday 5, Thursday 6, Friday 4, or Saturday 3. Convert `now` in the active IANA zone and use that local civil date's weekday and sunrise/sunset. Before sunrise still selects today's later interval; after sunset remains today's completed interval; midnight or a zone/date change selects the new local date atomically. State: **Proposed; strongly corroborated but PA-003 Blocked on selected-tradition evidence**.
 
 ### RK-003 — Membership and status
 
-Use `[start,end)`. At exact start Rahu is active; at exact end it is not. Before the interval, status is `Upcoming today`; after it, `Completed today`; missing/unapproved inputs produce `Unavailable`. State: **Awaiting Approval**.
+Use `[start,end)`. At exact start status is `ActiveNow`; at exact end it becomes `CompletedToday`. Before start status is `LaterToday`; after end through the local date it is `CompletedToday`. `LaterToday.nextRelevantTransition = start`, `ActiveNow.nextRelevantTransition = end`, and `CompletedToday.nextRelevantTransition = null`; do not calculate tomorrow merely for this field. Missing/unapproved inputs produce a typed unavailable outcome. State: **Proposed; PA-003 Blocked**.
 
 ### RK-004 — Separation and provenance
 
-Rahu is not an eighth ruler and does not alter CP-001, KH-002, or PK-003 sequences. Retain system ID, CP/RK versions, civil date, zone, coordinates, solar anchors/engine, source/validation state, calculation instant, internal precision, validation tolerance, and display policy. State: **Awaiting Approval**.
+Rahu is not an eighth ruler and does not alter CP-001, KH-002, or PK-003 sequences. Consume the same selected location/context fingerprint as CP-001; do not perform fallback selection inside the calculator. Retain system ID, CP/RK versions, civil date, zone, coordinates, solar anchors/engine, source/validation state, calculation instant, internal precision, validation tolerance, and display policy. Typed unavailable reasons include `ProfileNotApproved`, `LocationUnavailable`, `SolarAnchorUnavailable`, `InvalidSolarChronology`, `InvalidInput`, and `ArithmeticOverflow`; none invalidates an independently valid Seasonal Planetary Hora. State: **Proposed; PA-003 Blocked**.
 
 ### RK-005 — Night exclusion
 
-Some Sri Lankan sources/calculators present a sunset-to-following-sunrise Rahu period, while broader sources often emphasize daytime. No nighttime rule is selected for Version 1.0. State: **Deferred/unresolved**.
+Some Sri Lankan sources/calculators present a sunset-to-following-sunrise Rahu period, while broader sources often emphasize daytime. `CP-003-v0.2` deliberately excludes nighttime Rahu; this is a scope selection, not a claim that the variant is invalid. No nighttime rule is selected for Version 1.0. State: **Deferred/unresolved**.
 
 ## Change-control integrity
 

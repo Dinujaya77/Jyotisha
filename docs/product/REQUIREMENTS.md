@@ -64,7 +64,7 @@ PA-001 approves FR-001–FR-011 and NFR-001–NFR-014 below. Change Request CR-0
 - Localization implications: Locale-aware time display and externalized methodology wording.
 - Calculation-rule references: CP-001; CR-001, CR-002, CR-008.
 - Validation method: T-FR-003; VC-006, VC-008, VC-009, and VC-014; independent same-convention astronomical comparison. Proposed CR-001 supplementary coverage: VC-034.
-- Approval state: Approved under PA-001; algorithm selection remains an architecture prerequisite.
+- Approval state: Approved under PA-001; PA-002 selects the method family, while normative `SOLAR-001` remains an implementation prerequisite.
 
 ### FR-004 — Foreground current-location acquisition
 
@@ -82,7 +82,7 @@ PA-001 approves FR-001–FR-011 and NFR-001–NFR-014 below. Change Request CR-0
 - Localization implications: Rationale and errors externalized.
 - Calculation-rule references: CR-008–CR-010.
 - Validation method: T-FR-004; VC-010–VC-012 and VC-019; fake-provider, permission, timeout, and instrumented tests.
-- Approval state: Approved under PA-001; AndroidX versus Play Services implementation remains an architecture decision.
+- Approval state: Approved under PA-001; PA-002 selects AndroidX `LocationManagerCompat` without Play Services.
 
 ### FR-005 — Permission and location-state recovery
 
@@ -136,7 +136,7 @@ PA-001 approves FR-001–FR-011 and NFR-001–NFR-014 below. Change Request CR-0
 - Localization implications: Relative age formatted for locale.
 - Calculation-rule references: CR-009, CR-010.
 - Validation method: T-FR-007; VC-012, VC-016, VC-017, VC-019; threshold boundary and persistence tests. Proposed CR-001 supplementary coverage: VC-037.
-- Approval state: Approved under PA-001; maximum acceptable reported uncertainty and precision-downgrade retention require architecture decision before implementation.
+- Approval state: Approved under PA-001; maximum reported uncertainty and precision-downgrade retention are approved under PA-002.
 
 ### FR-008 — Time-zone, date, clock, and lifecycle handling
 
@@ -298,7 +298,7 @@ These deltas took effect when Change Request CR-001 was approved on 2026-08-02; 
 | NFR-003 | 1.0 | Must | Property/invariant tests prove exactly 24 intervals, 12 day + 12 night, exact adjacency, no gaps/overlaps, and complete `[sunrise,nextSunrise)` coverage. | Approved |
 | NFR-004 | 1.0 | Must | In airplane mode/no network, saved/manual/default calculations, timeline, settings, and methodology remain functional; automated/manual tests observe no required network path. | Approved |
 | NFR-005 | 1.0 | Must | All V1.0 flows work at 200% font with no lost content/action; touch targets are at least 48dp; normal text contrast ≥4.5:1 and large text/non-text ≥3:1; TalkBack order is logical; meaning never uses colour alone. | Approved |
-| NFR-006 | 1.0 | Must | With usable coordinates, a complete result renders within 1 second on the slowest approved family device; refresh/calc never blocks the main thread; benchmark threshold is revalidated during architecture. | Approved |
+| NFR-006 | 1.0 | Must | With usable coordinates, a complete result renders within 1 second on the slowest approved family device; refresh/calc never blocks the main thread; benchmark threshold is revalidated during implementation/device verification. | Approved |
 | NFR-007 | 1.0 | Must | Manifest/runtime audit finds only coarse/fine foreground location; no background location/service, backend, analytics, ads, history, coordinate logs/uploads, or `INTERNET` permission without separate approval. | Approved |
 | NFR-008 | 1.0 | Must | Persistence contains only approved selected-location fields; real/private family coordinates are absent from logs and committed fixtures, while approved public town/default and clearly synthetic coordinates are permitted for bundled data/tests; persisted user coordinates are excluded from Auto Backup and device-to-device transfer. | Approved |
 | NFR-009 | 1.0 | Must | Provisional `minSdk 26` is verified by build/lint/unit tests and an API 26 device/emulator; modern `compileSdk 36` and `targetSdk 36` remain unless an approved ADR changes them; actual oldest/newest family devices are manually tested. | Approved; support provisional pending evidence |
@@ -311,6 +311,6 @@ These deltas took effect when Change Request CR-001 was approved on 2026-08-02; 
 
 ## Approval and dependency gates
 
-PA-001 approves the original baseline identified above. Change Request CR-001 approves the amended product requirements, Option C allocation, stories, conditional requirement deltas, and linked validation obligations; it does not approve CP-002/CP-003, KH/PK/RK rules, unresolved expected outputs, ADRs, architecture, dependencies, design, final UI, delivery, or implementation. Before implementation: separately approve the applicable calculation profile/rules and solar algorithm, Android location/provider policy, town data/default coordinates, location uncertainty and precision-downgrade behavior, persistence/backup implementation, dependencies, and visual direction/UI specification.
+PA-001 approves the original baseline identified above. Change Request CR-001 approves the amended product requirements, Option C allocation, stories, conditional requirement deltas, and linked validation obligations; it did not itself approve later gates. PA-002 now approves ADR-001–ADR-009, the location/persistence/privacy architecture, and DEP-011–DEP-014 in principle; DA-001 now selects Direction A. Before implementation: separately approve normative `SOLAR-001`, applicable CP-003/RK, exact town data/default coordinates, final UI specification, dependency implementation evidence/direct coroutine decision, delivery milestone/tasks, and all required implementation verification.
 
 Before release: complete independent astronomical comparison, nominate and complete traditional Sri Lankan validation for every enabled timing system, test actual family devices, complete privacy/security/accessibility checks, and document signed-APK delivery. Expected results must never be altered merely to make tests pass. Fixed Kala/Panchama is implementation-blocked until the following-sunrise mismatch has an approved rule; nighttime Rahu is outside this amendment's recommended V1.0 scope.

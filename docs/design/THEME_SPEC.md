@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 0.2 |
-| Last updated | 2026-08-01 |
+| Status | Ready |
+| Version | 0.4 |
+| Last updated | 2026-08-02 |
 | Owner role | UI/UX Designer |
-| Approval state | Semantic contract proposed; final mappings deferred until A, B, or C is approved |
+| Approval state | DA-001 Direction A selected; its semantic mapping is the basis for the later UI specification, while exact token values and evidence remain unapproved |
 
 ## Semantic token groups
 
@@ -16,12 +16,14 @@
 - Status: informative, positive, caution, critical, each with icon/text treatment.
 - Domain: celestial accent plus one direction-specific accent role only where semantically defined.
 - Typography, shape, spacing, elevation, iconography, and motion scales.
+- Timing hierarchy: `timingPrimaryContainer/content`, `solarAnchorContainer/content`, `concurrentStatusContainer/content`, and `timelineDivider`.
+- Timing/status: `statusActive`, `statusLater`, `statusCompleted`, `statusPending`, `statusUnavailable`, `validationCaution`, `activeOutline`, and `focus`, each paired with text/icon/shape semantics.
 
 ## Phase B direction mapping
 
-Material 3 is the accessible base. Direction A maps archive/antique-metal character, B maps instrument/celestial accents, and C maps moonlit/warm-human accents only after one direction is approved and contrast-tested. Feature composables must not hard-code brand colours, typefaces, shapes, spacing, durations, or easing. Light/dark and future themes replace token values without changing feature meaning or accessibility semantics.
+Material 3 is the accessible base. Approved Direction A maps midnight/parchment/antique-gold character; superseded alternatives B and C remain preserved references only. Direction A's exact values still require contrast testing and later UI approval. Feature composables must not hard-code brand colours, typefaces, shapes, spacing, durations, or easing. Light/dark and later theme packs replace token values only at the theme boundary without changing hierarchy, semantics, icon/text cues, or contrast.
 
-No display font, asset, icon library, palette value, dynamic-color policy, or theme dependency is approved in Phase B.
+No display font, asset, icon library, palette value, dynamic-color policy, ruler-specific colour, or theme dependency is approved in Phase B.
 
 ## Verification
 

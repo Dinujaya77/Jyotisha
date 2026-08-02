@@ -34,7 +34,7 @@
 
 ## Implementation prerequisites
 
-- Select and approve the Version 1.0 solar algorithm and linked architecture/dependency decisions.
+- Complete and approve normative `SOLAR-001` for the PA-002-selected method family; architecture and dependency choices are already approved in principle.
 - Record one solar algorithm/version and its supported date/precision range.
 - Record Android location implementation and any dependency.
 - Approve exact Colombo coordinates, town dataset/provenance, acceptable location uncertainty, permission-downgrade retention, and backup exclusion mechanism.
@@ -55,19 +55,34 @@
 
 ## CP-003 — Sri Lankan Daytime Rahu Kalaya
 
-- State: Awaiting separate domain approval; production execution requires approved RK rules and source-backed golden cases.
+- State: **Blocked from approval and non-executable**; production execution requires an approved profile/RK package and source-backed golden cases.
+- Candidate package: `CP-003-v0.2` with `RK-v0.2`; deterministic structure reconciled, evidence incomplete.
 - Target allocation: Version 1.0 under approved Option C.
 - Purpose: Neutral daytime Rahu Kalaya start/end and active/upcoming/completed status; no advice and no eighth ruler.
 - Inputs: Current instant; selected coordinates; active IANA zone; applicable local civil date/weekday; calculated astronomical sunrise/sunset; solar/profile/engine versions.
-- Proposed solar convention: Reuse the same approved astronomical solar snapshot as CP-001 for the location/date. If a trusted traditional authority requires a different sunrise convention, that conflict must be approved as a new profile rather than hidden.
+- Proposed solar convention: Explicitly inherit CP-001's approved apparent-upper-limb `90.8333°`, sea-level/unobstructed-horizon convention and the same immutable location/zone/solar-engine fingerprint for the applicable civil date. If a trusted traditional authority requires a different sunrise convention, that conflict must be approved as a new profile rather than hidden.
 - Division: Partition `[sunrise,sunset)` into eight exact continuous parts using common-anchor integer arithmetic.
 - Weekday allocation: Sunday 8; Monday 2; Tuesday 7; Wednesday 5; Thursday 6; Friday 4; Saturday 3.
 - Membership: `[start,end)`; exact start is active and exact end is not.
-- Zones: Device system IANA zone for current-device mode; `Asia/Colombo` for manual/default Sri Lankan locations; weekday comes from the local civil date of the sunrise.
-- Output: Interval, status, next relevant transition, solar/location/system/profile/rule/source provenance, or typed unavailable result.
+- Civil date/zones: Convert `now` in the active zone. Device mode uses the current system IANA zone; manual/default Sri Lankan modes use `Asia/Colombo`. The resulting local civil date selects that date's sunrise/sunset and weekday. Before sunrise the result is `LaterToday`; during `[start,end)` it is `ActiveNow`; from exact end through the remaining local date it is `CompletedToday`; midnight or a zone/date change triggers atomic recomputation for the new local date.
+- Next transition: `LaterToday` points to today's Rahu start; `ActiveNow` points to its end; `CompletedToday` has no next transition in the current-day result. Tomorrow is not calculated merely to populate this field.
+- Failures: Missing/unapproved profile, no usable location, missing solar anchor, `sunrise >= sunset`, non-finite/invalid input, chronology failure, or arithmetic overflow returns a typed unavailable result and no interval. A profile-not-approved Rahu outcome cannot invalidate CP-001.
+- Fallback: Consume the same already-selected fresh/saved/manual/default location snapshot as CP-001. If no usable fallback exists, return `LocationUnavailable`; never choose a different location inside the Rahu calculator.
+- Output: Interval, `LaterToday | ActiveNow | CompletedToday`, nullable next relevant transition, solar/location/system/profile/rule/source provenance, or typed unavailable result.
 - Exclusions: Nighttime Rahu; activity advice; insertion into the seven-ruler sequence.
 - Source references: SRC-009, SRC-012, SRC-013, SRC-015–SRC-017.
 - Validation references: VC-030–VC-039.
+
+### CP-003 approval readiness
+
+Do **not** request `APPROVE DAYTIME RAHU CALCULATION PROFILE CP-003` yet. The deterministic candidate is structurally complete, but these approval prerequisites remain:
+
+1. Nominate SRC-009 or an equivalent selected Sri Lankan authority confirming the daytime convention, weekday allocation, inherited sunrise convention, and deliberate exclusion—not denial—of nighttime Rahu.
+2. Add independently prepared, source-backed golden records for all seven weekdays with exact public/synthetic coordinates, zone, date, sunrise/sunset, selected segment, expected start/end, source, reviewer and tolerance; include a non-06:00 sunrise and a remainder-bearing partition.
+3. Complete independent boundary/status records before/at/after sunrise, Rahu start/end, sunset, midnight, leap day, and location/zone change without deriving expected values from production code.
+4. Approve one canonical user-facing `Rahu Kalaya` term/evidence label and freeze the exact candidate profile/rule/golden-dataset versions or hashes in the approval record.
+
+That later phrase approves daytime CP-003/RK only; it must not approve architecture, UI, implementation, release, CP-002, or nighttime Rahu.
 
 ## Release-only blockers
 

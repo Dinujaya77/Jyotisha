@@ -43,8 +43,8 @@
 | T-FR-012 | FR-012 | Pure eight-part Rahu partition/property tests; all weekday allocations; exact start/end; date/zone/location/fallback/leap/restart; status and accessibility rendering; shared solar/provenance audit. | Approved obligation; implementation blocked on CP-003/RK |
 | T-FR-013 | FR-013 | Approved-profile gating; all seven main rulers; actual-sunrise/non-6:00 cases; sunset/next-sunrise; 23:59/24:00/24:01 spans; civil-versus-elapsed duration; no schedule while KH-005 is unresolved. | Approved obligation; CP-002 Blocked |
 | T-FR-014 | FR-014 | All 35 matrix cells; first/final/exact-boundary instants; parent coverage; main-boundary continuity; restart/transition atomicity. | Approved obligation; CP-002 Blocked |
-| T-FR-015 | FR-015 | Combined-card and grouped-timeline semantics, system separation, longest approved English/Sinhala labels, compact/200% font, TalkBack, reduced motion, per-system unavailable states. | Approved obligation; domain/design blocked |
-| T-NFR-SYSTEMS | NFR-015 | Distinct typed calculators/profiles/outcomes, one shared solar context, cache-call counts, fingerprints, rounding ownership, UI-calculation prohibition, and atomic multi-system bundle. | Approved obligation; implementation architecture/profile-gated |
+| T-FR-015 | FR-015 | Combined-card and grouped-timeline semantics, system separation, longest approved English/Sinhala labels, compact/200% font, TalkBack, reduced motion, per-system unavailable states. | Approved obligation; CP-002 and final UI remain blocked |
+| T-NFR-SYSTEMS | NFR-015 | Distinct typed calculators/profiles/outcomes, one shared solar context, cache-call counts, fingerprints, rounding ownership, UI-calculation prohibition, and atomic multi-system bundle. | Approved obligation and architecture; profile/UI/delivery/implementation gates remain |
 
 ## Non-functional test suites
 

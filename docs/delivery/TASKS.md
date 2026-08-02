@@ -3,14 +3,16 @@
 | Field | Value |
 |---|---|
 | Status | Done |
-| Version | 0.1 |
-| Last updated | 2026-08-01 |
+| Version | 0.2 |
+| Last updated | 2026-08-02 |
 | Owner role | Project Manager |
 | Approval state | Foundation task authorized by repository owner |
 
 | ID | State | Owner | Scope | References | Verification |
 |---|---|---|---|---|---|
 | SETUP-001 | Done | Lead Coordinator | Establish controlled Codex team and delivery foundation without feature work | M-000 | File/schema checks, Gradle baseline, Git diff/status review |
+
+No Version 1.0 implementation task is defined or authorized. Phase B document reconciliation and approval review do not create an Android Developer task.
 
 ## Task template
 

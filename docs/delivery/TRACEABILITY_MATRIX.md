@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 1.1 |
+| Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
 | Approval state | PA-001 and Change Request CR-001 product/validation trace approved; no implementation task authorized |
@@ -31,8 +31,8 @@
 | FR-012 | US-011 | CP-003; RK-001–RK-005 | VC-020, VC-030–VC-039 | T-FR-012, T-NFR-CALC, T-NFR-A11Y, T-NFR-SYSTEMS | Requirement approved; implementation blocked on CP-003/RK |
 | FR-013 | US-012 | CP-002; KH-001–KH-005 | VC-020, VC-021, VC-024–VC-028, VC-034–VC-039 | T-FR-013, T-NFR-CALC, T-NFR-SYSTEMS | Requirement approved; implementation Blocked on CP-002 |
 | FR-014 | US-012 | CP-002; PK-001–PK-004; USR-DOM-001 evidence | VC-020, VC-022–VC-027, VC-029, VC-034–VC-039 | T-FR-014, T-NFR-CALC, T-NFR-SYSTEMS | Requirement approved; implementation Blocked on CP-002 |
-| FR-015 | US-012, US-013 | CP-002; KH-*; PK-* | VC-020, VC-024, VC-026, VC-029, VC-034, VC-035, VC-037–VC-039 | T-FR-015, T-NFR-A11Y, T-NFR-SYSTEMS | Requirement approved; implementation Blocked on domain/design |
-| NFR-015 | US-011–US-013 | CP-001–CP-003; ADR-008, ADR-009 proposed | VC-020, VC-029, VC-034, VC-035, VC-037–VC-039 | T-NFR-SYSTEMS, T-NFR-CALC, T-NFR-ARCH | Approved; implementation architecture/profile gates pending |
+| FR-015 | US-012, US-013 | CP-002; KH-*; PK-* | VC-020, VC-024, VC-026, VC-029, VC-034, VC-035, VC-037–VC-039 | T-FR-015, T-NFR-A11Y, T-NFR-SYSTEMS | Requirement approved; implementation Blocked on CP-002 and final UI |
+| NFR-015 | US-011–US-013 | CP-001–CP-003; ADR-008, ADR-009 approved | VC-020, VC-029, VC-034, VC-035, VC-037–VC-039 | T-NFR-SYSTEMS, T-NFR-CALC, T-NFR-ARCH | Architecture approved; profile/UI/delivery gates pending |
 
 CP-002 is not linked to CP-001 interval rules merely because both consume solar events. `Change Request CR-001` is a change-control identifier and remains distinct from approved calculation rule `CR-001 — Solar anchors`.
 
@@ -45,7 +45,7 @@ CP-002 is not linked to CP-001 interval rules merely because both consume solar 
 | NFR-005, NFR-011 | US-008 | T-NFR-A11Y | UI specification pending |
 | NFR-006 | US-001, US-006 | T-NFR-PERF | Device threshold revalidation pending |
 | NFR-009, NFR-010 | US-003–US-006 | T-NFR-COMPAT | Actual family-device inventory pending |
-| NFR-012 | US-010 | T-NFR-ARCH | Architecture approval pending |
+| NFR-012 | US-010 | T-NFR-ARCH | Architecture approved; implementation evidence pending |
 | NFR-013 | US-010 | T-NFR-PRIVACY plus release checklist | Release blocker |
 
 ## Delivery-control traceability
@@ -55,5 +55,10 @@ CP-002 is not linked to CP-001 interval rules merely because both consume solar 
 | SETUP-001 | Controlled team and documentation foundation | `.codex/**`, `AGENTS.md`, `docs/**` | T-SETUP-001–T-SETUP-003, T-BASE-001–T-BASE-004 | Done |
 | PA-001 | V1.0 requirements/domain package | Product/domain/security/delivery docs v1.0 | Business, architecture, QA reviews; explicit phrase received 2026-08-01 | Approved |
 | Change Request CR-001 | Requirements amendment and Option C V1.0/V1.1 allocation | Product/domain/engineering/design/delivery docs | BA/Architect/Designer analyses; independent QA/recheck; exact phrase supplied 2026-08-02 | Approved |
+| Baseline checkpoint | Controlled team and approved requirements baseline | `.gitignore`, `README.md`, `.codex/**`, `AGENTS.md`, `docs/**` | Owner's explicit commit authorization; commit `be1b132` on `dev`; no app/Gradle change | Done |
+| PA-002 | Reconciled Version 1.0 architecture package v0.5 | Engineering docs; CP-003 unavailable contract | Architect analysis; independent QA/recheck zero open findings; exact phrase supplied 2026-08-02 | Approved |
+| DA-001 | Direction A — Celestial Archive v0.4 | Design docs; seven daytime-Rahu states; V1/V1.1 hierarchy | Designer analysis; independent QA/recheck; exact phrase supplied 2026-08-02 | Approved |
+| DA-002–DA-003 | Directions B/C v0.4 | Preserved alternative design narratives | Superseded by DA-001 selection for Version 1.0; not approved | Superseded |
+| PA-003 | Candidate daytime Rahu profile CP-003-v0.2 / RK-v0.2 | Domain profile/rules/validation docs | Authority, source-backed vectors, terminology, and source versions/hashes missing | Blocked |
 
 Task IDs may be filled only in a later authorized planning phase after requirements, applicable profiles/rules, architecture, and UI approval. “Not authorized” is an explicit gate, not claimed implementation coverage.

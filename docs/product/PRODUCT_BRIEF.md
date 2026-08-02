@@ -40,10 +40,10 @@ The reference website `jothishya.lk` is competitor evidence only. Its wording, c
 
 - `minSdk 26` is provisional pending actual family-device inventory and build/device verification; `compileSdk 36` and `targetSdk 36` remain modern and independent.
 - The exact Colombo coordinates and bundled Sri Lankan town dataset/provenance require approval before implementation.
-- Solar algorithm and Android location implementation are architecture decisions.
-- Location timeout/staleness/movement thresholds are approved product constraints subject to Phase B architecture justification or an explicitly approved revision.
+- PA-002 selects the pure-Kotlin NOAA/Meeus solar method family and AndroidX `LocationManagerCompat` location architecture; normative `SOLAR-001` and implementation evidence remain separately gated.
+- Location timeout/staleness/movement/uncertainty thresholds are approved product and PA-002 architecture constraints, subject only to an explicitly approved revision.
 - A trusted Sri Lankan practitioner or printed Panchanga is not yet nominated; this blocks final V1.0 release approval, not drafting, architecture, UI, implementation, or automated tests.
 - Product/application spelling (`Jyotisha` versus existing `Jyothisha`) remains unresolved.
-- Change Request CR-001 and Option C were approved 2026-08-02. Phase B architecture/design reconciliation may proceed, but their approvals remain separate.
+- Change Request CR-001, Option C, PA-002 architecture, and DA-001 Direction A were approved 2026-08-02. Their final UI, domain, implementation, and release gates remain separate.
 - The Sri Lankan fixed Kala/Panchama profile remains blocked on fixed-period coverage at following sunrise, day/night behavior, the approved five-subdivision matrix, and reviewed Sinhala terminology.
 - Daytime Rahu is proposed for V1.0, but its exact selected Sri Lankan convention and golden cases remain pending; nighttime Rahu is not proposed for V1.0.

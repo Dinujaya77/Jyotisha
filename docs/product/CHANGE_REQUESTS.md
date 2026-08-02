@@ -69,7 +69,7 @@ Under a 3,600-elapsed-seconds interpretation—or on an offset-stable date such 
 - Architecture: separate pure calculators over shared immutable solar/location/time context; typed profile approval and provenance; no module or dependency.
 - UI: keep Now/Day/Method and all three directions; conditional hierarchy for a future combined main-Kala/Panchama card; Rahu subordinate; distinct per-system unavailable states.
 - Validation: proposed cases cover every main/sub-ruler, boundaries, sunrise mismatch, all Rahu weekdays, location/zone/leap/restart, accessibility, and provenance.
-- Delivery: Phase B architecture/design reconciliation is authorized; their approval gates, final UI specification, delivery planning, and application implementation remain stopped.
+- Delivery: Phase B architecture/design reconciliation was authorized and later approved separately under PA-002 and DA-001; final UI specification, delivery planning, and application implementation remain stopped.
 
 ### Required unresolved approvals
 
@@ -88,8 +88,8 @@ The exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001` was received and record
 It does **not** approve or make executable:
 
 - CP-002 or KH/PK rules, which remain **Blocked** pending separate traditional/domain approval;
-- CP-003 or RK rules, which remain **Awaiting Approval** pending selected-tradition confirmation and approved golden vectors;
+- CP-003 or RK rules, which are **Blocked from approval** pending selected-tradition confirmation, approved golden vectors, canonical terminology, and frozen source/profile versions;
 - any unresolved expected validation output, which remains blank/Blocked;
 - ADR-008/ADR-009, Phase B architecture, dependencies, a design direction, `UI_SPEC.md`, delivery planning, application implementation, release validation, a commit, merge, or push.
 
-Those retain their own explicit gates after the approved requirements amendment. This approval authorizes documentation reconciliation only, not application implementation.
+Those retained their own explicit gates after the requirements amendment. PA-002 architecture and DA-001 Direction A were later approved separately on 2026-08-02; `SOLAR-001`, CP-002/CP-003, final UI, delivery, implementation, and release gates remain. The CR-001 approval itself authorized documentation reconciliation only, not application implementation.

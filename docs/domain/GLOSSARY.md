@@ -25,7 +25,7 @@
 | TERM-013 | Saved location | Last successfully persisted selected-device location record used as a local fallback. | No raw history |
 | TERM-014 | Manual location | Sri Lankan town/location explicitly selected by the user and retained until the user changes location mode. | Selected |
 | TERM-015 | Default location | Provisional Colombo fallback used only when no higher-priority usable selection exists. | Coordinates unresolved |
-| TERM-016 | Stale location | Saved device location at least 24 hours old or carrying invalid/future time metadata; usable only as a labeled fallback. | Approved product threshold; architecture policy pending |
+| TERM-016 | Stale location | Saved device location at least 24 hours old or carrying invalid/future time metadata; usable only as a labeled fallback. | Approved product threshold and PA-002 architecture policy |
 | TERM-017 | Calculation profile | Versioned set of domain conventions, inputs, exclusions, sources, and validation requirements. | CP-001 |
 | TERM-018 | Engine version | Identifier of the exact solar/Hora implementation used to produce a result. | Required provenance |
 | TERM-019 | Inclusive-start/exclusive-end | `[start,end)`: start belongs to an interval; its end belongs to the next interval. | Selected |

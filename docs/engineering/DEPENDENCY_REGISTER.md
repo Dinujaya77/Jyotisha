@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed |
-| Version | 0.3 |
-| Last updated | 2026-08-01 |
+| Status | Approved |
+| Version | 0.5 |
+| Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | Existing baseline recorded; DEP-011–DEP-014 proposed for Version 1.0 architecture approval |
+| Approval state | DEP-011–DEP-014 approved in principle under PA-002 on 2026-08-02; no artifact is added or authorized without an implementation task and evidence |
 
 | ID | Dependency | Version source | Scope/purpose | License/security notes | Decision |
 |---|---|---|---|---|---|
@@ -20,14 +20,14 @@
 | DEP-008 | JUnit | 4.13.2 | Local unit tests | Test-only | Existing |
 | DEP-009 | AndroidX Test JUnit / Espresso | 1.3.0 / 3.7.0 | Instrumented tests | Test-only | Existing |
 | DEP-010 | Compose UI test JUnit4/manifest | BOM-managed | Compose UI tests | Test/debug only | Existing |
-| DEP-011 | AndroidX Lifecycle ViewModel KTX | 2.9.2, aligned with existing Lifecycle family | ViewModel and coroutine-aware state holder | AndroidX; no new permission/data flow | Proposed; not added |
-| DEP-012 | AndroidX Lifecycle ViewModel Compose | 2.9.2, aligned with existing Lifecycle family | Obtain/use ViewModel from Compose | AndroidX; Compose bridge only | Proposed; not added |
-| DEP-013 | AndroidX Lifecycle Runtime Compose | 2.9.2, aligned with existing Lifecycle family | Lifecycle-aware `StateFlow` collection | AndroidX; avoids collecting UI state while stopped | Proposed; not added |
-| DEP-014 | AndroidX DataStore Preferences | 1.2.1 stable | Transactional asynchronous versioned location record | AndroidX; stored coordinate file must be excluded from backup/transfer | Proposed; not added |
+| DEP-011 | AndroidX Lifecycle ViewModel KTX | 2.9.2, aligned with existing Lifecycle family | ViewModel and coroutine-aware state holder | AndroidX; no new permission/data flow | Approved in principle under PA-002; not added |
+| DEP-012 | AndroidX Lifecycle ViewModel Compose | 2.9.2, aligned with existing Lifecycle family | Obtain/use ViewModel from Compose | AndroidX; Compose bridge only | Approved in principle under PA-002; not added |
+| DEP-013 | AndroidX Lifecycle Runtime Compose | 2.9.2, aligned with existing Lifecycle family | Lifecycle-aware `StateFlow` collection | AndroidX; avoids collecting UI state while stopped | Approved in principle under PA-002; not added |
+| DEP-014 | AndroidX DataStore Preferences | 1.2.1 stable | Transactional asynchronous versioned location record in `noBackupFilesDir` | AndroidX; complete location-data directory must be excluded/tested for backup/transfer | Approved in principle under PA-002; not added |
 
 New dependencies require an ADR or documented approval, purpose, alternatives, maintenance health, license, security/privacy impact, size/performance cost, version source, and verification plan.
 
-## Proposed dependency evidence
+## Required dependency evidence
 
 | ID | License/maintenance/version provenance | Compatibility and transitive review | Size/performance/privacy | Required implementation evidence |
 |---|---|---|---|---|
@@ -50,9 +50,11 @@ New dependencies require an ADR or documented approval, purpose, alternatives, m
 | Proto DataStore / Room | Not present | Typed/database capabilities exceed the single small record | Rejected as disproportionate |
 | Navigation Compose / Hilt | Not present | Useful at larger scale, but three destinations and manual construction do not justify dependencies | Rejected for V1 unless later evidence changes scope |
 
-No dependency was added in Phase A or B. Architecture approval would authorize the dependency set in principle; the Android Developer must still add exact catalog entries in an approved task, verify resolution/licenses/transitives, and update this register with the implemented evidence.
+No dependency was added in Phase A or B. PA-002 authorizes DEP-011–DEP-014 in principle only; the Android Developer must still receive an approved task, add exact catalog entries, verify resolution/licenses/transitives, and update this register with the implemented evidence.
 
-## Sources for proposed versions
+Direct coroutine APIs must not rely silently on transitive artifacts. Before implementation, the dependency task must either register/approve exact production and test coroutine artifacts with resolved versions, licenses and transitive evidence, or constrain the design to APIs exposed by already approved direct dependencies. No coroutine dependency is approved or added by this reconciliation.
+
+## Sources for approved-in-principle versions
 
 - [AndroidX DataStore releases](https://developer.android.com/jetpack/androidx/releases/datastore)
 - [AndroidX Lifecycle releases](https://developer.android.com/jetpack/androidx/releases/lifecycle)

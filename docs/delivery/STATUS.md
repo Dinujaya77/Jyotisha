@@ -2,21 +2,23 @@
 
 | Field | Value |
 |---|---|
-| Status | In Progress |
-| Version | 0.6 |
+| Status | Ready |
+| Version | 0.8 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001 and Change Request CR-001 approved; Phase B architecture and design reconciliation authorized but not approved |
+| Approval state | PA-001, Change Request CR-001, PA-002 architecture, and DA-001 Direction A approved; CP-003 remains Blocked and no implementation is authorized |
 
 ## Current phase
 
-**Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. Phase B architecture/design reconciliation is now In Progress; their approvals, all new calculation profiles/rules, delivery planning, and application implementation remain unauthorized.
+**Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
+
+**Phase B architecture and design direction are Approved.** On 2026-08-02 the repository owner supplied `APPROVE VERSION 1.0 ARCHITECTURE` and `APPROVE DESIGN DIRECTION A`. PA-002 approves architecture v0.5, ADR-001–ADR-009 v0.5, and DEP-011–DEP-014 in principle. DA-001 selects Celestial Archive v0.4; Directions B/C are superseded for Version 1.0 selection but preserved as alternatives. CP-003/RK v0.2 remains Blocked from approval until a selected Sri Lankan authority, source-backed weekday golden vectors, canonical terminology, and exact source versions/hashes are recorded. Final UI specification, delivery planning, dependencies, and application implementation remain unauthorized.
 
 The approved product allocation is **Option C**: retain approved CP-001 Seasonal Planetary Hora as the Version 1.0 primary system; add daytime Rahu (CP-003) only after separate profile/RK approval; allocate fixed Sri Lankan Kala/Panchama (CP-002) to Version 1.1. CP-002 is implementation-blocked because, under elapsed-duration semantics or on offset-stable dates, 24 fixed 60-minute periods do not generally end at the next astronomical sunrise; wall-clock civil-minute behavior across offset transitions is also unresolved. Available sources do not define the required gap/overlap/reset/partial-period rule. Nighttime Rahu and final Sinhala terminology remain unresolved.
 
 Phase A is Approved. On 2026-08-01 the repository owner supplied `APPROVE VERSION 1.0 REQUIREMENTS`, approving the Version 1.0 product requirements, scope, CP-001, CR-001–CR-010, and validation strategy subject to the documented architecture decisions and release-validation blockers.
 
-The original Phase B analysis is preserved but its approval gate is held. The Android Architect had completed read-only solar, location, town-data, persistence, lifecycle, dependency, testing, and proportionality analysis. The UI/UX Designer had completed read-only information architecture plus Celestial Archive, Astral Observatory, and Moonlit Sanctuary directions. CR-001 amendments retain the one-module proposal and all three directions while adding explicit timing-system boundaries and conditional hierarchies. No Kotlin, Compose production UI, Manifest, Gradle, resource, branch, worktree, merge, or push change occurred.
+The approved Phase B package preserves the Android Architect's read-only solar, location, town-data, persistence, lifecycle, dependency, testing, and proportionality analysis. It also preserves the UI/UX Designer's three reconciled narratives while selecting Celestial Archive. CR-001 amendments retain the one-module architecture and explicit timing-system boundaries. No Kotlin, Compose production UI, Manifest, Gradle, resource, branch, worktree, merge, or push change occurred.
 
 The independent QA Reviewer found zero Critical, three High, six Medium, and one Low Phase B documentation issues. Corrections made persistence payloads mutually exclusive, required a normative approved `SOLAR-001` before code, prevented premature production authorization, broadened backup exclusion, clarified direction evidence and Back behavior, restored VC-019 traceability, expanded dependency evidence, separated lifecycle cancellation outcomes, and fixed performance wording. QA re-verified all ten findings resolved with no new Critical/High issues. `UI_SPEC.md` remains unfinalized.
 
@@ -27,20 +29,20 @@ The independent QA Reviewer found zero Critical, three High, six Medium, and one
 - Location policy: 20-second request; fresh through 2 minutes; stale at 24 hours; movement at 10 km; replacement improvement requires both 50 m and 25%; warning over 10 km uncertainty; maximum usable uncertainty 20 km; approximate remains usable within the ceiling.
 - Town catalogue: frozen/reviewed GeoNames `LK.zip` CC BY 4.0 snapshot; nine proposed province-representative towns; no coordinate is guessed or approved yet.
 - Persistence: Preferences DataStore 1.2.1 with one mutually exclusive device/manual/default payload, full deletion on mode/permission downgrade rules, dedicated backup-excluded directory, migrations/corruption/reset tests, and no history.
-- Structure: one app module/activity, pure domain engines, immutable `StateFlow`, atomic snapshots, manual composition, and only four proposed AndroidX additions (DEP-011–DEP-014).
-- Design: three-destination Now/Day/Method IA plus focused location flow; A/B/C all cover required location/error/theme/accessibility/motion states. The design recommendation is A, while the owner must select exactly one.
-- CR-001 amendment: separate `PlanetaryHora`, `SriLankanKalaHora`, `PanchamaKala`, and `RahuKala` calculators over one immutable shared context; no new dependency/module. Recommended Option C; daytime Rahu is proposed for V1.0, fixed Kala/Panchama for V1.1. No direction is approved and `UI_SPEC.md` remains stopped.
+- Structure: one app module/activity, pure domain engines, immutable `StateFlow`, atomic snapshots, manual composition, and four AndroidX additions approved in principle but not added (DEP-011–DEP-014).
+- Design: Direction A — Celestial Archive is selected for the three-destination Now/Day/Method IA plus focused location flow; it covers required location/error/theme/accessibility/motion states and the seven explicit daytime-Rahu states. Final UI tokens/specification/evidence remain unapproved.
+- CR-001 amendment: separate `PlanetaryHora`, `SriLankanKalaHora`, `PanchamaKala`, and `RahuKala` calculators over one immutable shared context; no new dependency/module. Approved Option C allocates daytime Rahu conditionally to V1.0 and fixed Kala/Panchama to V1.1. Direction A is approved, while `UI_SPEC.md` remains stopped.
 
 ## Foundation milestone
 
 M-000 establishes the controlled Codex virtual team and documentation/verification foundation. No Jyotisha feature or intentional application behavior change is part of this milestone.
 
-## Existing repository state before work
+## Repository baseline history
 
-- Branch: `dev`
-- HEAD: `dfbdb20` (`initial application setup`); `origin/main`, `origin/dev`, and local `main` pointed to the same commit.
-- Worktree was not clean: untracked Android Studio files existed under `.idea/`.
-- Consequence: the requested documentation checkpoint commit cannot be created under the repository rule requiring a clean starting tree, even though `.idea/` is now covered by an ignore rule. The files were not deleted or edited.
+- The foundation work began on `dev` at `dfbdb20` (`initial application setup`) with pre-existing untracked Android Studio files under `.idea/`; those files were preserved and subsequently ignored.
+- The initial task did not authorize a commit from that dirty starting state. On 2026-08-02 the owner separately and explicitly authorized the exact staged baseline commit.
+- Baseline commit: `be1b132` (`chore: establish Codex team and approved requirements baseline`) on `dev`; no branch, merge, or push was performed.
+- Post-commit Phase B reconciliation and approval recording are documentation-only and remain uncommitted; no additional commit is authorized and no Android source or Gradle file changed.
 
 ## Baseline verification (2026-08-01)
 
@@ -88,21 +90,25 @@ Static validation parsed `.codex/config.toml` and all seven agent TOML files suc
 
 The corrections precisely bounded amendment approval, qualified elapsed-versus-civil fixed-duration wording, made golden records profile-neutral, and added this current verification record. Genuine traditional uncertainty remains unresolved rather than being closed as a documentation defect.
 
+## Phase B reconciliation QA (2026-08-02)
+
+The independent QA Reviewer initially found zero Critical/High, two Medium, and zero Low issues in the reconciled v0.5 architecture/v0.4 design package. Corrections limited Version 1.0 execution to CP-001 plus CP-003 only after PA-003, kept CP-002 unconstructed until Version 1.1 gates, and aligned stale gate/QA status wording. The read-only recheck found zero open Critical, High, Medium, or Low issues. It confirmed approval consistency, bidirectional traceability, all seven Rahu states, Option C boundaries, no Android/Gradle changes, and no secret/private-coordinate indicators.
+
 ## Blockers and unresolved decisions
 
 - No blocker prevents completing M-000; it remains Done.
-- The dirty starting worktree blocks the optional commit under the task's Git rule.
+- The separately authorized baseline commit is complete as `be1b132`; no additional commit is authorized.
 - Requirements, CP-001, CR-001–CR-010, and the linked validation strategy are approved under PA-001.
-- ADR-001–ADR-007 and DEP-011–DEP-014 await architecture approval. Even after it, solar implementation remains blocked until normative `SOLAR-001` is independently reviewed and approved.
+- ADR-001–ADR-009 and DEP-011–DEP-014 are approved under PA-002, with dependencies approved in principle but not added. Solar implementation remains blocked until normative `SOLAR-001` is independently reviewed and approved.
 - Exact GeoNames snapshot/coordinates, Colombo row, family-town coverage, DataStore installed path/backup proof, dependency resolution/transitives/size, package identity, and Android provider/OEM behavior require Phase C evidence.
-- Exactly one visual direction must be selected; final UI/theme tokens, fonts/assets/copy/components/previews/accessibility evidence remain unapproved.
+- Direction A — Celestial Archive is selected under DA-001; final UI/theme tokens, fonts/assets/copy/components/previews/accessibility evidence remain unapproved.
 - `minSdk 26` is provisional pending actual family-device inventory and verification; current `compileSdk`, `targetSdk`, and `minSdk` are independently 36.
 - Trusted Sri Lankan traditional authority, independent astronomical tolerance evidence, physical family-device testing, and signed-APK/privacy checks block release approval only.
-- Change Request CR-001 is approved; Phase B proposals must now be reconciled and independently reviewed before their own approval gates.
+- Change Request CR-001, PA-002 architecture, and DA-001 Direction A are approved; their subordinate domain/data/UI/implementation/release gates remain explicit.
 - CP-002 fixed 60-minute coverage at following sunrise, day/night behavior, the full Panchama matrix, cross-boundary behavior, and civil-versus-elapsed duration require traditional approval and block implementation.
-- CP-003 daytime Rahu requires selected-tradition confirmation and source-backed expected cases; a nighttime variant is recognized but deferred/unselected.
+- CP-003 daytime Rahu is Blocked from approval pending a selected Sri Lankan authority, seven source-backed weekday golden vectors including non-06:00 anchors and remainder behavior, boundary/date/zone/leap vectors, canonical terminology, and exact source versions/hashes. A nighttime variant is recognized but deferred/unselected.
 - Reviewed Sinhala spellings, transliterations, aliases, and user-facing Panchama grammar remain pending.
 
-## Next gate
+## Current stop point
 
-After the authorized Phase B reconciliation and independent QA, request `APPROVE VERSION 1.0 ARCHITECTURE` and exactly one design direction approval. Separately state whether CP-003 is ready for `APPROVE DAYTIME RAHU CALCULATION PROFILE CP-003`. Do not proceed to delivery planning or application implementation at this gate.
+The two Phase B approval phrases are recorded. CP-003 is **not** ready for `APPROVE DAYTIME RAHU CALCULATION PROFILE CP-003`, and `SOLAR-001` remains unapproved. Await explicit authorization for any next documentation phase; do not proceed automatically to final UI specification, delivery planning, dependency changes, or application implementation.

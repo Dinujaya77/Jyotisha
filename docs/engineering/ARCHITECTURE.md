@@ -2,15 +2,15 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed |
-| Version | 0.4 |
+| Status | Approved |
+| Version | 0.6 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | CR-001/Option C approved; Phase B proposal requires authorized reconciliation before architecture approval |
+| Approval state | PA-002 approved 2026-08-02 by exact phrase `APPROVE VERSION 1.0 ARCHITECTURE`; separate implementation/data/profile/UI/release gates remain |
 
 ## Recommendation summary
 
-Version 1.0 should retain one `:app` module, one activity, Compose/Material 3, unidirectional data flow, immutable state, and pure deterministic calculation code. The proposed production choices are:
+Version 1.0 retains one `:app` module, one activity, Compose/Material 3, unidirectional data flow, immutable state, and pure deterministic calculation code. The approved architecture choices are:
 
 - independently written pure-Kotlin NOAA/Meeus-style solar engine;
 - pure-Kotlin `PlanetaryHoraCalculator` implementing approved CP-001/calculation rules CR-001–CR-010, with separate proposed calculators for other timing systems;
@@ -20,13 +20,28 @@ Version 1.0 should retain one `:app` module, one activity, Compose/Material 3, u
 - `minSdk 26`, `compileSdk 36`, and `targetSdk 36`;
 - manual construction at the app composition root; no DI framework, database, networking, background service, navigation dependency, or new Gradle module.
 
-All choices in this document remain proposed. Change Request CR-001 is approved and the architecture reconciliation gate is open; architecture approval is still separate. No implementation is authorized by this proposal or by the amendment approval.
+PA-002 approves the architecture boundaries and choices recorded here. It does not authorize implementation, dependency changes, or application/Gradle edits; the separate `SOLAR-001`, CP-003/RK, data, final UI, delivery, and implementation gates remain in force.
+
+## Approved architecture boundary classification
+
+| Decision | Classification | Reconciled recommendation |
+|---|---|---|
+| `SOLAR-001` | Method family selected; separate engine approval Blocked | PA-002 selects the pure-Kotlin NOAA/Meeus method family, but solar implementation remains blocked until normative `SOLAR-001` freezes equations, constants, calendar/sign/unit behavior, solving, failures, rounding ties, diagnostics, version and independent vectors. |
+| Device location | Approved | Existing AndroidX Core `LocationManagerCompat.getCurrentLocation()` behind `DeviceLocationProvider`; no Play Services; permission-derived precision, explicit provider filtering, one-winner cancellation and API/OEM evidence required. |
+| Freshness/uncertainty | Approved | Timeout 20 s; returned monotonic age `<=2 min`; persisted wall-clock stale age `>=24 h`; movement `>=10 km`; accuracy improvement requires both `>=50 m` and `>=25%`; finite reported accuracy `0..20,000 m`; warn above 10 km. |
+| Sri Lankan towns | Source/schema approved; exact data pending | Frozen GeoNames CC BY 4.0/WGS84 source, schema, stable IDs, offline use and attribution are selected; separately review the snapshot/hash, extraction, exact rows, Colombo default and family-town coverage. Town coordinates are source/town-centre points, not physical-accuracy claims. |
+| Persistence | Approved | One application-scoped Preferences DataStore 1.2.1 with mutually exclusive device/manual/default records. Device zone is derived from the current `ZoneSource`, never persisted as authoritative; manual/default derive `Asia/Colombo`. |
+| Backup/transfer | Policy approved; release evidence blocker | Store location data under credential-protected `noBackupFilesDir/location-data/`; retain explicit legacy and Android 12+ cloud/device-transfer exclusions as defence in depth; prove clean-device restore/transfer. |
+| Package/namespace | Deferred implementation decision; release blocker | Resolve `Jyotisha` versus `Jyothisha` and choose one stable owner-controlled application ID before the first distributed APK. Do not distribute `com.example.*`; perform the rename once in an approved early task. |
+| Dependencies | Approved in principle; implementation prerequisite | PA-002 covers DEP-011–DEP-014 in principle. No Navigation, Hilt, Room, solar, Play Services, networking, analytics or encryption dependency. Direct coroutine APIs may not rely silently on transitives; record/approve exact direct artifacts or avoid them before code. |
+| Internal precision | Approved shared contract; solar anchor rule separate | `Double`/`StrictMath` only for solar intermediates; quantize each anchor once under `SOLAR-001`; thereafter integer UTC epoch nanoseconds with overflow-safe quotient/remainder partitions. |
+| Display precision | Deferred UI/display-policy decision | Formatting is versioned and outside calculators. Exact instants drive membership. Before UI implementation, freeze rounding direction/ties, date rollover, seconds near transitions, positive countdown behavior and shared-boundary formatting. |
 
 ## Existing baseline
 
 The Gradle root `Jyothisha` has one Android application module and production package `com.example.jyothisha`. The launcher activity displays the generated Compose template. Current SDK values are independently `compileSdk 36`, `targetSdk 36`, and `minSdk 36`; only `minSdk` sets the install floor. Existing AndroidX Core KTX 1.17.0 already provides `LocationManagerCompat`. The manifest has no location permissions and currently enables backup/data-extraction rules. No calculation, state-holder, repository, navigation, persistence, or meaningful feature test exists.
 
-Package/application spelling and the placeholder `com.example` identity remain release decisions. Do not rename them opportunistically during feature work.
+Package/application spelling and the placeholder `com.example` identity require an approved early implementation decision before the first distributed APK. Do not rename opportunistically, and do not distribute `com.example.*` because a later application-ID change breaks update lineage.
 
 ## System shape
 
@@ -38,8 +53,6 @@ domain/model/           immutable domain values and typed failures
 domain/solar/           SolarEngine and local algorithm
 domain/timing/common/   shared context, intervals, provenance, typed outcomes
 domain/timing/planetaryhora/  approved CP-001 calculator and invariants
-domain/timing/kalahora/ proposed CP-002 main-Kala calculator
-domain/timing/panchama/ proposed CP-002 Panchama calculator
 domain/timing/rahu/     proposed CP-003 daytime Rahu calculator
 domain/location/        acceptance/selection policy and models
 data/location/          LocationSelectionRepository, DataStore, TownCatalog
@@ -51,11 +64,11 @@ ui/methodology/         method, sources, privacy, limitations
 ui/theme/               semantic theme tokens and approved direction
 ```
 
-`domain/**` has no Android imports. Interfaces are introduced at real substitution boundaries—solar, location, clock/zone, persistence—not as one-interface-per-class ceremony. No Hilt/service locator is proposed; a small application composition root constructs production objects and test factories construct fakes.
+`domain/**` has no Android imports. CP-002 `SriLankanKalaHora`/`PanchamaKala` boundaries remain conceptual; Version 1.0 creates no source package, stub calculator, or dependency for them. Interfaces are introduced at real substitution boundaries—solar, location, clock/zone, persistence—not as one-interface-per-class ceremony. No Hilt/service locator is proposed; a small application composition root constructs production objects and test factories construct fakes.
 
 ## State and data flow
 
-UI events flow to a screen-level ViewModel. The ViewModel calls repositories/engines and exposes one immutable `StateFlow<DashboardUiState>`. Acquisition progress/failure is distinct from the last complete `CalculationSnapshot`.
+UI events flow to one activity-scoped ViewModel owning selected location, multi-date calculation context, atomic timing bundle, small destination state and acquisition state. It calls repositories/engines and exposes one immutable `StateFlow<DashboardUiState>`. Acquisition progress/failure is distinct from the last complete `CalculationSnapshot`; composables emit intents and render only.
 
 ```text
 UI event
@@ -72,7 +85,7 @@ The countdown never reruns astronomy. The schedule is precomputed, remaining dur
 
 ## Solar and timing calculation
 
-### Proposed solar method
+### Selected solar method family; normative specification pending
 
 Implement a small pure-Kotlin NOAA/Meeus-style engine specifically for CP-001. Solve the Sun-centre event at geometric altitude `-0.8333°` (zenith `90.8333°`) with elevation fixed to zero. Proposed supported civil dates are `1900-01-01` through `2100-12-31`; outside that range returns a typed unavailable result. Use UTC astronomical arithmetic, explicit date/zone conversion, finite-input validation, `StrictMath`, and a versioned specification.
 
@@ -100,7 +113,7 @@ Keep six distinct concepts:
 3. **Engine quantization:** proposed solar anchors are rounded once to the nearest millisecond before conversion to integer nanoseconds.
 4. **Hora division:** CR-004 computes all boundaries from common anchors with exact endpoint/adjacency guarantees and less than one-nanosecond rational quantization error.
 5. **Validation:** compare the production engine with an independent same-convention implementation and retain every discrepancy.
-6. **Display:** normally round sunrise, sunset, and boundaries to the nearest minute in the active zone. A technical/transition detail may show seconds. Membership and transitions always use unrounded internal values.
+6. **Display:** a separately versioned display policy, outside calculators, must freeze rounding direction/ties, date rollover, seconds near transitions, positive countdown behavior and one formatting of shared boundaries. Membership and transitions always use unrounded internal values.
 
 Before sunrise, the active Hora cycle begins at the previous local sunrise. Calculation may therefore require previous/current/next civil-date anchors. A typed missing-event, unsupported-date, invalid-input, or chronology failure must never produce a fabricated Hora.
 
@@ -112,7 +125,7 @@ Model `PlanetaryHora`, `SriLankanKalaHora`, `PanchamaKala`, and `RahuKala` as di
 SolarEventsProvider
   → DailyCalculationContext
   → PlanetaryHoraCalculator
-  → KalaHoraCalculator
+  → SriLankanKalaHoraCalculator
   → PanchamaKalaCalculator
   → RahuKalaCalculator
   → DailyTimingBundle
@@ -122,9 +135,9 @@ SolarEventsProvider
   → rendering-only UI
 ```
 
-`DailyCalculationContext` contains immutable `SolarEvents`, exact selected location/provenance, explicit zone, civil date, injected clock instant, solar profile/engine version, and a canonical context fingerprint. Each calculator accepts only a typed approved profile. A provisional constant in documentation cannot create an executable production profile.
+`DailyCalculationContext` contains immutable date-keyed `SolarEvents`, exact selected location/provenance, explicit zone, civil date, sampled clock instant, solar profile/engine version, and a canonical context fingerprint. “Same solar snapshot” means the same immutable location/zone/profile fingerprint, not necessarily the same civil-date anchor set: before sunrise CP-001 may consume the prior day's sunrise while daytime Rahu consumes the current civil date's sunrise/sunset. Each calculator accepts only a typed approved profile. A provisional constant in documentation cannot create an executable production profile.
 
-`CalculationOutcome<T>` is either `Success(result, provenance, warnings)` or `Unavailable(reason, partialProvenance)`. Proposed unavailable reasons include unapproved profile, unresolved rule questions, invalid input, missing solar event, parent/profile mismatch, coverage mismatch, chronology failure, arithmetic overflow, and unavailable storage/context. Evidence states remain distinct: user-supplied, provisional, rule-approved, independently validated, and traditionally validated.
+`CalculationOutcome<T>` is either `Success(result, provenance, warnings)` or `Unavailable(reason, partialProvenance)`. Typed unavailable reasons include unapproved profile, unresolved rule questions, invalid input, missing solar event, parent/profile mismatch, coverage mismatch, chronology failure, arithmetic overflow, and unavailable storage/context. Evidence states remain distinct: user-supplied, provisional, rule-approved, independently validated, and traditionally validated.
 
 Reuse only neutral mechanics: shared solar events, location/zone/date/clock inputs, integer-timeline intervals, `[start,end)` membership, exact common-anchor partitioning, continuity checks, profile/provenance structures, and a centralized display policy. Keep separate builders:
 
@@ -191,7 +204,7 @@ Google Play Services offers richer request controls but is disproportionate for 
 
 Usability, freshness, replacement, warning, and fallback are separate decisions:
 
-| Concept | Proposed rule |
+| Concept | Approved architecture rule |
 |---|---|
 | Usable device result | Finite in-range coordinates; valid source/zone/timestamps; horizontal accuracy finite and `0..20,000 m` inclusive. Approximate permission remains usable within this ceiling. |
 | Fresh returned fix | Age `0..2 minutes` inclusive, measured with monotonic elapsed realtime where available. Freshness is not precision. |
@@ -202,7 +215,7 @@ Usability, freshness, replacement, warning, and fallback are separate decisions:
 
 The 20 km ceiling is a policy guard, not a confidence guarantee; Android horizontal accuracy is a 68-percent confidence radius. Above the ceiling, treat the device fix as unavailable and use fallback. An explicit manual-town selection remains active until the user chooses another town or `Use current location`. A non-material refresh retains the existing selected coordinates and acquisition time; it may report a transient `Location unchanged` outcome but must not create history.
 
-Proposed privacy behavior on mode/permission change: switching to manual or default deletes any saved device fix; a later `Use current location` action requests a fresh fix and failure retains the active manual/default result. Likewise, if fine becomes coarse-only, or foreground permission is externally revoked, delete the saved fine-derived device record rather than continue presenting coordinates more precise than the current choice. Acquire a fresh approximate fix only in an approved foreground context; meanwhile use manual/default fallback. This availability/privacy tradeoff requires architecture approval.
+Approved privacy behavior on mode/permission change: switching to manual or default deletes any saved device fix; a later `Use current location` action requests a fresh fix and failure retains the active manual/default result. Likewise, if fine becomes coarse-only, or foreground permission is externally revoked, delete the saved fine-derived device record rather than continue presenting coordinates more precise than the current choice. Acquire a fresh approximate fix only in an approved foreground context; meanwhile use manual/default fallback.
 
 ## Sri Lankan town catalogue
 
@@ -236,16 +249,16 @@ schemaVersion
 activeMode = DEVICE | MANUAL_TOWN | DEFAULT
 DEVICE { latitude, longitude, accuracyMetres,
          permissionPrecision, acquiredAtEpochMillis,
-         zoneId, source }
+         source }
 MANUAL_TOWN { activeTownId, selectedAtEpochMillis }
 DEFAULT { datasetVersion }
 ```
 
-Modes are mutually exclusive. Switching to manual/default deletes device coordinates; switching to device deletes the manual/default payload. Bundled town coordinates resolve from the stable town ID and are not duplicated. Default mode stores provenance only, not coordinates. Do not persist derived schedules.
+Modes are mutually exclusive. Switching to manual/default deletes device coordinates; switching to device deletes the manual/default payload. Device mode derives the current system zone on every restore/resume rather than persisting it as authoritative. Bundled town coordinates resolve from the stable town ID and use `Asia/Colombo`; default mode stores provenance only, not coordinates. Do not persist derived schedules.
 
 Updates are atomic. Unknown newer schema, corruption, invalid coordinates/zone/source, or impossible timestamp resets only location preferences to the Colombo default and emits one recovery warning. Migrations are pure, versioned, tested, and never widen retained data silently. `Reset location data` deletes the record and returns to the labelled Colombo default.
 
-Create the DataStore in one dedicated location-data directory and exclude the complete directory/domain—not only the nominal `.preferences_pb` file—from both legacy backup and Android 12+ cloud/device-transfer rules so temporary/replacement/companion artifacts cannot escape. Verify the real installed paths and restore/transfer behavior; disable application backup if reliable exclusion cannot be proven. Never log location values or use real family coordinates in committed fixtures.
+Create one application-scoped DataStore under credential-protected `noBackupFilesDir/location-data/`. Retain explicit exclusions for the complete directory/domain—not only the nominal `.preferences_pb` file—in legacy and Android 12+ cloud/device-transfer rules as defence in depth. Verify real installed paths and clean-device restore/transfer behavior; disable application backup if reliable exclusion cannot be proven. Never log location values or use real family coordinates in committed fixtures.
 
 ## Time, zone, lifecycle, and failures
 
@@ -255,7 +268,7 @@ Typed failures include invalid input, unsupported date, missing solar event, chr
 
 ## Dependencies and proportionality
 
-Proposed new AndroidX artifacts, subject to architecture approval and register entries:
+AndroidX artifacts approved in principle under PA-002, subject to an authorized implementation task and completed register evidence:
 
 - `androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2`
 - `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2`
@@ -264,7 +277,9 @@ Proposed new AndroidX artifacts, subject to architecture approval and register e
 
 No solar library, Google Play Services Location, Navigation Compose, DI, database, network, analytics, crash upload, or logging dependency is required. Reuse the existing Lifecycle 2.9.2 family; do not opportunistically upgrade it during implementation.
 
-Change Request CR-001 adds no Gradle artifact, module, database, DI framework, navigation library, astronomy library, or networking path. Four small pure schedules should execute sequentially after shared solar calculation; their cost does not justify new concurrency infrastructure.
+Direct coroutine APIs must not rely silently on transitive artifacts. Before implementation, either register and approve exact production/test coroutine dependencies with resolved versions and evidence, or constrain code to APIs supplied by the approved direct AndroidX dependencies. This is an implementation prerequisite, not permission to add a dependency now.
+
+Change Request CR-001 adds no Gradle artifact, module, database, DI framework, navigation library, astronomy library, or networking path. Only enabled Version 1.0 schedules—CP-001 and, after PA-003 approval, CP-003—execute sequentially after shared solar calculation; their cost does not justify new concurrency infrastructure. CP-002 Kala/Panchama is not constructed or invoked before its Version 1.1 domain and delivery gates.
 
 ## Testing, performance, signing, and extension points
 
@@ -298,10 +313,10 @@ Future Panchanga capability extends through new approved engines/profile IDs and
 - [AndroidX DataStore releases](https://developer.android.com/jetpack/androidx/releases/datastore)
 - [Android Auto Backup](https://developer.android.com/identity/data/autobackup)
 
-## Unresolved approval items
+## Remaining gated items
 
-- Change Request CR-001 and Option C are approved; Phase B architecture reconciliation is authorized, but architecture approval remains pending.
+- Change Request CR-001, Option C, PA-002 architecture, and DA-001 Direction A are approved.
 - CP-002 fixed-day coverage, day/night behavior, Panchama matrix, duration semantics, and reviewed terminology are implementation-blocking.
-- CP-003 daytime Rahu requires selected-tradition approval and source-backed golden cases; nighttime Rahu remains deferred.
+- CP-003 daytime Rahu remains a separate domain gate; Version 1.0 returns typed `Unavailable(ProfileNotApproved)` until it passes. Nighttime Rahu remains deferred.
 
-Solar method/date range/millisecond quantization plus normative `SOLAR-001`; AndroidX provider-selection policy; 20 km maximum uncertainty; device-record deletion on manual/default selection or permission downgrade/revocation; exact GeoNames snapshot/town rows/family town/attribution; DataStore and Lifecycle additions; application identity; actual family-device inventory; UI/navigation direction; signing/distribution ownership; independent astronomical dataset; and external traditional authority remain unresolved until their stated gates.
+Normative `SOLAR-001` equations/date range/quantization; exact GeoNames snapshot/town rows/family town/attribution; authorized dependency addition with resolved evidence; application identity; actual family-device inventory; final UI specification/tokens/evidence; signing/distribution ownership; independent astronomical dataset; and external traditional authority remain unresolved until their stated gates.

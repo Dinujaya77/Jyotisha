@@ -2,19 +2,19 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 0.3 |
+| Status | Approved |
+| Version | 0.5 |
 | Last updated | 2026-08-02 |
 | Owner role | UI/UX Designer |
-| Approval state | CR-001/Option C approved; three Phase B directions require reconciliation and no direction is approved |
+| Approval state | DA-001 Direction A — Celestial Archive v0.4 approved 2026-08-02; Directions B/C superseded for Version 1.0 selection |
 
 ## Shared contract
 
 Change Request CR-001 does not replace the three directions. Under approved Option C, V1.0 keeps Seasonal Planetary Hora dominant and adds Rahu as a subordinate concurrent status only after CP-003/RK approval. Fixed Kala/Panchama remains a future Version 1.1 concept until CP-002/KH/PK approval. No direction may solve added density with four equal cards.
 
-All directions must support long reviewed English/Sinhala names, grouped timeline disclosure, per-system unapproved/unavailable states, 200% font, compact phones, TalkBack boundary announcements, reduced motion, and colour-independent Rahu status.
+All directions must keep the active location and labelled calculated astronomical sunrise/sunset visible, and support long reviewed English/Sinhala names, per-system unapproved/unavailable states, 200% font, compact phones, TalkBack boundary announcements, reduced motion, future theme packs, and colour-independent Rahu status. Fixed Kala/Panchama is a clearly labelled non-functional Version 1.1 concept only; it must never appear as a working Version 1.0 feature.
 
-Every direction uses Material 3 structure and semantic tokens, preserves meaning in light/dark mode, meets NFR-005, and keeps the current Hora dominant. The 24-Hora view remains chronological rather than becoming a decorative wheel. Status uses text plus icon/shape, never colour alone. Motion confirms state or continuity and disappears under reduced motion.
+Every direction uses Material 3 structure and semantic tokens, preserves meaning in light/dark mode, meets NFR-005, and keeps Seasonal Planetary Hora dominant. The 24-Hora view remains chronological rather than becoming a decorative wheel. Status uses text plus icon/shape, never colour alone. Motion is short and state-confirming only at a boundary or user action, and disappears under reduced motion; number rolls, ambient celestial motion, glow loops, and animated backgrounds are excluded.
 
 All directions avoid horoscope-ad styling, excessive glow, continuously animated backgrounds, tiny ornamental labels, dense radial charts, and unreviewed sacred/culturally specific imagery. They preserve professional, premium, calm, subtly fantastical, mysterious, culturally respectful, older-user-readable character.
 
@@ -34,7 +34,7 @@ A carefully preserved astronomical manuscript translated into a contemporary int
 
 ### Screen character
 
-The current Hora becomes a featured folio: large ruler, calm remaining-time emphasis, labelled boundaries, and a smaller attached next-Hora note. Sunrise/sunset form a labelled astronomical-anchors row. Day is a ledger with Day/Night chapters and a textual `Current` badge plus outline/weight. Provenance is a catalog line above the featured card; Method uses readable editorial sections and catalog-like version metadata without tiny type.
+Seasonal Planetary Hora becomes a featured folio: large ruler, calm remaining-time emphasis, labelled boundaries, and a smaller attached next-Hora note. Sunrise/sunset form a labelled astronomical-anchors row. Day is a ledger with Day/Night chapters and a textual `Current` badge plus outline/weight. Provenance is a catalog line above the featured card; Method uses readable editorial sections and catalog-like version metadata without tiny type.
 
 ### State behavior
 
@@ -68,7 +68,7 @@ A precise modern observing instrument: clean astronomical data, measured spacing
 
 ### Screen character
 
-The current Hora is a central observation readout: ruler, remaining duration, and aligned boundaries. Solar anchors sit on a labelled horizon scale. Day uses aligned chronological columns and strong Day/Night groups, switching to stacked rows at large text. Provenance is an observation-context panel. Method reads as an observation log: Method, Inputs, Assumptions, Privacy, Sources, Versions, Limits.
+Seasonal Planetary Hora is a central observation readout: ruler, remaining duration, and aligned boundaries. Solar anchors sit on a labelled horizon scale. Day uses aligned chronological columns and strong Day/Night groups, switching to stacked rows at large text. Provenance is an observation-context panel. Method reads as an observation log: Method, Inputs, Assumptions, Privacy, Sources, Versions, Limits.
 
 ### State behavior
 
@@ -101,7 +101,7 @@ A quiet, protective evening space for a family ritual of checking time: soft lun
 
 ### Screen character
 
-The current Hora occupies a spacious quiet-moment card with ruler, remaining time, boundaries, and next ruler. Sunrise/sunset are paired labelled horizon cards. Day is a calm sequence of rounded rows with prominent Day/Night headings and textual/icon/outline current state. Provenance uses a reassuring context card. Method favors short plain-language sections and progressive disclosure for technical detail.
+Seasonal Planetary Hora occupies a spacious quiet-moment card with ruler, remaining time, boundaries, and next ruler. Sunrise/sunset are paired labelled horizon cards. Day is a calm sequence of rounded rows with prominent Day/Night headings and textual/icon/outline current state. Provenance uses a reassuring context card. Method favors short plain-language sections and progressive disclosure for technical detail.
 
 ### State behavior
 
@@ -136,51 +136,56 @@ Warmest and least intimidating for older family users. Risks are pastel contrast
 | 200% font | Vertical reflow, no clipping/truncation of key values/actions |
 | TalkBack | Coherent summaries, chronological rows, decorative content hidden, no tick announcements |
 | Reduced motion | State remains understandable with all ornamental transitions removed |
-| Rahu active/upcoming/completed | Explicit text, start/end, next transition and icon/shape/weight cue; never red/green or colour alone; no auspiciousness claim |
+| Rahu active now | `Active now`, start/end and `Ends at…`; text plus icon/outline/weight; no auspiciousness claim |
+| Rahu later today | `Later today`, start/end and `Starts at…`; no urgency or auspiciousness claim |
+| Rahu completed today | `Completed today` with elapsed start/end and no misleading countdown |
+| Rahu calculation pending | `Calculating Rahu Kalaya…`; no partial/mixed-context times; any prior value is explicitly labelled previous with provenance |
+| Rahu location unavailable | No times; name the missing usable location and offer current-location/town recovery |
+| Rahu solar unavailable | No times; name unavailable calculated sunrise/sunset and retain location, recovery, and Method access |
+| Rahu profile not approved | `Rahu Kalaya isn’t available yet. Its calculation method has not been approved.` No functional-looking control or guessed time |
 | Per-system unavailable/unapproved | Name the affected system and evidence/input state; preserve independently valid results; never show guessed times |
 | Future Kala/Panchama | One atomic parent/child card and grouped disclosure timeline; long names wrap; one combined boundary announcement |
 
-## CR-001 direction adaptations
+## Approved Option C direction adaptations
 
 ### Direction A — Celestial Archive
 
-- Under Option C, Rahu is a supporting marginal note/banded row below the seasonal-Hora folio, not another featured card.
-- Under a later Option B, the featured folio becomes a two-level entry: main Kala heading and current Panchama active passage, separated by restrained editorial dividers. The Day view becomes a grouped ledger with parent chapter rows and subdivision entries.
+- Rahu is a supporting marginal note/banded row below the Seasonal Planetary Hora folio, not another featured card.
+- A future Version 1.1 Kala/Panchama concept may use a two-level archival entry only after CP-002/KH/PK and later UI approval; it is non-functional in Version 1.0.
 - Keep long Sinhala/Panchama names and all times in the highly legible sans; any serif use is limited to a comfortable main-ruler display.
 - Risk: bilingual labels plus archival dividers can become busy. Ornament disappears before content compresses or truncates.
 - Recommendation impact: A remains the preferred visual direction for a validated Option B; B's timeline alignment remains an implementation principle, not a merged direction.
 
 ### Direction B — Astral Observatory
 
-- Under Option C, Rahu is a secondary status strip with explicit status/start/end.
-- Under a later Option B, one instrument panel contains separate main-Kala and current-Panchama readout bands; the next transition is the most prominent numeric value after ruler names. Its aligned grouped timeline is strongest for five subdivisions.
+- Rahu is a secondary status strip with explicit status/start/end.
+- A future Version 1.1 Kala/Panchama concept may use separate main/subdivision readout bands only after CP-002/KH/PK and later UI approval; it is non-functional in Version 1.0.
 - Risk: system IDs, versions, transitions, and validation states can turn the dashboard into telemetry. Use progressive disclosure and strict content limits.
 - B has the lowest layout risk if Option A were chosen, but visual precision cannot remove the conceptual burden of two competing Hora systems.
 
 ### Direction C — Moonlit Sanctuary
 
-- Under Option C, Rahu is a calm textual context row below the quiet seasonal-Hora card with explicit state and outline marker.
-- Under a later Option B, one quiet-moment surface contains main Kala plus a nested Panchama section using spacing/type rather than nested rounded cards. Day uses generous expandable parent rows.
+- Rahu is a calm textual context row below the quiet Seasonal Planetary Hora card with explicit state and outline marker.
+- A future Version 1.1 Kala/Panchama concept may use a nested section within one quiet surface only after CP-002/KH/PK and later UI approval; it is non-functional in Version 1.0.
 - Risk: repeated rounded containers can recreate equal cards and excessive scrolling. Compact layouts use one surface with internal dividers/spacing; soft tones must retain status contrast.
 
-### Option complexity
+### Approved allocation impact
 
-| Product option | Visual/cognitive consequence | Direction guidance |
+| Allocation record | Visual/cognitive consequence | Direction guidance |
 |---|---|---|
-| A — both systems V1.0 | Highest density and older-user risk; Now must still name one primary system and Day needs a non-interleaving selector. | Not preferred; B is lowest layout risk if mandated. |
-| B — Sri Lankan primary | Cleanest eventual parent/child hierarchy and best family intention, but only when CP-002/language evidence is approved. | A remains recommended, conditional on domain approval. |
-| C — staged | Smallest honest V1.0 change: seasonal result plus subordinate daytime Rahu; major Kala hierarchy waits for V1.1. | Recommended now; all three remain viable and unapproved. |
+| Historical A/B alternatives | Superseded for Version 1.0 by approved Option C; they provide no implementation authority. | Do not expose competing functional systems in Version 1.0. |
+| Approved C — staged | Seasonal result remains primary; subordinate daytime Rahu appears only after CP-003/RK; Kala/Panchama waits for Version 1.1. | Direction A is selected; B/C remain preserved alternatives without Version 1.0 implementation authority. |
 
 Suggested future semantic roles describe structure rather than rulers: `timingPrimaryContainer/content`, `timingNestedContainer/content`, `concurrentStatusContainer/content`, `activeOutline`, `validationCaution`, and `timelineGroupDivider`. Do not require seven ruler colours. Reduced motion removes number rolls, sweeps, reveals, and settling without changing text, outline, or status meaning.
 
-## Selection guidance
+## Selection record
 
-- Choose **A** for heritage, trust, editorial craft, and subtle celestial mystery.
-- Choose **B** for precision, timeline scanability, and lowest visual implementation risk.
-- Choose **C** for emotional comfort and older-user approachability.
+- **Selected:** A for heritage, trust, editorial craft, and subtle celestial mystery.
+- **Superseded alternative:** B emphasized precision, timeline scanability, and low visual implementation risk.
+- **Superseded alternative:** C emphasized emotional comfort and older-user approachability.
 
-The UI/UX recommendation remains **A — Celestial Archive** for a future validated Option B, while retaining B's timeline discipline and C's generous spacing as later implementation principles. Under currently recommended product Option C, no direction advantage is large enough to reopen the held approval gate. This is not permission to merge or approve directions.
+The repository owner supplied `APPROVE DESIGN DIRECTION A` on 2026-08-02. **A — Celestial Archive** is therefore the approved Version 1.0 direction, while B's timeline discipline and C's generous spacing remain implementation principles where they do not conflict with A.
 
 ## Deferred after direction approval
 
-Direction approval does not approve final tokens, palettes, fonts/licenses, assets, icons, copy, component measurements, breakpoints, motion values, town-picker behavior, or UI implementation. Final UI work remains blocked on CP-002/CP-003 rules relevant to the selected version, approved terminology, architecture, and one selected direction. Those later artifacts require light/dark previews, 200% font, TalkBack, keyboard, reduced-motion, contrast, pseudolocale, and cultural-review evidence.
+Direction approval does not approve final tokens, palettes, fonts/licenses, assets, icons, copy, component measurements, breakpoints, motion values, town-picker behavior, or UI implementation. Detailed Version 1.0 UI work remains separately gated on approved terminology and CP-003/RK evidence before Rahu can function; CP-002/KH/PK is not a Version 1.0 UI blocker. Those later artifacts require light/dark previews, 200% font, TalkBack, keyboard, reduced-motion, contrast, pseudolocale, and cultural-review evidence.
