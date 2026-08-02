@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 0.6 |
+| Version | 0.7 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | PA-002 approved 2026-08-02 by exact phrase `APPROVE VERSION 1.0 ARCHITECTURE`; separate implementation/data/profile/UI/release gates remain |
+| Approval state | PA-002 and PA-004 SOLAR-001 are Approved; implementation/data/profile/UI/release gates remain |
 
 ## Recommendation summary
 
@@ -26,7 +26,7 @@ PA-002 approves the architecture boundaries and choices recorded here. It does n
 
 | Decision | Classification | Reconciled recommendation |
 |---|---|---|
-| `SOLAR-001` | Method family selected; separate engine approval Blocked | PA-002 selects the pure-Kotlin NOAA/Meeus method family, but solar implementation remains blocked until normative `SOLAR-001` freezes equations, constants, calendar/sign/unit behavior, solving, failures, rounding ties, diagnostics, version and independent vectors. |
+| `SOLAR-001` | Method family and engine package Approved | PA-002 selects pure-Kotlin NOAA/Meeus. PA-004 approves `SOLAR-001-v1.0`, SOL-R-001–SOL-R-014, SOLAR-GOLDEN-001-v1.0, and SOLAR-INTERMEDIATE-001-v1.0; implementation requires a later approved milestone/task. |
 | Device location | Approved | Existing AndroidX Core `LocationManagerCompat.getCurrentLocation()` behind `DeviceLocationProvider`; no Play Services; permission-derived precision, explicit provider filtering, one-winner cancellation and API/OEM evidence required. |
 | Freshness/uncertainty | Approved | Timeout 20 s; returned monotonic age `<=2 min`; persisted wall-clock stale age `>=24 h`; movement `>=10 km`; accuracy improvement requires both `>=50 m` and `>=25%`; finite reported accuracy `0..20,000 m`; warn above 10 km. |
 | Sri Lankan towns | Source/schema approved; exact data pending | Frozen GeoNames CC BY 4.0/WGS84 source, schema, stable IDs, offline use and attribution are selected; separately review the snapshot/hash, extraction, exact rows, Colombo default and family-town coverage. Town coordinates are source/town-centre points, not physical-accuracy claims. |
@@ -85,24 +85,51 @@ The countdown never reruns astronomy. The schedule is precomputed, remaining dur
 
 ## Solar and timing calculation
 
-### Selected solar method family; normative specification pending
+### Selected solar method family and Approved normative specification
 
-Implement a small pure-Kotlin NOAA/Meeus-style engine specifically for CP-001. Solve the Sun-centre event at geometric altitude `-0.8333°` (zenith `90.8333°`) with elevation fixed to zero. Proposed supported civil dates are `1900-01-01` through `2100-12-31`; outside that range returns a typed unavailable result. Use UTC astronomical arithmetic, explicit date/zone conversion, finite-input validation, `StrictMath`, and a versioned specification.
+Through a later approved implementation milestone/task, implement the small pure-Kotlin `NOAA-MEEUS-001-v1.0` engine specified by PA-004-approved SOL-R-001–SOL-R-014. It solves Sun-centre events at geometric altitude `−0.8333°` (zenith `90.8333°`) with `SEA_LEVEL_FIXED`, uses civil dates `1900-01-01` through `2100-12-31`, explicit IANA day bounds and UTC instants, binary64/`StrictMath`, a five-evaluation solver, and one half-even millisecond anchor quantization. Outside/invalid/missing/no-event/ambiguous/non-convergent/chronology cases are typed unavailable.
 
 NOAA describes its Meeus-based sunrise/sunset result as theoretically accurate within one minute for latitudes inside ±72°, which includes Sri Lanka, while warning that physical observations vary with atmospheric and horizon conditions. NOAA also states its calculator is no longer actively maintained; the project therefore owns the implementation and tests rather than copying unsupported web code. NREL SPA supplies independent validation, not production code.
 
-The phrase “NOAA/Meeus-style” is a method recommendation, not an implementable specification. Before any solar production task, the Lead Coordinator must add and obtain approval for a normative `SOLAR-001` engine specification. It must freeze the exact source document/version/hash and define, without developer inference:
+`SOLAR_001.md` freezes the exact official NOAA equation-artifact hash and independently authored equation order; project `90.8333°` override; epoch-derived Julian day; sign/units; IANA civil-date search; five-evaluation event iteration; inverse-domain margin; typed failures; half-even millisecond quantization; diagnostics; versions; and pinned NREL-SPA/pvlib goldens. `APPROVE VERSION 1.0 ARCHITECTURE` selected the family; PA-004 approved the complete normative package. A later approved delivery milestone/task is still required, preserving the no-invention and no-automatic-implementation gates.
 
-- proleptic-Gregorian/Julian-date conversion and supported-year behavior;
-- latitude/longitude sign and units, UTC/civil-date association, and zone conversion;
-- exact equation order and constants for geometric longitude/anomaly, eccentricity, equation of centre, apparent longitude, obliquity, declination, equation of time, solar noon, and `90.8333°` hour angle;
-- event iteration or root-solving procedure, convergence/iteration limits, and missing-event handling;
-- floating-point model (`Double` plus `StrictMath`), domain clamping tolerance, non-finite handling, and overflow limits;
-- nearest-millisecond rounding with an explicit tie rule;
-- chronology/invariant failure thresholds and typed failures;
-- version identifier, intermediate diagnostic values, normative vectors, and independently generated NREL/same-convention golden results.
+### SOLAR-001 API, execution, and replacement boundary
 
-`APPROVE VERSION 1.0 ARCHITECTURE` selects this production-method family but does **not** authorize solar implementation until `SOLAR-001` is complete, independently reviewed, and explicitly approved. This preserves the no-invention rule.
+Use one synchronous pure boundary equivalent to `SolarEngine.calculate(SolarDayRequest): SolarDayOutcome`. The request contains date, canonical coordinates, explicit zone, and approved profile; the outcome is immutable `RegularDay`/typed `Unavailable` with provenance. The engine is Android-free, stateless, thread-safe, CPU-only, and owns no clock, dispatcher, cache, cancellation, persistence, or location metadata.
+
+```kotlin
+fun interface SolarEngine {
+    fun calculate(request: SolarDayRequest): SolarDayOutcome
+}
+
+data class SolarDayRequest(
+    val civilDate: LocalDate,
+    val coordinates: GeoCoordinates,
+    val zone: ZoneId,
+    val profile: ApprovedSolarProfile,
+)
+
+sealed interface SolarDayOutcome {
+    data class RegularDay(
+        val events: SolarEvents,
+        val provenance: SolarProvenance,
+        val warnings: Set<SolarWarning>,
+    ) : SolarDayOutcome
+
+    data class Unavailable(
+        val reason: SolarUnavailableReason,
+        val partialProvenance: SolarProvenance,
+    ) : SolarDayOutcome
+}
+```
+
+This is an architecture signature, not production code or authorization to add a stub.
+
+The context coordinator requests date-keyed outcomes off-main, checks generation/cancellation between dates, and prevents superseded publication. A calculation already running need not be interruptible. Target at most three date calculations for a normal CP-001 context and retain the approved complete-result limit under one second; a proposed solar-only engineering budget is 50 ms p95 for three dates, pending physical-device evidence.
+
+Cache at the coordinator/repository boundary, not inside the engine: bounded in-memory target 32 entries, keyed by canonical coordinate bits, zone plus resolved civil-day start/end instants, date, solar profile/rule and engine versions. Compute outside short synchronized get/put operations; duplicate parallel computation is safe. Do not persist solar events/schedules or expose the sensitive fingerprint.
+
+`DailyCalculationContext` retains typed outcomes for the necessary dates so Seasonal Hora and future approved Rahu consume the same exact objects/fingerprint. Replacement implements the same boundary, changes engine/profile version, invalidates the cache namespace, regenerates independent vectors, and obtains approval; UI, ViewModels, Hora/Rahu rules, location provider, and persistence do not change.
 
 ### Precision contract
 
@@ -173,7 +200,7 @@ Under approved Option C, CP-001 remains the V1.0 primary calculator and CP-003 d
 |---|---|---|---|---|
 | Local pure-Kotlin NOAA/Meeus style | NOAA states about one minute within ±72°; propose 1900–2100 | Fully local, deterministic, exact CP-001 convention, excellent JVM testing | No runtime dependency/APK cost; project owns moderate maintenance; calculator itself is no longer maintained | Solar-only but best proportional V1 choice; **recommended** |
 | NREL SPA or an independent implementation | NREL states ±0.0003° from years −2000 to 6000 | Offline/deterministic but much larger verification surface | Supplied ANSI C and custom notice terms; a Kotlin port/reimplementation is materially complex | Solar-only and accuracy exceeds V1 need; use as independent reference |
-| Solarpositioning Java library 2.0.12 | SPA/Grena implementation with 1,000+ upstream test points; SPA has broad date range | Offline, thread-safe, and fast, but its documented sunrise correction is `0.833°`, not the exact CP-001 `0.8333°` | MIT/Maven, no runtime deps; requires Java 17 and an Android/API 26 compatibility proof | Solar-only, no Panchanga advantage; closest maintained library candidate but reject for exact-convention/build simplicity |
+| Solarpositioning Java library 2.0.13 candidate | SPA/Grena implementation with 1,000+ claimed upstream test points; SPA has broad date range | Offline, thread-safe, and fast, but its documented sunrise correction is `0.833°`, not the exact CP-001 `0.8333°` | MIT, no runtime deps; latest reported tag 2.0.13 requires artifact resolution plus Java 17 and Android/API 26 proof | Solar-only, no Panchanga advantage; closest maintained library candidate but reject for exact-convention/build simplicity |
 | Astronomy Engine Kotlin/JVM | Project claims ±1 arcminute and broad dates; tested against NOVAS/JPL | Offline and well tested, but its normal rise/set convention is not the fixed CP-001 centre altitude | MIT, no runtime deps; adds repository/supply-chain and broad code surface | Strong future Moon/planet path, but exact CP-001 needs a custom search/adapter; reconsider for later Panchanga, reject for V1 |
 
 ## Foreground device location
@@ -319,4 +346,4 @@ Future Panchanga capability extends through new approved engines/profile IDs and
 - CP-002 fixed-day coverage, day/night behavior, Panchama matrix, duration semantics, and reviewed terminology are implementation-blocking.
 - CP-003 daytime Rahu remains a separate domain gate; Version 1.0 returns typed `Unavailable(ProfileNotApproved)` until it passes. Nighttime Rahu remains deferred.
 
-Normative `SOLAR-001` equations/date range/quantization; exact GeoNames snapshot/town rows/family town/attribution; authorized dependency addition with resolved evidence; application identity; actual family-device inventory; final UI specification/tokens/evidence; signing/distribution ownership; independent astronomical dataset; and external traditional authority remain unresolved until their stated gates.
+Later implementation evidence for the PA-004-approved `SOLAR-001`; exact product GeoNames town rows/family town/attribution; authorized dependency addition with resolved evidence; application identity; actual family-device inventory; final UI specification/tokens/evidence; signing/distribution ownership; and external traditional authority remain unresolved until their stated gates. The frozen SOLAR-GOLDEN-001 dataset is approved validation input, not completed production or release evidence.

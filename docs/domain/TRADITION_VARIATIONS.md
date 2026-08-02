@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 1.1-draft |
+| Status | Partially Complete |
+| Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Business Analyst |
-| Approval state | TV-001–TV-007 approved under PA-001; TV-008–TV-015 variation records accepted under CR-001 without approving unresolved profiles/rules |
+| Approval state | TV-001–TV-007 approved under PA-001; TV-008–TV-015 recorded under CR-001; TV-016–TV-019 approved under PA-004 with SOLAR-001 |
 
 | ID | Decision area | Selected V1.0 behavior | Documented alternative | Effect/state |
 |---|---|---|---|---|
@@ -25,5 +25,11 @@
 | TV-013 | Rahu period | Proposed daytime sunrise-to-sunset eighth | Some Sri Lankan sources/calculators show sunset-to-following-sunrise night Rahu | Daytime-only proposed for V1.0; night deferred |
 | TV-014 | Solar convention by system | Proposed CP-003 reuses CP-001's approved astronomical anchors | Practitioner/almanac sunrise may use a different disc/refraction/table convention | Any difference requires a new explicit profile, never a hidden offset |
 | TV-015 | Ruler names | One reviewed canonical display name per language plus secondary aliases | Ravi/Hiru/Iru; Sandu/Chandra; Angaharu/Kuja; Brahaspathi/Guru; Sikuru/Shukra; Senesuru/Shani variants | Language and practitioner review pending |
+| TV-016 | Observer elevation | `SEA_LEVEL_FIXED`; reject elevation-adjusted profiles | Dip-of-horizon/topocentric observer height, terrain/elevation correction, or silently ignoring a supplied numeric elevation | Approved under PA-004; elevation-aware engine deferred |
+| TV-017 | Refraction/weather | Fixed conventional 34 arcminutes plus 16 arcminutes solar semidiameter, total `0.8333°` | Live pressure/temperature/humidity model, NOAA variable-refraction position correction, or provider weather | Approved under PA-004; live weather intentionally excluded |
+| TV-018 | Solar algorithm | Local NOAA/Meeus-derived equations frozen in SOL-R-007/SOL-R-008 | Production NREL SPA port, NOAA web output, third-party solar library, or mixed-provider anchors | Approved under PA-004; NREL SPA is validation only |
+| TV-019 | Time-scale/display | Production UTC-as-UT1 (`ΔUT1=0`) model; half-even millisecond anchors; central nearest-minute display | ΔT/UT1 service, leap-second prediction, per-row independent rounding, or claimed sub-second physical accuracy | Approved under PA-004; future engine/profile change requires new approval |
 
 Selection means a deliberate product profile, not a claim that other traditions are incorrect. SRC-009 must assess every selected profile. CP-002 uncertainty blocks implementation; CP-003 traditional comparison remains a separate approval/release gate.
+
+SOLAR-001 is an astronomical model choice, not a declaration that a printed Panchanga or every Jyotisha tradition uses the same sunrise convention. Any traditional authority requiring a different disc, refraction, elevation, or civil-day rule must be represented as a separately sourced profile and change request; no hidden offset may alter CP-001 anchors.

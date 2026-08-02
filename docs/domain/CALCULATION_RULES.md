@@ -2,17 +2,17 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 1.1 |
+| Status | Partially Complete |
+| Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Business Analyst |
-| Approval state | Calculation rules CR-001–CR-010 approved under PA-001; product CR-001 approved, while KH/PK/RK proposals retain separate domain approval gates |
+| Approval state | CR-001–CR-010 approved under PA-001; SOL-R-001–SOL-R-014 approved under PA-004; KH/PK/RK retain separate gates |
 
 All rules use CP-001. Inputs and intermediate instants must remain deterministic and versioned.
 
 ## CR-001 — Solar anchors
 
-Calculate sunrise, sunset, and following sunrise with one approved offline algorithm using latitude, longitude, civil date, active zone, apparent upper limb, standard refraction, solar-centre zenith 90.8333°, sea-level, and level/unobstructed horizon. Never combine anchors from different providers/algorithms in one result.
+Calculate sunrise, sunset, and following sunrise with the PA-004-approved offline algorithm using latitude, longitude, civil date, active zone, apparent upper limb, standard refraction, solar-centre zenith 90.8333°, sea-level, and level/unobstructed horizon. `SOLAR-001-v1.0` / SOL-R-001–SOL-R-014 is the complete approved implementation profile. Implementation still requires an approved delivery milestone and task; never combine or fabricate anchors from different providers/algorithms.
 
 ## CR-002 — Applicable Hora day
 
@@ -63,6 +63,27 @@ On a material location, clock, date, zone, profile, or engine change, calculate 
 ## Integrity rule
 
 Expected results must follow approved rules and evidence. Do not change an expectation merely to make an implementation or test pass.
+
+## Proposed SOLAR-001 engine rules
+
+The normative wording is in `SOLAR_001.md`; this index does not redefine it.
+
+| Rule | Subject | State |
+|---|---|---|
+| SOL-R-001 | Apparent-upper-limb `90.8333°` event meaning | Approved under PA-004 |
+| SOL-R-002 | Fixed sea-level elevation and average-refraction assumptions | Approved under PA-004 |
+| SOL-R-003 | Typed inputs, ranges, rejection, and canonical coordinates | Approved under PA-004 |
+| SOL-R-004 | IANA civil-day association and UTC time-scale model | Approved under PA-004 |
+| SOL-R-005 | Following sunrise from the following civil date | Approved under PA-004 |
+| SOL-R-006 | Julian day, binary64, `StrictMath`, and normalization | Approved under PA-004 |
+| SOL-R-007 | Frozen NOAA/Meeus-derived solar terms/constants/order | Approved under PA-004 |
+| SOL-R-008 | Five-evaluation event iteration and inverse-domain behavior | Approved under PA-004 |
+| SOL-R-009 | Half-even millisecond quantization and ordering | Approved under PA-004 |
+| SOL-R-010 | Success output/provenance/diagnostics | Approved under PA-004 |
+| SOL-R-011 | Typed unavailable outcomes | Approved under PA-004 |
+| SOL-R-012 | High-latitude/no-event behavior | Approved under PA-004 |
+| SOL-R-013 | Shared context, cache, thread, cancellation, and replacement contract | Approved under PA-004 |
+| SOL-R-014 | Model expectation, validation tolerance, internal and display precision separation | Approved under PA-004 |
 
 ## Proposed CP-002 main-Kala rules
 

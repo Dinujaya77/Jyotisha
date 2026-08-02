@@ -3,16 +3,18 @@
 | Field | Value |
 |---|---|
 | Status | Ready |
-| Version | 0.8 |
+| Version | 1.0 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, Change Request CR-001, PA-002 architecture, and DA-001 Direction A approved; CP-003 remains Blocked and no implementation is authorized |
+| Approval state | PA-001, CR-001, PA-002, DA-001, and PA-004 SOLAR-001 approved; CP-003 Blocked; no implementation milestone/task authorized yet |
 
 ## Current phase
 
 **Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
 
 **Phase B architecture and design direction are Approved.** On 2026-08-02 the repository owner supplied `APPROVE VERSION 1.0 ARCHITECTURE` and `APPROVE DESIGN DIRECTION A`. PA-002 approves architecture v0.5, ADR-001–ADR-009 v0.5, and DEP-011–DEP-014 in principle. DA-001 selects Celestial Archive v0.4; Directions B/C are superseded for Version 1.0 selection but preserved as alternatives. CP-003/RK v0.2 remains Blocked from approval until a selected Sri Lankan authority, source-backed weekday golden vectors, canonical terminology, and exact source versions/hashes are recorded. Final UI specification, delivery planning, dependencies, and application implementation remain unauthorized.
+
+**The normative SOLAR-001 package is Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE SOLAR-001`, approving `SOLAR-001-v1.0`, SOL-R-001–SOL-R-014, `NOAA-MEEUS-001-v1.0`, SOLAR-GOLDEN-001-v1.0, SOLAR-INTERMEDIATE-001-v1.0, the sea-level fixed policy, supported range/following-day condition, 60-second Sri Lankan validation tolerance, half-even millisecond anchors, local-wall minute/second presentation policies, pinned host-side NREL-SPA/pvlib validation method, source roles, and zero production dependency decision. This authorizes future implementation only through an approved delivery milestone and task; it does not approve CP-003, CP-002, final UI, delivery plan, implementation, or release.
 
 The approved product allocation is **Option C**: retain approved CP-001 Seasonal Planetary Hora as the Version 1.0 primary system; add daytime Rahu (CP-003) only after separate profile/RK approval; allocate fixed Sri Lankan Kala/Panchama (CP-002) to Version 1.1. CP-002 is implementation-blocked because, under elapsed-duration semantics or on offset-stable dates, 24 fixed 60-minute periods do not generally end at the next astronomical sunrise; wall-clock civil-minute behavior across offset transitions is also unresolved. Available sources do not define the required gap/overlap/reset/partial-period rule. Nighttime Rahu and final Sinhala terminology remain unresolved.
 
@@ -24,7 +26,7 @@ The independent QA Reviewer found zero Critical, three High, six Medium, and one
 
 ## Phase B proposal outcome
 
-- Solar: local pure-Kotlin NOAA/Meeus-style method family; `SOLAR-001` must freeze exact equations/constants/calendar/sign/root/rounding/failure/golden-vector behavior and receive independent approval before implementation. NREL SPA is the validation reference; Solarpositioning and Astronomy Engine were evaluated but not selected for V1.
+- Solar: PA-004-approved local pure-Kotlin `NOAA-MEEUS-001-v1.0`; SOLAR-001 freezes exact source hashes, equations/constants/order, civil-day/time-scale/sign rules, five-evaluation solver, typed failures, half-even millisecond anchors, independent NREL-SPA goldens, 60-second acceptance, and central display rounding. Implementation still requires an approved milestone/task. Solarpositioning and Astronomy Engine were evaluated but not selected.
 - Location provider: existing AndroidX Core `LocationManagerCompat.getCurrentLocation()` behind `DeviceLocationProvider`; no Google Play Services dependency.
 - Location policy: 20-second request; fresh through 2 minutes; stale at 24 hours; movement at 10 km; replacement improvement requires both 50 m and 25%; warning over 10 km uncertainty; maximum usable uncertainty 20 km; approximate remains usable within the ceiling.
 - Town catalogue: frozen/reviewed GeoNames `LK.zip` CC BY 4.0 snapshot; nine proposed province-representative towns; no coordinate is guessed or approved yet.
@@ -42,7 +44,8 @@ M-000 establishes the controlled Codex virtual team and documentation/verificati
 - The foundation work began on `dev` at `dfbdb20` (`initial application setup`) with pre-existing untracked Android Studio files under `.idea/`; those files were preserved and subsequently ignored.
 - The initial task did not authorize a commit from that dirty starting state. On 2026-08-02 the owner separately and explicitly authorized the exact staged baseline commit.
 - Baseline commit: `be1b132` (`chore: establish Codex team and approved requirements baseline`) on `dev`; no branch, merge, or push was performed.
-- Post-commit Phase B reconciliation and approval recording are documentation-only and remain uncommitted; no additional commit is authorized and no Android source or Gradle file changed.
+- Architecture/design checkpoint: `7848f1b` (`docs: approve version 1.0 architecture and design direction`) on `dev`; exactly 26 documentation files, with no Android/Gradle/dependency change and no push.
+- SOLAR-001 preparation after `7848f1b` is documentation-only and remains unstaged/uncommitted. The owner explicitly prohibited another commit without later authorization.
 
 ## Baseline verification (2026-08-01)
 
@@ -94,12 +97,21 @@ The corrections precisely bounded amendment approval, qualified elapsed-versus-c
 
 The independent QA Reviewer initially found zero Critical/High, two Medium, and zero Low issues in the reconciled v0.5 architecture/v0.4 design package. Corrections limited Version 1.0 execution to CP-001 plus CP-003 only after PA-003, kept CP-002 unconstructed until Version 1.1 gates, and aligned stale gate/QA status wording. The read-only recheck found zero open Critical, High, Medium, or Low issues. It confirmed approval consistency, bidirectional traceability, all seven Rahu states, Option C boundaries, no Android/Gradle changes, and no secret/private-coordinate indicators.
 
+## SOLAR-001 evidence and review (2026-08-02)
+
+- Read-only Android Architect confirmed Candidate A, no dependency, stateless pure API, coordinator-owned 32-entry in-memory cache target, off-main execution/cancellation generation, exact shared `DailyCalculationContext`, thread safety, under-one-second product threshold, 50 ms p95 solar engineering target, and replaceability without UI/ViewModel/Hora/Rahu/location changes.
+- Read-only Business Analyst/source review confirmed USNO as the exact event-definition authority, NOAA as the equation-family/limitation source, NREL Revised January 2008 as the independent SPA validation authority, and Meeus as copyrighted lineage rather than copied code.
+- Official evidence hashes were frozen for USNO, NOAA equations PDF/spreadsheet, NREL report, GeoNames `LK.zip`, and the pvlib 0.15.1 wheel. No NREL software source was copied or redistributed.
+- Golden generation used Python only in an operating-system temporary directory. Nothing from that environment was added to the repository or Android build.
+- A separate temporary transcription of the frozen SOL-R-006–SOL-R-009 equations was used only as a specification sanity check: all 30 proposed production anchors were within the preselected 60-second oracle tolerance, with maximum absolute difference 2.452 seconds. This is not Android implementation or acceptance evidence; the future Kotlin engine must independently pass the frozen set.
+- Independent QA initially found two High, three Medium, and one Low documentation issues. Corrections unified the PA-004 source set, froze deterministic grazing/polar/multiple/failure precedence, moved SOL-G-007 to the exact lower range edge, added source-provenanced equation literals, defined historical wall-time display rounding, and corrected the StrictMath claim. A correction recheck found two High and one Medium fixture/scope issues; those were resolved with exact round-trip binary64 literals, named representable grazing bounds, and inclusion of SOLAR-INTERMEDIATE-001-v1.0 throughout PA-004. The final read-only recheck found zero open Critical, High, Medium, or Low issues; all 105 intermediate literals matched the independent transcription at 0 ULP.
+
 ## Blockers and unresolved decisions
 
 - No blocker prevents completing M-000; it remains Done.
-- The separately authorized baseline commit is complete as `be1b132`; no additional commit is authorized.
+- The separately authorized baseline and architecture/design checkpoints are complete as `be1b132` and `7848f1b`; SOLAR-001 changes must remain unstaged/uncommitted and no additional commit is authorized.
 - Requirements, CP-001, CR-001–CR-010, and the linked validation strategy are approved under PA-001.
-- ADR-001–ADR-009 and DEP-011–DEP-014 are approved under PA-002, with dependencies approved in principle but not added. Solar implementation remains blocked until normative `SOLAR-001` is independently reviewed and approved.
+- ADR-001–ADR-009 and DEP-011–DEP-014 are approved under PA-002, with dependencies approved in principle but not added. SOLAR-001 is Approved under PA-004; solar implementation remains blocked until a delivery plan and specific milestone/task are approved.
 - Exact GeoNames snapshot/coordinates, Colombo row, family-town coverage, DataStore installed path/backup proof, dependency resolution/transitives/size, package identity, and Android provider/OEM behavior require Phase C evidence.
 - Direction A — Celestial Archive is selected under DA-001; final UI/theme tokens, fonts/assets/copy/components/previews/accessibility evidence remain unapproved.
 - `minSdk 26` is provisional pending actual family-device inventory and verification; current `compileSdk`, `targetSdk`, and `minSdk` are independently 36.
@@ -111,4 +123,4 @@ The independent QA Reviewer initially found zero Critical/High, two Medium, and 
 
 ## Current stop point
 
-The two Phase B approval phrases are recorded. CP-003 is **not** ready for `APPROVE DAYTIME RAHU CALCULATION PROFILE CP-003`, and `SOLAR-001` remains unapproved. Await explicit authorization for any next documentation phase; do not proceed automatically to final UI specification, delivery planning, dependency changes, or application implementation.
+PA-004 is Approved and the same owner instruction explicitly authorizes one solar documentation checkpoint plus a documentation-only final UI/delivery-planning pass. Complete only that pass, then stop for `APPROVE VERSION 1.0 UI` and `APPROVE DELIVERY PLAN`. CP-003 is **not** ready for its approval phrase. Do not proceed automatically to dependency changes, application implementation, a milestone branch, merge, or push.

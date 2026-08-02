@@ -3,24 +3,25 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 0.6 |
+| Version | 0.7 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | ADR-001–ADR-009 approved under PA-002 on 2026-08-02; their recorded subordinate data/profile/implementation/release gates remain |
+| Approval state | ADR-001–ADR-009 remain Approved under PA-002; SOLAR-001 refinement Approved under PA-004; implementation still requires an approved milestone/task |
 
 ## ADR-001 — Version 1.0 solar engine
 
-- **State:** Approved under PA-002 on 2026-08-02; `SOLAR-001` remains a separate implementation-blocking approval.
+- **State:** Approved method family under PA-002 and complete `SOLAR-001-v1.0` package under PA-004 on 2026-08-02; implementation requires a separately approved milestone/task.
 - **Linked requirements:** FR-001–FR-003, FR-008, FR-010; NFR-001–NFR-003, NFR-006, NFR-012, NFR-014; CP-001; CR-001–CR-008.
 - **Context:** V1 needs deterministic offline sunrise/sunset under the exact `90.8333°` convention. Internal nanoseconds, model accuracy, validation tolerance, and display precision must not be conflated.
 - **Options:** Local NOAA/Meeus-style pure Kotlin; NREL SPA/port; maintained permissive astronomy library (Astronomy Engine evaluated).
-- **Decision:** Select a small independently written pure-Kotlin NOAA/Meeus-style method family. Proposed date range `1900-01-01..2100-12-31`; solve centre altitude `-0.8333°`; quantize each anchor once to nearest millisecond; convert to UTC integer nanoseconds. Hand exact anchors to a separately versioned display policy; interval membership never uses displayed values.
+- **Decision:** Select a small independently written pure-Kotlin NOAA/Meeus-style method family. SOLAR-001 now proposes exact engine `NOAA-MEEUS-001-v1.0`, date range `1900-01-01..2100-12-31`, centre altitude `−0.8333°`, `SEA_LEVEL_FIXED`, binary64/`StrictMath`, five event evaluations to a 0.0005-second convergence threshold, half-even millisecond anchor quantization, and typed unavailable states. Exact anchors then use checked UTC nanoseconds; display never changes membership.
 - **Why:** NOAA states about one-minute theoretical sunrise/set accuracy within ±72°, including Sri Lanka. This is proportional to the approved ±60-second criterion, exactly controllable for CP-001, offline, small, and easy to unit test.
-- **Rejected production alternatives:** NREL SPA is a high-quality independent reference but materially more complex than V1 needs. Solarpositioning 2.0.12 is a maintained MIT/Maven SPA/Grena library with extensive upstream tests, but documents `0.833°` rather than exact `0.8333°`, requires Java 17, and provides no Panchanga extension. Astronomy Engine is MIT-licensed and extensible, but normal rise/set uses a different refraction/radius convention and exact CP-001 would need a custom search/adapter plus broader supply-chain/code surface.
-- **Normative prerequisite:** Architecture approval does not authorize implementation. `SOLAR-001` must first freeze the exact equation source/version/hash, calendar/Julian conversion, sign/units, equation order/constants, event solving/convergence, floating-point/domain rules, rounding ties, chronology failures, diagnostics, version ID, and independent golden vectors, followed by independent review and explicit approval.
-- **Consequences:** The project owns algorithm specification and maintenance. NREL SPA or another independent same-convention implementation supplies validation expectations. NOAA's calculator is no longer actively maintained, so do not copy web implementation code or claim ongoing NOAA support.
+- **Rejected production alternatives:** NREL SPA is a high-quality independent reference but materially more complex than V1 needs; downloadable NREL C code also has restrictive no-redistribution terms. Solarpositioning's reported 2.0.13 tag is a maintained MIT SPA/Grena library with no runtime dependencies and extensive claimed tests, but it documents `0.833°`, requires Java 17, and lacks exact-profile/Android/API 26 evidence. Astronomy Engine remains a broader future candidate with a different normal rise/set convention.
+- **Normative prerequisite:** Architecture approval alone did not authorize implementation. PA-004 now approves `SOLAR_001.md`, which freezes official NOAA source hashes, independently authored equations/control flow, calendar/sign/unit/time-scale behavior, event convergence/domain rules, half-even rounding, diagnostics, versions, and independent NREL-SPA vectors. A later approved milestone/task remains required.
+- **Consequences:** The project owns algorithm specification and maintenance. Pinned pvlib 0.15.1 executes the published NREL SPA family outside Android to freeze validation expectations; it is not a production/test dependency in Gradle. NOAA's calculator is no longer actively maintained, so do not copy web implementation code or claim ongoing NOAA support.
 - **Failure/limits:** Typed invalid-input, unsupported-date, missing-event, and chronology failures; no fabricated result. Observed terrain/weather/refraction differences remain disclosed.
-- **Dependencies:** None.
+- **API/execution:** One synchronous stateless `SolarEngine` pure boundary. Coordinator-owned off-main execution, cancellation generation, atomic context publication, and bounded in-memory date cache; no persistent schedule. Future engine replacement preserves UI/ViewModel/Hora/Rahu/location contracts and changes engine/cache/golden versions.
+- **Dependencies:** None; SRC-022 host-side oracle tooling is temporary validation infrastructure outside the repository/Android build.
 - **Rollback:** `SolarEngine` permits a later approved engine/profile version without changing the Hora/UI contracts.
 - **Approval record:** PA-002 approved by exact phrase `APPROVE VERSION 1.0 ARCHITECTURE` on 2026-08-02.
 
@@ -130,4 +131,4 @@
 
 ## Remaining decisions outside this gate
 
-CP-002 coverage, CP-003 rule evidence, normative `SOLAR-001`, final package/application name, direct coroutine dependency decision, family-device inventory, exact GeoNames snapshot/coordinates and family-town coverage, actual independent astronomical dataset, traditional authority, final UI direction/specification, signing owner/distribution mechanics, and release calculation accuracy remain separately gated. CR-001/Option C is approved but does not approve any ADR.
+CP-002 coverage, CP-003 rule evidence, final package/application name, direct coroutine dependency decision, family-device inventory, product town-catalogue rows/family-town coverage, traditional authority, final UI specification, signing owner/distribution mechanics, SOLAR-001 implementation evidence, and release calculation accuracy remain separately gated. CR-001/Option C and PA-004 are approved but do not approve any new subordinate profile or implementation task.

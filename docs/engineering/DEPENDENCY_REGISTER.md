@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 0.5 |
+| Version | 0.6 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | DEP-011–DEP-014 approved in principle under PA-002 on 2026-08-02; no artifact is added or authorized without an implementation task and evidence |
+| Approval state | DEP-011–DEP-014 remain approved in principle under PA-002; PA-004 approves SOLAR-001 with zero additional Android/Gradle dependencies |
 
 | ID | Dependency | Version source | Scope/purpose | License/security notes | Decision |
 |---|---|---|---|---|---|
@@ -45,7 +45,7 @@ New dependencies require an ADR or documented approval, purpose, alternatives, m
 | AndroidX `LocationManagerCompat.getCurrentLocation()` | Available through DEP-003 | API 26-compatible one-shot callback with cancellation/nullable result; provider/OEM behavior needs device tests | Recommended by ADR-002; no new dependency |
 | Google Play Services `FusedLocationProviderClient.getCurrentLocation()` | Not present | Rich current-location controls but introduces Play-services availability, APK, maintenance, and provider privacy/data-flow review | Rejected for V1 by ADR-002 |
 | Astronomy Engine Kotlin/JVM 2.1.19 | Not present; distributed from project/JitPack path | MIT, offline, broad Moon/planet capability and strong upstream tests; standard rise/set convention does not directly implement fixed CP-001 event and adds broad supply-chain/code surface | Rejected for V1 production; future Panchanga candidate |
-| `net.e175.klaus:solarpositioning:2.0.12` | Not present | MIT, maintained Java SPA/Grena implementation with 1,000+ tests and no runtime deps; documented `0.833°` sunrise correction is not exact CP-001 `0.8333°`; Java 17/API 26 compatibility also needs proof | Evaluated, not selected |
+| `net.e175.klaus:solarpositioning` (reported tag 2.0.13) | Not present | MIT, maintained Java SPA/Grena implementation with 1,000+ claimed tests and no runtime deps; documented `0.833°` correction is not exact CP-001 `0.8333°`; artifact, Java 17/API 26, desugaring/R8, APK and supply-chain evidence remain absent | Evaluated as Candidate C; not selected |
 | SharedPreferences | Platform API | Small/no dependency, but synchronous API and weaker transactional/Flow/migration model | Rejected in favor of proportionate DEP-014 |
 | Proto DataStore / Room | Not present | Typed/database capabilities exceed the single small record | Rejected as disproportionate |
 | Navigation Compose / Hilt | Not present | Useful at larger scale, but three destinations and manual construction do not justify dependencies | Rejected for V1 unless later evidence changes scope |
@@ -53,6 +53,12 @@ New dependencies require an ADR or documented approval, purpose, alternatives, m
 No dependency was added in Phase A or B. PA-002 authorizes DEP-011–DEP-014 in principle only; the Android Developer must still receive an approved task, add exact catalog entries, verify resolution/licenses/transitives, and update this register with the implemented evidence.
 
 Direct coroutine APIs must not rely silently on transitive artifacts. Before implementation, the dependency task must either register/approve exact production and test coroutine artifacts with resolved versions, licenses and transitive evidence, or constrain the design to APIs exposed by already approved direct dependencies. No coroutine dependency is approved or added by this reconciliation.
+
+## SOLAR-001 dependency impact
+
+`NOAA-MEEUS-001-v1.0` is independently written pure Kotlin using the standard library/`StrictMath`; it adds no production, test, Gradle, version-catalogue, network, native, or data dependency. This zero-dependency decision was approved under PA-004 on 2026-08-02.
+
+Pinned pvlib 0.15.1 (BSD-3-Clause) was installed only in an operating-system temporary directory to generate frozen independent NREL-SPA values. Its wheel hash and host environment are evidence in SRC-022 and `VALIDATION_CASES.md`; it is not present in the repository, Android APK, Gradle graph, or dependency register as an application artifact. NREL's downloadable C code is not copied, ported, redistributed, or bundled.
 
 ## Sources for approved-in-principle versions
 

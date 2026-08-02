@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 1.1 |
+| Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, Change Request CR-001, PA-002 architecture, and DA-001 Direction A approved; PA-003 remains Blocked |
+| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, and PA-004 SOLAR-001 approved; PA-003 Blocked |
 
 ## Confirmed stakeholder decisions
 
@@ -45,6 +45,16 @@ The amendment phrase approves the Option C product allocation, FR-012–FR-015, 
 | PA-003 | `CP-003-v0.2`, `RK-v0.2`, and linked source-backed golden dataset | `APPROVE DAYTIME RAHU CALCULATION PROFILE CP-003` | Blocked — selected authority, golden vectors, and terminology evidence incomplete |
 
 PA-003 would approve the daytime profile/rules only. It would not approve architecture, design, implementation, release, CP-002, or nighttime Rahu. Do not request the phrase until `CALCULATION_PROFILE.md`'s readiness list is complete and independently reviewed.
+
+## Approved SOLAR-001 profile
+
+| ID | Item/version | Required phrase | State |
+|---|---|---|---|
+| PA-004 | `SOLAR-001-v1.0`; SOL-R-001–SOL-R-014 (`SOL-R-v1.0`); `NOAA-MEEUS-001-v1.0`; `SOLAR-GOLDEN-001-v1.0`; `SOLAR-INTERMEDIATE-001-v1.0`; canonical source-role set SRC-004 and SRC-019–SRC-027 (SRC-005 excluded as superseded) | `APPROVE SOLAR-001` | Approved — exact phrase supplied 2026-08-02 after independent QA/recheck found zero open findings |
+
+PA-004 became valid when the repository owner explicitly supplied the exact phrase on 2026-08-02; no approval was inferred from proposal preparation, frozen vectors, PA-002, or test results.
+
+PA-004 approves the astronomical convention and production/validation profile only. It does not authorize a dependency change, Kotlin/Compose/resource/Manifest/Gradle edit, implementation milestone/task, UI specification, town catalogue for product use, CP-003/RK, CP-002, traditional release validation, or release. The same owner instruction separately authorizes one documentation checkpoint and a documentation-only UI/delivery-planning pass; those permissions are not effects of PA-004 itself.
 
 ## Approved Phase B architecture
 

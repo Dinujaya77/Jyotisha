@@ -2,15 +2,15 @@
 
 | Field | Value |
 |---|---|
-| Status | Awaiting Approval |
-| Version | 1.1 |
+| Status | Partially Complete |
+| Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Business Analyst |
-| Approval state | CP-001 approved under PA-001; CR-001 allocation approved, while CP-002/CP-003 retain separate domain approval gates |
+| Approval state | CP-001 approved under PA-001; SOLAR-001 approved under PA-004; CP-002/CP-003 retain separate domain approval gates |
 
 ## CP-001 — Sri Lanka Seasonal Planetary Hora V1.0
 
-- State: Approved under PA-001 on 2026-08-01; algorithm and release-validation decisions remain separately gated.
+- State: Approved under PA-001 on 2026-08-01; normative solar package `SOLAR-001-v1.0` was approved under PA-004 on 2026-08-02; implementation still requires an approved delivery milestone and task.
 - Purpose: Current/daily planetary Hora timing for private Sri Lankan family use, without interpretive advice.
 - Inputs: Current instant; finite latitude `[-90,90]`; finite longitude `[-180,180]`; explicit IANA time zone; required civil dates; profile and engine version.
 - Hora day: Calculated local sunrise through following calculated local sunrise.
@@ -23,19 +23,34 @@
 - Interval membership: Inclusive start, exclusive end `[start,end)`.
 - Current-device zone: Device's current system IANA zone; coordinate alone never determines zone.
 - Manual/default Sri Lankan zone: `Asia/Colombo`.
-- Precision: Anchor and boundary instants use integer nanoseconds on the UTC timeline. Fractional twelfths use CR-004 floor quantization from the common anchor, never iterative addition. Display formatting/rounding must never change interval membership.
+- Precision: SOLAR-001 proposes binary64/`StrictMath` intermediates and one half-even millisecond quantization per anchor. Anchor and boundary instants then use checked integer nanoseconds on the UTC timeline. Fractional twelfths use CR-004 floor quantization from the common anchor, never iterative addition. Display formatting/rounding must never change interval membership.
 - Output: 24 continuous versioned intervals, current/next interval, countdown, all solar anchors, and calculation/location provenance.
 - Offline: One approved algorithm and required data are packaged locally; no provider mixing.
 - Location provenance: Coordinates, optional display name, metre accuracy if provided, permission precision, source, source-specific timestamp/provenance, active zone, calculation time, profile version, and engine version. Device fixes use acquisition time; manual locations use selection time; defaults use dataset/version provenance and may have no acquisition time.
 - Selected location modes: Fresh precise, fresh approximate, saved device, explicit manual Sri Lankan, and provisional Colombo default.
 - Excluded variations: Equal sunrise-to-next-sunrise 24ths; centre-disc/no-refraction anchors; elevation/terrain/weather model; Rahu/Ketu rulers; activity advice; worldwide manual zone inference.
 - Source references: SRC-001, SRC-002, SRC-004, SRC-006, SRC-007; SRC-003/SRC-008 document variations only.
-- Validation references: VC-001–VC-019.
+- Validation references: VC-001–VC-019 and SOL-G-001–SOL-G-010 / SOL-B-001–SOL-B-016.
+
+## SOLAR-001 — Version 1.0 astronomical anchor profile
+
+- State: **Approved** under PA-004 on 2026-08-02; executable only through a separately approved delivery milestone and task.
+- Profile/rules/engine: `SOLAR-001-v1.0`; `SOL-R-v1.0`; `jyotisha.noaa-meeus` / `NOAA-MEEUS-001-v1.0`.
+- Inputs: Proleptic-Gregorian civil date; explicit IANA zone; finite latitude `[-90,+90]` north-positive; finite longitude `[-180,+180]` east-positive; `SEA_LEVEL_FIXED`; exact approved profile and engine versions.
+- Supported solar-day range: `1900-01-01..2100-12-31` inclusive. A three-anchor result additionally requires the following date; no date is clamped.
+- Convention: Geometric solar-centre elevation `−0.8333°` (`90.8333°` zenith), conventionally representing apparent upper-limb contact through 16 arcminutes mean semidiameter plus 34 arcminutes average refraction at a level, unobstructed sea-level horizon.
+- Elevation/weather: Numeric elevation adjustments and live pressure, temperature, humidity, weather, terrain, and horizon models are excluded. A different elevation policy is rejected, not silently ignored.
+- Production: Independently written pure-Kotlin NOAA/Meeus-style equations and iteration frozen in `SOLAR_001.md`; no runtime library/network.
+- Validation: Independent NREL-SPA family executed by pinned host-side pvlib 0.15.1; expected anchors frozen in `SOLAR-GOLDEN-001-v1.0`; no Android dependency.
+- Precision: Binary64 computation; converge to 0.0005 seconds within five evaluations; quantize once to half-even milliseconds; dashboard labels round resolved local wall time to the nearest half-even minute; diagnostics may show the nearest local wall second.
+- Acceptance: Each Sri Lankan sunrise, sunset, and following sunrise differs from the oracle by at most 60 seconds; derived Hora boundaries use the same 60-second astronomical comparison ceiling while retaining exact CR-004 adjacency.
+- Outputs/failures: Versioned anchors/provenance/diagnostics or typed missing/invalid/unsupported/no-event/ambiguous/non-finite/convergence/overflow/chronology outcomes. No fabricated event.
+- Source references: canonical PA-004 set SRC-004 and SRC-019–SRC-027; SRC-005 is a superseded historical cross-reference outside the approval unit.
+- Validation references: SOLAR-GOLDEN-001-v1.0 (SOL-G-001–SOL-G-010), SOLAR-INTERMEDIATE-001-v1.0, and SOL-B-001–SOL-B-016.
 
 ## Implementation prerequisites
 
-- Complete and approve normative `SOLAR-001` for the PA-002-selected method family; architecture and dependency choices are already approved in principle.
-- Record one solar algorithm/version and its supported date/precision range.
+- Use the PA-004-approved `SOLAR-001-v1.0` package unchanged; any profile/engine/source/tolerance change requires a superseding approval.
 - Record Android location implementation and any dependency.
 - Approve exact Colombo coordinates, town dataset/provenance, acceptable location uncertainty, permission-downgrade retention, and backup exclusion mechanism.
 
