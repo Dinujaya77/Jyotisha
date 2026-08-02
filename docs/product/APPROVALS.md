@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Status | Approved |
-| Version | 1.2 |
+| Version | 1.3 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, and PA-004 SOLAR-001 approved; PA-003 Blocked |
+| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery plan Approved; PA-003 Blocked |
 
 ## Confirmed stakeholder decisions
 
@@ -65,3 +65,12 @@ PA-004 approves the astronomical convention and production/validation profile on
 PA-002 does not approve exact town coordinates/snapshot rows, production code, final UI/theme specifications, signing/distribution, independent validation results, or release accuracy.
 
 The exact phrase was received on 2026-08-02 after reconciliation and an independent recheck with zero open findings. PA-002 selects the shared V1.0 architecture and DEP-011–DEP-014 in principle; it does not approve `SOLAR-001`, CP-003/RK, exact town data, package identity, direct coroutine artifacts, final UI, implementation, signing/distribution, or release accuracy. Direction A is approved separately under DA-001, not by PA-002.
+
+## Approved Version 1.0 UI and delivery plan
+
+| ID | Item/version | Required phrase | State |
+|---|---|---|---|
+| DA-004 | `UI-V1.0-001`, `THEME-CELESTIAL-ARCHIVE-001`, and `A11Y-V1.0-001` v1.0 | `APPROVE VERSION 1.0 UI` | Approved — exact phrase supplied 2026-08-02 after independent QA/recheck found zero open findings |
+| DP-001 | M1–M9, 39 tasks V1-M1-01–V1-M9-05, trace/test/branch gates v1.0 | `APPROVE DELIVERY PLAN` | Approved — exact phrase supplied 2026-08-02 |
+
+DA-004 and DP-001 became valid only when the repository owner explicitly supplied both phrases. They approve the Version 1.0 UI specification and delivery plan, not automatic implementation. M1–M4 are eligible to begin through explicitly assigned non-blocked tasks; coding has not started. M5 depends on PA-004-approved SOLAR-001 and accepted M1, M6 depends on accepted M5 and CP-001, and M8 remains Blocked by PA-003/CP-003. Fixed Kala Hora and Panchama remain Version 1.1.

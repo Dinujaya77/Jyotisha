@@ -6,7 +6,7 @@
 | Version | 0.7 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | PA-002 and PA-004 SOLAR-001 are Approved; implementation/data/profile/UI/release gates remain |
+| Approval state | PA-002 architecture, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; explicit task/data/profile/evidence/release gates remain |
 
 ## Recommendation summary
 
@@ -20,7 +20,7 @@ Version 1.0 retains one `:app` module, one activity, Compose/Material 3, unidire
 - `minSdk 26`, `compileSdk 36`, and `targetSdk 36`;
 - manual construction at the app composition root; no DI framework, database, networking, background service, navigation dependency, or new Gradle module.
 
-PA-002 approves the architecture boundaries and choices recorded here. It does not authorize implementation, dependency changes, or application/Gradle edits; the separate `SOLAR-001`, CP-003/RK, data, final UI, delivery, and implementation gates remain in force.
+PA-002 approves the architecture boundaries, PA-004 approves normative `SOLAR-001`, DA-004 approves the final UI, and DP-001 approves the delivery plan. None automatically starts implementation or dependency/application/Gradle edits; CP-003/RK, exact data, explicit task start, produced evidence, and release gates remain in force.
 
 ## Approved architecture boundary classification
 
@@ -35,7 +35,7 @@ PA-002 approves the architecture boundaries and choices recorded here. It does n
 | Package/namespace | Deferred implementation decision; release blocker | Resolve `Jyotisha` versus `Jyothisha` and choose one stable owner-controlled application ID before the first distributed APK. Do not distribute `com.example.*`; perform the rename once in an approved early task. |
 | Dependencies | Approved in principle; implementation prerequisite | PA-002 covers DEP-011–DEP-014 in principle. No Navigation, Hilt, Room, solar, Play Services, networking, analytics or encryption dependency. Direct coroutine APIs may not rely silently on transitives; record/approve exact direct artifacts or avoid them before code. |
 | Internal precision | Approved shared contract; solar anchor rule separate | `Double`/`StrictMath` only for solar intermediates; quantize each anchor once under `SOLAR-001`; thereafter integer UTC epoch nanoseconds with overflow-safe quotient/remainder partitions. |
-| Display precision | Deferred UI/display-policy decision | Formatting is versioned and outside calculators. Exact instants drive membership. Before UI implementation, freeze rounding direction/ties, date rollover, seconds near transitions, positive countdown behavior and shared-boundary formatting. |
+| Display precision | Approved under PA-004 as `SOLAR-DISPLAY-001-v1.0` | Formatting is versioned and outside calculators. Dashboard/shared boundaries use local-wall nearest-minute half-even; Method uses nearest-second half-even. Exact instants drive membership/countdown; shared boundaries format once. DA-004 governs component placement only. |
 
 ## Existing baseline
 
@@ -91,7 +91,7 @@ Through a later approved implementation milestone/task, implement the small pure
 
 NOAA describes its Meeus-based sunrise/sunset result as theoretically accurate within one minute for latitudes inside ±72°, which includes Sri Lanka, while warning that physical observations vary with atmospheric and horizon conditions. NOAA also states its calculator is no longer actively maintained; the project therefore owns the implementation and tests rather than copying unsupported web code. NREL SPA supplies independent validation, not production code.
 
-`SOLAR_001.md` freezes the exact official NOAA equation-artifact hash and independently authored equation order; project `90.8333°` override; epoch-derived Julian day; sign/units; IANA civil-date search; five-evaluation event iteration; inverse-domain margin; typed failures; half-even millisecond quantization; diagnostics; versions; and pinned NREL-SPA/pvlib goldens. `APPROVE VERSION 1.0 ARCHITECTURE` selected the family; PA-004 approved the complete normative package. A later approved delivery milestone/task is still required, preserving the no-invention and no-automatic-implementation gates.
+`SOLAR_001.md` freezes the exact official NOAA equation-artifact hash and independently authored equation order; project `90.8333°` override; epoch-derived Julian day; sign/units; IANA civil-date search; five-evaluation event iteration; inverse-domain margin; typed failures; half-even millisecond quantization; diagnostics; versions; and pinned NREL-SPA/pvlib goldens. `APPROVE VERSION 1.0 ARCHITECTURE` selected the family; PA-004 approved the complete normative package; DP-001 places implementation in M5. Coding still requires the accepted M1 quality baseline and explicit task start.
 
 ### SOLAR-001 API, execution, and replacement boundary
 
@@ -137,10 +137,10 @@ Keep six distinct concepts:
 
 1. **Representation:** anchors and Hora boundaries are integer nanoseconds on the UTC timeline.
 2. **Model accuracy:** astronomical output is not physically accurate to a nanosecond; the approved same-convention acceptance tolerance is ±60 seconds.
-3. **Engine quantization:** proposed solar anchors are rounded once to the nearest millisecond before conversion to integer nanoseconds.
+3. **Engine quantization:** PA-004-approved solar anchors are rounded once, half-even, to the nearest millisecond before conversion to integer nanoseconds.
 4. **Hora division:** CR-004 computes all boundaries from common anchors with exact endpoint/adjacency guarantees and less than one-nanosecond rational quantization error.
 5. **Validation:** compare the production engine with an independent same-convention implementation and retain every discrepancy.
-6. **Display:** a separately versioned display policy, outside calculators, must freeze rounding direction/ties, date rollover, seconds near transitions, positive countdown behavior and one formatting of shared boundaries. Membership and transitions always use unrounded internal values.
+6. **Display:** PA-004-approved `SOLAR-DISPLAY-001-v1.0`, outside calculators, uses resolved local-wall half-even nearest minute on Dashboard/shared Hora boundaries and nearest second in Method, including date carry and historical sub-minute offsets. A shared boundary is formatted once. Membership, transitions, and countdown always use unrounded internal values.
 
 Before sunrise, the active Hora cycle begins at the previous local sunrise. Calculation may therefore require previous/current/next civil-date anchors. A typed missing-event, unsupported-date, invalid-input, or chronology failure must never produce a fabricated Hora.
 
@@ -346,4 +346,4 @@ Future Panchanga capability extends through new approved engines/profile IDs and
 - CP-002 fixed-day coverage, day/night behavior, Panchama matrix, duration semantics, and reviewed terminology are implementation-blocking.
 - CP-003 daytime Rahu remains a separate domain gate; Version 1.0 returns typed `Unavailable(ProfileNotApproved)` until it passes. Nighttime Rahu remains deferred.
 
-Later implementation evidence for the PA-004-approved `SOLAR-001`; exact product GeoNames town rows/family town/attribution; authorized dependency addition with resolved evidence; application identity; actual family-device inventory; final UI specification/tokens/evidence; signing/distribution ownership; and external traditional authority remain unresolved until their stated gates. The frozen SOLAR-GOLDEN-001 dataset is approved validation input, not completed production or release evidence.
+Later implementation evidence for the PA-004-approved `SOLAR-001`; exact product GeoNames town rows/family town/attribution; authorized dependency addition with resolved evidence; application identity; actual family-device inventory; DA-004 UI implementation/accessibility evidence; signing/distribution ownership; and external traditional authority remain unresolved until their stated gates. The UI specification and frozen SOLAR-GOLDEN-001 dataset are approved inputs, not completed production or release evidence.

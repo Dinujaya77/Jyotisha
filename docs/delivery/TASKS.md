@@ -1,28 +1,99 @@
-# Tasks
+# Version 1.0 Task Catalogue
 
 | Field | Value |
 |---|---|
-| Status | Done |
-| Version | 0.2 |
+| Status | Approved |
+| Version | 1.0 |
 | Last updated | 2026-08-02 |
-| Owner role | Project Manager |
-| Approval state | Foundation task authorized by repository owner |
+| Owner role | Lead Coordinator; Project Manager read-only reviewer |
+| Approval state | DP-001 Approved on 2026-08-02; all tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
 
-| ID | State | Owner | Scope | References | Verification |
-|---|---|---|---|---|---|
-| SETUP-001 | Done | Lead Coordinator | Establish controlled Codex team and delivery foundation without feature work | M-000 | File/schema checks, Gradle baseline, Git diff/status review |
+Each row is one focused Codex session where practical. `Tests` always lists unit, UI/integration, and manual verification. Only the Android Developer may normally edit production Android/Gradle files; independent QA and Lead acceptance follow Developer verification.
 
-No Version 1.0 implementation task is defined or authorized. Phase B document reconciliation and approval review do not create an Android Developer task.
+## M1 — Android foundation and quality tooling
 
-## Task template
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M1-01 | NFR-009, NFR-012, NFR-013; ADR-006/007 | DA-004 + DP-001 Approved; Proposed until explicit start | Existing Gradle/app tree, read-mostly | Record exact SDK, package, dependency, source-set, Manifest, backup, and check baseline; produce the smallest normalization delta; no opportunistic rename/dependency | Existing tests; existing smoke compile; diff/status/generated-output audit | Medium | Hidden baseline assumptions |
+| V1-M1-02 | NFR-009, NFR-013; ADR-006/007 | Owner-approved app name/namespace/application ID; **Blocked** | `app/build.gradle.kts`, Manifest, Kotlin/test packages, strings/theme names | Replace `com.example.*` and inconsistent Jyotisha/Jyothisha spelling once with stable owner-controlled identity; all packages/tests compile; clean install identity recorded | Renamed unit tests; install/launch; APK/package inspection | Medium | Update lineage and costly rework |
+| V1-M1-03 | NFR-009, NFR-012; DEP-011–013; ADR-006 | DA-004 + DP-001 Approved; Proposed; V1-M1-01 evidence first | Version catalogue, app Gradle, dependency register | Set provisional minSdk 26; add only exact approved Lifecycle artifacts after resolution/transitive/licence/API-26/APK/advisory evidence; defer DEP-014 DataStore to V1-M4-03; stop if a direct coroutine artifact is needed | Baseline unit tests; API-26 test APK compile; dependency graph/size/licence audit | Medium | Transitive/version/API conflict |
+| V1-M1-04 | NFR-009–012; all later suites | V1-M1-03; Proposed | `app/src/test`, `app/src/androidTest`, test config | Replace template tests with minimal deterministic clock/zone/repository/provider/UI-state fakes and standard focused/full commands; no new plugin or private coordinates | Fake-contract tests; launcher smoke; unit/lint/assemble commands | Medium | Oversized test framework |
+| V1-M1-05 | FR-008, FR-011; NFR-005, NFR-012; ADR-007; UI-001–007 | V1-M1-02/03 as applicable; Proposed | `app/`, `ui/navigation`, `MainActivity` | Manual composition root and bounded sealed destination state for Dashboard/Timeline/Method plus Location/Settings/About children; single activity, deterministic Back, rendering-only placeholders, no navigation dependency | Reducer/navigation unit tests; Back/configuration tests; compact/landscape/process recreation | Medium | Shell overreach or identity blocker |
 
-- ID/title/state/owner:
-- Approved requirement, domain, design, ADR, milestone, and test references:
-- Preconditions and blockers:
-- Allowed and forbidden files:
-- Smallest complete outcome and acceptance criteria:
-- Exact focused verification:
-- QA and Lead gates:
-- Deviations/follow-ups:
+## M2 — Celestial Archive design system
 
-Only one Android Developer should own overlapping production files at a time.
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M2-01 | FR-011; NFR-005, NFR-011; UI/THEME | DA-004 Approved; accepted M1 foundation; Proposed | `ui/theme`, theme resources | Implement complete semantic light/dark color roles; no feature hard-coding, dynamic color, or color-only state; component pairs meet contrast | Token completeness; component semantics; contrast/OLED-dark inspection | Medium | Composited state contrast |
+| V1-M2-02 | FR-011; NFR-005, NFR-011 | V1-M2-01; Proposed | `ui/theme` | Implement approved type, spacing, shape, elevation, gradient, motion, icon, illustration tokens; 48dp targets and immediate reduced-motion substitution | Token invariants; font-scale/reduced-motion UI; 200%/high-contrast review | Medium | Platform font/gradient variance |
+| V1-M2-03 | FR-001–003, FR-009–012; NFR-005 | V1-M2-01/02; Proposed | `ui/components` | Accessible timing folio, anchor row, provenance/status, timeline row, actions and unavailable panel; flexible height, stable semantics, domain-neutral inputs | Mapper unit tests; semantics/interactions; long labels/D-pad/200% | Medium | Premature domain coupling |
+| V1-M2-04 | NFR-005, NFR-011; A11Y | V1-M2-01–03; Proposed | Preview/test fixtures | Deterministic compact/landscape/medium/expanded, light/dark, 200%, reduced-motion, error-state previews and capture path; no screenshot dependency without approval | Fixture completeness; Compose semantics smoke; review capture matrix | Medium | Pixel automation unavailable with current dependencies |
+
+## M3 — Static dashboard and navigation
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M3-01 | FR-001, FR-003, FR-009, FR-011; UI-002 | M1–M2; Proposed | `ui/dashboard` | Fixed sample Dashboard with Hora ruler/start/end/remaining/next, solar anchors, location/provenance, calculation time/actions; coordinates absent; Rahu unapproved note only | Presentation mapping; semantics/actions/state matrix; compact/landscape/200%/themes | Medium | Sample mistaken for calculation |
+| V1-M3-02 | FR-002, FR-003, FR-008, FR-011; UI-003 | M2, V1-M3-01; Proposed | `ui/timeline` | Static exactly-24-row Day/Night timeline with headings, current marker, Go to current and no UI interval calculation | Row mapping; 24-row order/current/scroll; font/landscape/tablet | Medium | Fixed heights or focus jump |
+| V1-M3-03 | FR-004–007, FR-009; UI-001/004/005 | M1–M2; Proposed | `ui/location`, `ui/settings` | Static first-use/location/settings states for precise/approximate/saved/manual/default/denied/disabled/timeout/invalid/stale and recovery; no live provider | State-action mapping; selection/rationale/recovery UI; TalkBack/D-pad | Medium | Coercive permission UX or invented setting |
+| V1-M3-04 | FR-003, FR-010, FR-011; UI-006/007 | M1–M2; Proposed | `ui/method`, `ui/about` | Method/About and solar-unavailable UI with approved wording, headings, offline content, versions/zone placeholders and no fabricated values | Content/resource audit; headings/actions/unavailable semantics; offline/long-text review | Medium | Claims exceed approved model |
+
+## M4 — Location, settings and persistence foundation
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M4-01 | FR-005–009; CR-008–010; ADR-003 | M1; Proposed | `domain/location` | Immutable location/provenance and exact acceptance, age, movement, accuracy, permission, fallback rules; preserve 2m/24h/10km/50m+25%/10–20km boundaries | Every threshold/nonfinite/future case; fake outputs; rule audit | Medium + High review | Boundary/privacy error |
+| V1-M4-02 | FR-004/005; NFR-007/010; ADR-002/003 | M1, V1-M4-01; Proposed | Manifest, `platform/location` | One-shot `LocationManagerCompat`, coarse/fine rationale, provider choice, 20s timeout/cancel/late-result suppression; no background/continuous/passive location | Adapter race tests; permission/provider API matrix; approximate/precise/denied/off manual | Medium + High review | OEM/provider/lifecycle races |
+| V1-M4-03 | FR-007; NFR-004/007/008; ADR-005; DEP-014 | V1-M1-03, V1-M4-01; Proposed | `data/location`, backup XML | Versioned mutually exclusive DataStore under dedicated no-backup path; migrations/corruption/reset/deletion; no history/schedules | Serialization/migration/downgrade; restart/backup-path integration; stored-data/log audit | Medium + High review | Backup leak or stale precision |
+| V1-M4-04 | FR-006/009; ADR-004 | Exact approved town rows/default/hash/coverage; **Blocked** | `data/location/TownCatalog`, resources/assets | Import only approved public stable IDs/microdegree coordinates/Asia-Colombo with attribution; validate uniqueness/ranges/default; no guessed/private data | Catalogue/hash/default tests; selection/restart; source-row attribution review | Medium | Wrong town/default or private data |
+| V1-M4-05 | FR-004–009; CR-009/010 | V1-M4-01–04 as applicable; Proposed, town paths Blocked | Location data/UI/composition | Assemble exactly-one-source repository/settings flow with atomic selection and coherent saved/manual/default recovery; delete prohibited data on mode/permission change | State-machine/fallback tests; onboarding/refresh/restart; airplane/failure recovery | Medium + High review | Mixed source or late result |
+
+## M5 — SOLAR-001 implementation
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M5-01 | FR-003/008/010; SOL-R-001–005/010–012 | PA-004, M1; Proposed | `domain/model`, `domain/solar` | Typed request/outcome/provenance, coordinate/date/elevation/IANA civil-day validation; exact IDs; no normalization/fabrication | SOL-B-001–004/006–009; pure consumer smoke; API/profile audit | High | Sign/date/range error |
+| V1-M5-02 | SOL-R-006/007 | V1-M5-01; Proposed | `domain/solar/noaameeus` | Exact binary64/StrictMath term order and normalization from frozen spec; no copied code/dependency; 105 intermediates within 1 ULP and final bits identical | Full intermediate fixture; none; source/hash/order review | High | Transcription/operation-order drift |
+| V1-M5-03 | SOL-R-008/009/011/012 | V1-M5-02; Proposed | `domain/solar/noaameeus` | Five-evaluation solver, UTC base-date collection, grazing/multiple/no-event precedence, checked conversion, half-even milliseconds and chronology | SOL-B-009–012 plus failure seams; unavailable mapping contract; diagnostics review | High | Floating seam/precedence regression |
+| V1-M5-04 | NFR-001/002/014; SOLAR-GOLDEN | V1-M5-03; Proposed | Solar tests/fixtures | Test production against frozen independent goldens only; host pvlib/NREL never enters Android build; all 30 anchors within inclusive 60.000s and expectations immutable | SOL-G-001–010/repeatability; label smoke; evidence/hash/runtime audit | High | Correlated oracle or altered expected values |
+| V1-M5-05 | SOL-R-013/014; NFR-006/012/015 | V1-M5-01–04; Proposed | `domain/timing/common`, coordinator/cache/formatter boundary | Stateless/thread-safe engine; normal max three calls; 32-entry memory cache; generation cancellation; shared fingerprint; no persistence; central display rounding | Repeat/concurrency/cache/cancel/format tests; publication integration; profile/no-main-thread audit | High | Cache privacy or stale publication |
+
+## M6 — Seasonal Planetary Hora engine
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M6-01 | FR-001/002; CP-001; CR-003/004 | Accepted M5; Proposed | `domain/timing/common`, `planetaryhora` | Overflow-safe common-anchor partition and approved weekday/seven-ruler cycle; floor partition, <1ns rational error, no Rahu/Ketu | Ruler/leap/fraction/overflow tests; none; rule trace | High | Arithmetic overflow/off-by-one |
+| V1-M6-02 | FR-002; CR-004–006; NFR-003 | V1-M6-01; Proposed | `domain/timing/planetaryhora` | Immutable 12-day/12-night schedule; exactly 24, shared anchors, adjacency/no gaps/overlaps, `[start,end)` | Properties across goldens/extremes; timeline contract; boundary dump | High | Cumulative division drift |
+| V1-M6-03 | FR-001/008; CR-002/006/007/008 | V1-M6-02; Proposed | Hora selectors | Current/next/countdown/applicable-Hora-day selection from the explicit context zone/date; prior cycle pre-sunrise, exact boundary selects next, remaining nonnegative; current-device mode uses device zone while manual/default uses `Asia/Colombo`, never longitude inference | Before/at/after all boundaries plus device-zone/Asia-Colombo/date-change cases; fake clock/zone integration; active-zone transition trace | High | Prior-date/range or wrong-zone edge |
+| V1-M6-04 | FR-001–003/009/010; CR-001/008/009/010; NFR-014/015 | V1-M5/6-01–03; Proposed | Shared context/provenance | Consume exact shared SOLAR location/zone/date context; no second solar call; atomic typed outcome; full provenance/fingerprint | SOL-B-014/CP-001 and zone-context validation; fake bundle; profile/fingerprint/zone audit | High | Mixed profile/anchors/context |
+
+## M7 — Live dashboard integration
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M7-01 | FR-001/002/009; NFR-012/015 | Accepted M3–M6; Proposed | `app`, ViewModel/UI models | Immutable UI state/intents and activity-scoped StateFlow; composables render only; retain coherent state across configuration | Reducer/mappers; ViewModel/configuration; state inspection | Medium + High review | Mixed old/new fields or coroutine gate |
+| V1-M7-02 | FR-004–010; CR-010 | M4, V1-M7-01; Proposed | Coordinator/repositories | Generation-checked atomic location/time/solar/Hora publication; superseded results ignored; failures retain previous coherent data | Every dependency/supersession; refresh/fallback/restart; forced failures | Medium + High review | Race/late callback |
+| V1-M7-03 | FR-001/008; CR-002/006/007/010 | V1-M7-02; Proposed | Clock/zone/lifecycle coordinator | Countdown and exact transition scheduling from injected clock; resume/time/date/zone reconciliation; no astronomy rerun per tick | Boundary/clock-jump tests; lifecycle/broadcast integration; live boundary session | Medium + High review | Drift/duplicate announcement |
+| V1-M7-04 | FR-001–011 | V1-M7-01–03; Proposed | Dashboard/timeline/location/settings/method binding | Bind approved live state matrix and central formatter; exact membership unaffected by display rounding; never blank valid fallback | Mapper/formatter; full UI/navigation matrix; live permission/location/offline flows | Medium | UI calculation leakage |
+
+## M8 — Daytime Rahu
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M8-01 | FR-012; VC-020/030–039 | Authority/terminology/source/goldens; **Blocked** | Domain/approval documentation only | Independently review CP-003/RK readiness and record explicit PA-003 approval; no inferred traditional rule | None; none; source/term/golden/approval audit | High | Genuine traditional uncertainty |
+| V1-M8-02 | FR-012; RK-001–005 | PA-003 + accepted shared context; **Blocked** | `domain/timing/rahu` | Implement only approved eight-part daytime profile/status/provenance with exact `[start,end)`; no night rule; no Hora effect | Weekday/partition/boundary/overflow; shared-call integration; vector audit | High | Wrong traditional allocation |
+| V1-M8-03 | FR-012; NFR-005/015 | V1-M8-02 + approved copy; **Blocked** | Bundle/ViewModel/Rahu UI | Activate subordinate approved Rahu states/times with same fingerprint and independent unavailable behavior; no advice/favorable meaning | State mapping; states/transitions/TalkBack/200%; hierarchy review | High | Premature reachability or misleading hierarchy |
+
+## M9 — Accessibility, optimization and family release
+
+| ID | Requirements | Dependencies / approval / status | Likely files or packages | Implementation and acceptance criteria | Tests: unit; UI/integration; manual | Reasoning | Risks |
+|---|---|---|---|---|---|---|---|
+| V1-M9-01 | Enabled FR-001–012; NFR-005/011 | Accepted feature UI; Proposed | Tests/resources/previews | Close TalkBack, 200%, contrast, 48dp, expansion, reduced motion, D-pad, non-color matrix | Resource/token audits; semantics/state suite; TalkBack/device evidence | Medium | Older-user usability gaps |
+| V1-M9-02 | NFR-001–003/009/010/012/014 | All enabled engines/integration; Proposed | All tests/build config | Full regression on API 26, 30, 31/32, 36; all invariants/goldens/states/build/lint pass without expected-value drift | Complete unit suites; complete UI/instrumented suites; traceability/triage audit | Medium + High calculation review | API/time regression |
+| V1-M9-03 | NFR-004/006–008 | Physical inventory/app; **Blocked** | Performance/privacy evidence | Under-1s result, 50ms p95 solar target, no main-thread work; airplane, permission, logs, storage, backup/transfer on oldest/newest family devices | Perf/privacy checks; device flows; OEM/device audit | Medium + High review | Devices or backup behavior unavailable |
+| V1-M9-04 | NFR-013 | Identity/signing/distribution decisions; **Blocked** | Release config/checklist/guide | Version/licence/privacy/install/update/rollback/family guide and reproducible signed APK; never request/commit real credentials | Release variant; install/update/rollback; APK/manifest/licence/signature audit | Medium + High signing review | Secret exposure/update failure |
+| V1-M9-05 | All enabled V1 requirements | M9-01–04; M8 accepted or explicit deferral; Proposed | Delivery/release records | Independent QA then Lead acceptance with bidirectional traceability, deviations owned, no release blocker and explicit release approval | Focused/full rerun; exploratory/accessibility/privacy review; owner family acceptance | High review | False release completion |
+
+## Start and completion rules
+
+DA-004 and DP-001 are Approved, so M1–M4 are eligible to begin through explicitly assigned non-blocked tasks. V1-M1-01 is the first bounded development task; coding has not started. M5 is no longer profile-blocked because PA-004 is Approved, but still needs the accepted M1 quality baseline. M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated. No row becomes Ready or In Progress until the Lead explicitly starts it.

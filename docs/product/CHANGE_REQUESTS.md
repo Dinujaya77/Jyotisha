@@ -92,4 +92,4 @@ It does **not** approve or make executable:
 - any unresolved expected validation output, which remains blank/Blocked;
 - ADR-008/ADR-009, Phase B architecture, dependencies, a design direction, `UI_SPEC.md`, delivery planning, application implementation, release validation, a commit, merge, or push.
 
-Those retained their own explicit gates after the requirements amendment. PA-002 architecture and DA-001 Direction A were later approved separately on 2026-08-02; `SOLAR-001`, CP-002/CP-003, final UI, delivery, implementation, and release gates remain. The CR-001 approval itself authorized documentation reconciliation only, not application implementation.
+Those retained their own explicit gates after the requirements amendment. PA-002 architecture, DA-001 Direction A, PA-004 `SOLAR-001`, DA-004 final UI, and DP-001 delivery were later approved separately on 2026-08-02. CP-002/CP-003, explicit task start, implementation evidence, and release retain their own gates. The CR-001 approval itself authorized documentation reconciliation only, not application implementation.

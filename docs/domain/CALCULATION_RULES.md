@@ -64,7 +64,7 @@ On a material location, clock, date, zone, profile, or engine change, calculate 
 
 Expected results must follow approved rules and evidence. Do not change an expectation merely to make an implementation or test pass.
 
-## Proposed SOLAR-001 engine rules
+## Approved SOLAR-001 engine rules
 
 The normative wording is in `SOLAR_001.md`; this index does not redefine it.
 

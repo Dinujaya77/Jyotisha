@@ -23,7 +23,7 @@
 - Interval membership: Inclusive start, exclusive end `[start,end)`.
 - Current-device zone: Device's current system IANA zone; coordinate alone never determines zone.
 - Manual/default Sri Lankan zone: `Asia/Colombo`.
-- Precision: SOLAR-001 proposes binary64/`StrictMath` intermediates and one half-even millisecond quantization per anchor. Anchor and boundary instants then use checked integer nanoseconds on the UTC timeline. Fractional twelfths use CR-004 floor quantization from the common anchor, never iterative addition. Display formatting/rounding must never change interval membership.
+- Precision: PA-004-approved SOLAR-001 uses binary64/`StrictMath` intermediates and one half-even millisecond quantization per anchor. Anchor and boundary instants then use checked integer nanoseconds on the UTC timeline. Fractional twelfths use CR-004 floor quantization from the common anchor, never iterative addition. Display formatting/rounding must never change interval membership.
 - Output: 24 continuous versioned intervals, current/next interval, countdown, all solar anchors, and calculation/location provenance.
 - Offline: One approved algorithm and required data are packaged locally; no provider mixing.
 - Location provenance: Coordinates, optional display name, metre accuracy if provided, permission precision, source, source-specific timestamp/provenance, active zone, calculation time, profile version, and engine version. Device fixes use acquisition time; manual locations use selection time; defaults use dataset/version provenance and may have no acquisition time.

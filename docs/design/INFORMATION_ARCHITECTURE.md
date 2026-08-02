@@ -2,21 +2,21 @@
 
 | Field | Value |
 |---|---|
-| Status | Ready |
-| Version | 0.5 |
+| Status | Approved |
+| Version | 1.0 |
 | Last updated | 2026-08-02 |
-| Owner role | UI/UX Designer |
-| Approval state | PA-002 architecture and DA-001 Direction A approved; detailed IA/component decisions remain part of the later UI specification gate |
+| Owner role | Lead Coordinator; UI/UX Designer read-only reviewer |
+| Approval state | PA-002 architecture, DA-001 Direction A, and DA-004 Version 1.0 IA Approved |
 
 ## Navigation model
 
-Version 1.0 uses one activity and three stable destinations:
+Version 1.0 uses one activity and three stable top-level destinations:
 
-1. **Now** — default dashboard and primary answer.
-2. **Day** — complete chronological timeline for the approved primary timing system.
+1. **Now / Dashboard** — default dashboard and primary answer.
+2. **Day / Timeline** — complete chronological timeline for the approved primary timing system.
 3. **Method** — methodology, sources, privacy, limitations, validation state, and detailed per-system provenance.
 
-Location selection is a focused child flow entered from the always-visible location action on Now. It is not a fourth top-level destination because it supports the calculation rather than representing recurring content. Compact devices use labeled bottom navigation; medium/expanded devices may use a labeled navigation rail. Expanded layouts may place the Now summary beside upcoming intervals, while preserving compact semantic order.
+Location selection, Settings, and About/privacy are supporting child destinations. Location is entered from the always-visible location action on Now; Settings and About/privacy are entered from the app menu and Method. They do not become additional top-level navigation items. Compact devices use labeled bottom navigation; medium/expanded devices may use a labeled navigation rail. Expanded layouts may place the Now summary beside upcoming intervals, while preserving compact semantic order. This six-route/three-top-level model needs no navigation-library dependency; a bounded sealed destination state is sufficient.
 
 No public deep links are proposed. System Back from a child flow returns to its origin without discarding the last valid result. Back from Day or Method returns to Now, preserving destination state and restoring focus to the action that opened the destination where practical; selecting top-level destinations does not build an unbounded history. Back from Now exits the task normally. Cancelling location acquisition retains the prior coherent result or a clearly labelled fallback. Platform permission and Settings screens open only after an explicit user action.
 
@@ -25,14 +25,16 @@ No public deep links are proposed. System Back from a child flow returns to its 
 | IA ID | Destination/state | User goal | Main content/actions | Requirement/story references |
 |---|---|---|---|---|
 | IA-001 | First-use location introduction | Understand why location helps and continue without coercion | Plain-language rationale; `Use current location`; `Choose a town`; `Continue with Colombo default`; privacy summary | FR-004–FR-006, FR-010; US-003–US-005 |
-| IA-002 | Now dashboard | Identify the current Seasonal Planetary Hora, its end, and what follows | Location/provenance; dominant Seasonal Planetary Hora; remaining time; start/end; next Hora; calculated sunrise/sunset; subordinate Rahu state when approved; warning and refresh/use-current action; Day link | FR-001, FR-003, FR-007–FR-009, FR-011, FR-012; US-001, US-006–US-011 |
-| IA-003 | Day timeline | Inspect the complete Hora day | Hora-day date range; calculated anchors; 12 Day and 12 Night rows; textual current marker; return-to-current action | FR-002, FR-003, FR-008, FR-011; US-002, US-008 |
+| IA-002 | Now / Dashboard | Identify the current Seasonal Planetary Hora, its end, and what follows | Location/provenance; dominant Seasonal Planetary Hora; remaining time; start/end; next Hora; calculated sunrise/sunset; subordinate Rahu state when approved; warning and refresh/use-current action; Day link | FR-001, FR-003, FR-007–FR-009, FR-011, FR-012; US-001, US-006–US-011 |
+| IA-003 | Day / Timeline | Inspect the complete Hora day | Hora-day date range; calculated anchors; 12 Day and 12 Night rows; textual current marker; return-to-current action | FR-002, FR-003, FR-008, FR-011; US-002, US-008 |
 | IA-004 | Location selection | Choose current device or bundled Sri Lankan town | Current-location state/action; active selection; town list; Colombo default; concise precision/freshness labels | FR-004–FR-007, FR-009; US-003–US-006 |
 | IA-005 | Location rationale/recovery | Recover from denied, unavailable, disabled, timeout, null, or failed retrieval | Explanation; retry where appropriate; town/default/retained fallback; optional Settings action | FR-004, FR-005, FR-007, FR-009; US-003, US-004 |
 | IA-006 | Method | Judge how the result was produced | Seasonal-Hora method; ruler sequence; boundaries; solar convention/limits; location/zone/profile/engine; privacy; sources; neutral timing-only scope | FR-003, FR-008–FR-011; US-007–US-010 |
 | IA-007 | Solar result unavailable | Understand why no trustworthy result can be shown | No fabricated Hora; safe reason; active location/method details; retry/reselect; retain earlier result only where CR-010 permits | FR-001, FR-003, FR-007–FR-010; US-006, US-007 |
-| IA-008 | V1.0 Rahu status/detail | Understand the separately calculated daytime Rahu state without weakening the primary answer | Explicit Rahu state, approved profile/provenance, start/end and next transition when valid, typed unavailable reason, recovery/Method action | FR-012, NFR-015; US-011 | Approved requirement; implementation blocked on CP-003/RK and UI approval |
-| IA-009 | Future V1.1 Kala/Panchama concept | Explain the approved future allocation without presenting a working feature | Clearly labelled non-functional concept and Method link only; no live ruler, time, timeline, selector, or enabled action | FR-013–FR-015, NFR-015; US-012, US-013 | Future concept; implementation Blocked on CP-002/KH/PK and later UI approval |
+| IA-008 | V1.0 Rahu status/detail | Understand the separately calculated daytime Rahu state without weakening the primary answer | Explicit unapproved-profile state until PA-003; approved states/times only after CP-003/RK; recovery/Method action | FR-012, NFR-015; US-011; implementation Blocked on PA-003 and UI approval |
+| IA-009 | Version 1.1 Kala/Panchama research record — not a Version 1.0 route | Preserve future information-architecture questions in documentation only | No Version 1.0 runtime route, card, timeline, setting, selector, preview, disabled control, live value, or teaser | FR-013–FR-015, NFR-015; US-012, US-013; Blocked on CP-002/KH/PK and later V1.1 architecture/UI approval |
+| IA-010 | Settings | Manage approved location data and reach supporting information without changing calculation rules | Active location, change/reset location, read-only device appearance/reduced-motion behavior, Method and About links | FR-003–FR-011; NFR-003, NFR-005, NFR-008, NFR-009 |
+| IA-011 | About/privacy | Verify family-only purpose, offline/privacy behavior, version, and limitations | App/version identity, no-upload/no-tracking statement, stored-location summary, Method link, licences and source acknowledgements | NFR-001, NFR-006–NFR-008, NFR-010–NFR-012 |
 
 ## Now hierarchy
 
@@ -125,6 +127,6 @@ Now → Day initially positions the current interval visibly without unexpectedl
 - Method prose has a readable maximum line width.
 - English strings are externalized; layout is Sinhala-ready and must later pass pseudolocale expansion and RTL resilience checks even though Sinhala content is not in V1.0.
 
-## Deferred to approved UI specification
+## Version 1.0 UI gate
 
-Exact components, copy, breakpoints, measurements, typography, colors, shapes, motion, town-picker behavior, Settings conditions, previews, and accessibility evidence remain unapproved. A detailed `UI_SPEC.md` may be prepared only after explicit authorization; PA-002 and DA-001 prerequisites are satisfied, while approved terminology and CP-003/RK evidence remain necessary before Rahu can function.
+Exact components, copy, breakpoints, measurements, token values, town-picker behavior, Settings conditions, previews, and accessibility acceptance cases are frozen under DA-004 in `UI_SPEC.md`, `THEME_SPEC.md`, and `ACCESSIBILITY.md`. CP-003/RK evidence is still separately required before Rahu can display calculated times; the unapproved-profile state is the only permitted Rahu presentation before that gate.

@@ -6,13 +6,13 @@
 | Version | 0.5 |
 | Last updated | 2026-08-02 |
 | Owner role | UI/UX Designer |
-| Approval state | DA-001 Direction A — Celestial Archive v0.4 approved 2026-08-02; Directions B/C superseded for Version 1.0 selection |
+| Approval state | DA-001 Direction A — Celestial Archive v0.4 and DA-004 final Version 1.0 UI approved 2026-08-02; Directions B/C superseded |
 
 ## Shared contract
 
 Change Request CR-001 does not replace the three directions. Under approved Option C, V1.0 keeps Seasonal Planetary Hora dominant and adds Rahu as a subordinate concurrent status only after CP-003/RK approval. Fixed Kala/Panchama remains a future Version 1.1 concept until CP-002/KH/PK approval. No direction may solve added density with four equal cards.
 
-All directions must keep the active location and labelled calculated astronomical sunrise/sunset visible, and support long reviewed English/Sinhala names, per-system unapproved/unavailable states, 200% font, compact phones, TalkBack boundary announcements, reduced motion, future theme packs, and colour-independent Rahu status. Fixed Kala/Panchama is a clearly labelled non-functional Version 1.1 concept only; it must never appear as a working Version 1.0 feature.
+All directions must keep the active location and labelled calculated astronomical sunrise/sunset visible, and support long reviewed English/Sinhala names, per-system unapproved/unavailable states, 200% font, compact phones, TalkBack boundary announcements, reduced motion, future theme packs, and colour-independent Rahu status. Fixed Kala/Panchama research is documentation-only for Version 1.1; Version 1.0 has no Kala/Panchama route, card, timeline, setting, selector, preview, disabled control, live value, or teaser.
 
 Every direction uses Material 3 structure and semantic tokens, preserves meaning in light/dark mode, meets NFR-005, and keeps Seasonal Planetary Hora dominant. The 24-Hora view remains chronological rather than becoming a decorative wheel. Status uses text plus icon/shape, never colour alone. Motion is short and state-confirming only at a boundary or user action, and disappears under reduced motion; number rolls, ambient celestial motion, glow loops, and animated backgrounds are excluded.
 

@@ -44,7 +44,7 @@
 | T-FR-013 | FR-013 | Approved-profile gating; all seven main rulers; actual-sunrise/non-6:00 cases; sunset/next-sunrise; 23:59/24:00/24:01 spans; civil-versus-elapsed duration; no schedule while KH-005 is unresolved. | Approved obligation; CP-002 Blocked |
 | T-FR-014 | FR-014 | All 35 matrix cells; first/final/exact-boundary instants; parent coverage; main-boundary continuity; restart/transition atomicity. | Approved obligation; CP-002 Blocked |
 | T-FR-015 | FR-015 | Combined-card and grouped-timeline semantics, system separation, longest approved English/Sinhala labels, compact/200% font, TalkBack, reduced motion, per-system unavailable states. | Approved obligation; CP-002 and final UI remain blocked |
-| T-NFR-SYSTEMS | NFR-015 | Distinct typed calculators/profiles/outcomes, one shared solar context, cache-call counts, fingerprints, rounding ownership, UI-calculation prohibition, and atomic multi-system bundle. | Approved obligation and architecture; profile/UI/delivery/implementation gates remain |
+| T-NFR-SYSTEMS | NFR-015 | Distinct typed calculators/profiles/outcomes, one shared solar context, cache-call counts, fingerprints, rounding ownership, UI-calculation prohibition, and atomic multi-system bundle. | Approved obligation, architecture, UI and delivery mapping; CP-003/profile/task/implementation gates remain |
 
 ## Non-functional test suites
 
@@ -81,6 +81,6 @@ The astronomical tolerance is selected before production output. A failing vecto
 
 VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecycle, and release cases. Approved VC-020–VC-039 obligations cover CR-001 system separation, fixed Kala/Panchama boundaries and unresolved coverage, Rahu, cross-system inputs/provenance, and accessibility. Every concrete record must retain inputs, expected/actual values, tolerance, evidence, versions, and reviewers. CP-002 traditional uncertainty is implementation-blocking; missing expectations must not be invented.
 
-## Later planning gate
+## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations but does not itself authorize implementation. The separately authorized delivery-planning pass may assign planned test IDs to focused implementation tasks and physical-device milestones. No test is claimed as implemented by this document.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither starts implementation. Each task row specifies unit, UI/integration, and manual verification. No test is claimed as implemented by this plan. Test execution begins only through an explicitly started task, and task results do not bypass independent QA or Lead acceptance.

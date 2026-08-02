@@ -6,7 +6,7 @@
 | Version | 0.7 |
 | Last updated | 2026-08-02 |
 | Owner role | Android Architect |
-| Approval state | ADR-001–ADR-009 remain Approved under PA-002; SOLAR-001 refinement Approved under PA-004; implementation still requires an approved milestone/task |
+| Approval state | ADR-001–ADR-009, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; implementation still requires explicit task start and evidence |
 
 ## ADR-001 — Version 1.0 solar engine
 
@@ -14,7 +14,7 @@
 - **Linked requirements:** FR-001–FR-003, FR-008, FR-010; NFR-001–NFR-003, NFR-006, NFR-012, NFR-014; CP-001; CR-001–CR-008.
 - **Context:** V1 needs deterministic offline sunrise/sunset under the exact `90.8333°` convention. Internal nanoseconds, model accuracy, validation tolerance, and display precision must not be conflated.
 - **Options:** Local NOAA/Meeus-style pure Kotlin; NREL SPA/port; maintained permissive astronomy library (Astronomy Engine evaluated).
-- **Decision:** Select a small independently written pure-Kotlin NOAA/Meeus-style method family. SOLAR-001 now proposes exact engine `NOAA-MEEUS-001-v1.0`, date range `1900-01-01..2100-12-31`, centre altitude `−0.8333°`, `SEA_LEVEL_FIXED`, binary64/`StrictMath`, five event evaluations to a 0.0005-second convergence threshold, half-even millisecond anchor quantization, and typed unavailable states. Exact anchors then use checked UTC nanoseconds; display never changes membership.
+- **Decision:** Select the PA-004-approved, independently written pure-Kotlin `NOAA-MEEUS-001-v1.0`: date range `1900-01-01..2100-12-31`, centre altitude `−0.8333°`, `SEA_LEVEL_FIXED`, binary64/`StrictMath`, five event evaluations to a 0.0005-second convergence threshold, half-even millisecond anchor quantization, and typed unavailable states. Exact anchors then use checked UTC nanoseconds; display never changes membership. Implementation still requires an approved task.
 - **Why:** NOAA states about one-minute theoretical sunrise/set accuracy within ±72°, including Sri Lanka. This is proportional to the approved ±60-second criterion, exactly controllable for CP-001, offline, small, and easy to unit test.
 - **Rejected production alternatives:** NREL SPA is a high-quality independent reference but materially more complex than V1 needs; downloadable NREL C code also has restrictive no-redistribution terms. Solarpositioning's reported 2.0.13 tag is a maintained MIT SPA/Grena library with no runtime dependencies and extensive claimed tests, but it documents `0.833°`, requires Java 17, and lacks exact-profile/Android/API 26 evidence. Astronomy Engine remains a broader future candidate with a different normal rise/set convention.
 - **Normative prerequisite:** Architecture approval alone did not authorize implementation. PA-004 now approves `SOLAR_001.md`, which freezes official NOAA source hashes, independently authored equations/control flow, calendar/sign/unit/time-scale behavior, event convergence/domain rules, half-even rounding, diagnostics, versions, and independent NREL-SPA vectors. A later approved milestone/task remains required.
@@ -101,7 +101,7 @@
 
 - **State:** Approved under PA-002 on 2026-08-02.
 - **Linked requirements:** FR-001–FR-015; NFR-001–NFR-015.
-- **Decision:** One app module/activity; domain/data/platform/UI packages; pure domain; immutable ViewModel `StateFlow`; atomic complete snapshots; manual composition root. Use a small sealed destination state for Now/Day/Method unless approved UI evidence proves Navigation Compose necessary.
+- **Decision:** One app module/activity; domain/data/platform/UI packages; pure domain; immutable ViewModel `StateFlow`; atomic complete snapshots; manual composition root. Use a small sealed destination state for top-level Dashboard/Now, Hora Timeline/Day, and Method, plus bounded Location, Settings, and About/privacy child routes. Navigation Compose is not required.
 - **Lifecycle/time:** Injectable clock/zone; resume reconciliation; visible-only date/time/time-zone/provider observation; calculation snapshot separate from acquisition state; countdown does not rerun astronomy.
 - **Failures:** Typed domain/platform/storage failures; no raw exception reaches UI.
 - **Dependencies approved in principle:** Lifecycle ViewModel KTX, Lifecycle ViewModel Compose, Lifecycle Runtime Compose at the existing 2.9.2 family, plus Preferences DataStore 1.2.1. They are not authorized to be added until an implementation task satisfies the register prerequisites.
@@ -131,4 +131,4 @@
 
 ## Remaining decisions outside this gate
 
-CP-002 coverage, CP-003 rule evidence, final package/application name, direct coroutine dependency decision, family-device inventory, product town-catalogue rows/family-town coverage, traditional authority, final UI specification, signing owner/distribution mechanics, SOLAR-001 implementation evidence, and release calculation accuracy remain separately gated. CR-001/Option C and PA-004 are approved but do not approve any new subordinate profile or implementation task.
+CP-002 coverage, CP-003 rule evidence, final package/application name, direct coroutine dependency decision, family-device inventory, product town-catalogue rows/family-town coverage, traditional authority, DA-004 UI implementation evidence, signing owner/distribution mechanics, SOLAR-001 implementation evidence, and release calculation accuracy remain separately gated. DA-004 and DP-001 are Approved but do not automatically start a task or approve a subordinate profile.
