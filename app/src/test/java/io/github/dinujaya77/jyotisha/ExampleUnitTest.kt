@@ -1,4 +1,4 @@
-package com.example.jyothisha
+package io.github.dinujaya77.jyotisha
 
 import org.junit.Test
 

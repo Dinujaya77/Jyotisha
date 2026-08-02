@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.jyothisha"
+    namespace = "io.github.dinujaya77.jyotisha"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.jyothisha"
+        applicationId = "io.github.dinujaya77.jyotisha"
         minSdk = 36
         targetSdk = 36
         versionCode = 1

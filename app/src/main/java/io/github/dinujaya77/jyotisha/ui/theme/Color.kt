@@ -1,4 +1,4 @@
-package com.example.jyothisha.ui.theme
+package io.github.dinujaya77.jyotisha.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

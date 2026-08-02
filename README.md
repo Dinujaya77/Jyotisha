@@ -4,16 +4,16 @@ Jyotisha is an early Android application intended for private, family-only APK d
 
 ## Current status
 
-The delivery foundation and controlled Codex virtual team are established. PA-001, Requirements Amendment CR-001 with Option C, PA-002 Version 1.0 architecture, and DA-001 Direction A — Celestial Archive are approved. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu is allocated to Version 1.0 only after separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-014 are approved in principle but not added. `SOLAR-001`, CP-003/RK, final UI specification, delivery planning, implementation, and release remain separately gated.
+The delivery foundation and controlled Codex virtual team are established. Requirements, Option C, Version 1.0 architecture, Celestial Archive UI, `SOLAR-001`, and the delivery plan are approved. M1 implementation is in progress: V1-M1-01 and V1-M1-02 are complete, while later tasks remain separately gated. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu requires separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-014 are approved in principle but not added.
 
 ## Project baseline
 
 - One Android application module: `:app`
-- Application ID and namespace: `com.example.jyothisha`
+- Application ID and namespace: `io.github.dinujaya77.jyotisha`
 - `compileSdk`: 36; `targetSdk`: 36; current `minSdk`: 36. Only `minSdk` sets the installation floor; API 26 is the PA-002-approved provisional V1.0 floor pending device verification and an authorized implementation task.
 - Kotlin 2.0.21; Java source/target and Kotlin JVM target 11
 - Jetpack Compose enabled with Material 3
-- Entry point: `app/src/main/java/com/example/jyothisha/MainActivity.kt`
+- Entry point: `app/src/main/java/io/github/dinujaya77/jyotisha/MainActivity.kt`
 
 ## Setup
 

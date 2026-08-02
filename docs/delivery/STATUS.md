@@ -6,11 +6,11 @@
 | Version | 1.2 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 Done; PA-003/CP-003 Blocked |
+| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 and V1-M1-02 Done; PA-003/CP-003 Blocked |
 
 ## Current phase
 
-**Version 1.0 development has begun with V1-M1-01 only.** On 2026-08-02 the repository owner explicitly started V1-M1-01 from the approved `fe9fd3a` planning checkpoint. The task is Done on `milestone/M1-android-foundation`; no later task was started. Its read-mostly audit found that the smallest valid normalization delta is zero, so no Android, Manifest, resource, Gradle, dependency, or test file changed.
+**Version 1.0 M1 development is in progress; V1-M1-01 and V1-M1-02 are Done.** V1-M1-02 established the owner-approved permanent identity: visible name `Jyotisha`, namespace/application ID `io.github.dinujaya77.jyotisha`. No V1-M1-03 through V1-M1-05 work has started.
 
 **Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
 
@@ -81,6 +81,15 @@ All successful Gradle runs emitted a non-fatal metrics warning because the Andro
 - Normalization delta: zero. Identity/spelling belongs to blocked V1-M1-02; minSdk and dependency evidence to V1-M1-03; test replacement to V1-M1-04; app shell to V1-M1-05; backup/persistence changes to V1-M4-03. Advancing any of those in V1-M1-01 would exceed the approved task.
 - Environment note: an initial forced compile timed out after the Kotlin daemon could not write to sandboxed user AppData; the in-process compiler rerun passed. The non-fatal Android metrics warning remains an environment limitation, not a product blocker.
 
+## V1-M1-02 permanent identity (2026-08-02)
+
+- Owner approval: visible name `Jyotisha`; namespace and application ID `io.github.dinujaya77.jyotisha`, identical and lowercase with no suffix or product flavour.
+- Implementation: renamed the Gradle root, namespace/application ID, production/unit/instrumented package declarations and paths, instrumented assertion, Manifest theme references, application label, and template theme identifiers. Six Kotlin files moved; no duplicate old package tree remains.
+- Verification passed: Gradle project configuration and debug dependency resolution; forced unit execution (one test; zero failures/errors/skips); lint (zero errors; 16 retained baseline warnings); debug APK and Android-test APK builds; package/path consistency; merged-Manifest, output-metadata, and APK badging inspection; old active-identity search; diff, secret, signing-material, and generated-output audits.
+- Artifact identity: merged Manifest, debug APK, generated authorities/permissions, and output metadata use `io.github.dinujaya77.jyotisha`; the application and launcher label is `Jyotisha`; the launchable activity is the renamed `MainActivity` package.
+- Scope preserved: compile/min/target SDK, version code/name, signing, dependencies, architecture, modules, and application behavior did not change. Connected install/launch and instrumented execution were unavailable because no device or emulator was attached.
+- Independent QA: one Medium completion-gate finding required the QA result and Lead acceptance to be explicit. The three delivery records were corrected. QA independently repeated the forced unit and full unit/lint/debug/test-APK checks, inspected the moved files, merged Manifest and APK, and found no implementation defect. The Lead accepted V1-M1-02 after that correction.
+
 Static validation parsed `.codex/config.toml` and all seven agent TOML files successfully, confirming required fields and the requested sandbox modes. All 29 required documentation files and metadata fields were also found. A supplementary `codex --version` / `codex features list` check could not run because this environment denied execution of `codex.exe`, including on an escalated retry; this is an environment limitation, not a TOML parse failure.
 
 ## Phase B verification (2026-08-01)
@@ -126,7 +135,7 @@ The independent QA Reviewer initially found zero Critical/High, two Medium, and 
 - The separately authorized baseline, architecture/design, and SOLAR-001 checkpoints are complete as `be1b132`, `7848f1b`, and `44d248d`. DA-004 and DP-001 are now explicitly Approved, and the owner authorized one documentation-only approval checkpoint. No Android/Gradle/dependency work or later automatic commit is authorized.
 - Requirements, CP-001, CR-001–CR-010, and the linked validation strategy are approved under PA-001.
 - ADR-001–ADR-009 and DEP-011–DEP-014 are approved under PA-002, with dependencies approved in principle but not added. SOLAR-001 is Approved under PA-004; solar implementation remains blocked until a delivery plan and specific milestone/task are approved.
-- Exact GeoNames snapshot/coordinates, Colombo row, family-town coverage, DataStore installed path/backup proof, dependency resolution/transitives/size, package identity, and Android provider/OEM behavior require Phase C evidence.
+- Exact GeoNames snapshot/coordinates, Colombo row, family-town coverage, DataStore installed path/backup proof, dependency resolution/transitives/size, and Android provider/OEM behavior require later task evidence. Permanent package identity is complete under V1-M1-02; signed update-lineage evidence remains a release gate.
 - Direction A — Celestial Archive is selected under DA-001 and the final UI/theme/token/accessibility specification is Approved under DA-004. Produced Compose previews, screenshots, TalkBack, font-scale, device, and component evidence remain milestone/release work.
 - `minSdk 26` is provisional pending actual family-device inventory and verification; current `compileSdk`, `targetSdk`, and `minSdk` are independently 36.
 - Trusted Sri Lankan traditional authority, independent astronomical tolerance evidence, physical family-device testing, and signed-APK/privacy checks block release approval only.
@@ -141,4 +150,4 @@ The independent QA Reviewer initially found zero Critical/High, two Medium, and 
 
 The independent read-only QA recheck initially found zero Critical/High, five Medium, and zero Low issues. Corrections removed stale PA-004 language, made non-colour theme aliases/layout/motion tokens deterministic, made Dashboard location actions source-specific, restored CR-008 active-zone coverage in M6, and normalized the IA inventory/Now–Dashboard/Day–Timeline aliases. The final recheck found **zero open Critical, High, Medium, or Low findings**. It confirmed 39 complete tasks, full FR-001–FR-012/NFR-001–NFR-015 task/test traceability, M1–M4 independence from CP-003, M5/PA-004 alignment, M6/CP-001/CR-001–010 alignment, M8/PA-003 blocking, V1.1-only Kala/Panchama, exact DA-004/DP-001 gates, no Android/Gradle/dependency diff, and no secret/private-data indicator.
 
-V1-M1-01 is Done on `milestone/M1-android-foundation` with no production or build-file delta. V1-M1-02 is the next planned task but remains Blocked until the repository owner selects the application name, namespace, and stable owner-controlled reverse-DNS application ID. Do not start V1-M1-02 or any other task, merge, or push without a new explicit prompt.
+V1-M1-01 and V1-M1-02 are Done on `milestone/M1-android-foundation`. V1-M1-03 is the exact next dependency-eligible task, but it has not started. Do not start V1-M1-03 or any other task, merge, or push without a new explicit prompt.
