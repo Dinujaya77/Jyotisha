@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-05 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-03 Done; remaining task mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-04 Done; remaining task mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -79,5 +79,6 @@
 | V1-M1-01 | Done 2026-08-02 on `milestone/M1-android-foundation`; NFR-009/NFR-012/NFR-013 and ADR-006/007 baseline recorded; Developer and independent QA unit/lint/debug/test-APK compilation and repository audits passed; zero Android/Gradle normalization delta; Lead accepted |
 | V1-M1-02 | Done 2026-08-02 on `milestone/M1-android-foundation`; NFR-009/NFR-013 and ADR-006/007; permanent visible name `Jyotisha`, namespace/application ID `io.github.dinujaya77.jyotisha`; Developer and independent QA verified package paths, merged Manifest, APK identity, and required builds; Lead accepted |
 | V1-M1-03 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009/NFR-012, ADR-006, DEP-011–013; min SDK 26 with compile/target 36; exact Lifecycle 2.9.2 direct dependencies and transitive/licence/advisory/size evidence recorded; API-26 compile and API-36 install/launch/connected checks passed; Developer and independent QA verified; Lead accepted |
+| V1-M1-04 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009–NFR-012; generated template tests replaced by a test-only fixed clock/zone fixture and package/launcher/MainActivity/root smoke test; JVM 2/2 repeatedly and API-36 connected 1/1 passed; no production/dependency/private-location change; later contract fakes and broader compatibility suites remain assigned; Developer and independent QA verified; Lead accepted |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-03 have been explicitly started; no later task is authorized by their completion.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-04 have been explicitly started; no later task is authorized by their completion.

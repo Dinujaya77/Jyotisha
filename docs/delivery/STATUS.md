@@ -6,15 +6,15 @@
 | Version | 1.2 |
 | Last updated | 2026-08-05 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 through V1-M1-03 Done; PA-003/CP-003 Blocked |
+| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 through V1-M1-04 Done; PA-003/CP-003 Blocked |
 
 ## Current phase
 
-**Version 1.0 M1 development is in progress; V1-M1-01 through V1-M1-03 are Done.** V1-M1-03 set provisional `minSdk 26`, retained compile/target SDK 36, and added only DEP-011–DEP-013 Lifecycle 2.9.2. No V1-M1-04 or V1-M1-05 work has started.
+**Version 1.0 M1 development is in progress; V1-M1-01 through V1-M1-04 are Done.** V1-M1-04 replaced generated template tests with a bounded deterministic test foundation and verified the launcher on an API 36 emulator. V1-M1-05 has not started.
 
 **Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
 
-**Phase B architecture and Celestial Archive are Approved.** On 2026-08-02 the repository owner supplied `APPROVE VERSION 1.0 ARCHITECTURE`, `APPROVE DESIGN DIRECTION A`, and later `APPROVE VERSION 1.0 UI`. PA-002 approves architecture v0.5, ADR-001–ADR-009 v0.5, and DEP-011–DEP-014 in principle. DA-001 selects Celestial Archive and DA-004 approves its final Version 1.0 UI/token/accessibility specification. Directions B/C remain superseded alternatives. CP-003/RK v0.2 remains Blocked until its authority, source-backed weekday goldens, canonical terminology, and exact source versions/hashes are approved. Implementation remains task-gated; V1-M1-01 through V1-M1-03 are complete and later tasks have not started.
+**Phase B architecture and Celestial Archive are Approved.** On 2026-08-02 the repository owner supplied `APPROVE VERSION 1.0 ARCHITECTURE`, `APPROVE DESIGN DIRECTION A`, and later `APPROVE VERSION 1.0 UI`. PA-002 approves architecture v0.5, ADR-001–ADR-009 v0.5, and DEP-011–DEP-014 in principle. DA-001 selects Celestial Archive and DA-004 approves its final Version 1.0 UI/token/accessibility specification. Directions B/C remain superseded alternatives. CP-003/RK v0.2 remains Blocked until its authority, source-backed weekday goldens, canonical terminology, and exact source versions/hashes are approved. Implementation remains task-gated; V1-M1-01 through V1-M1-04 are complete and later tasks have not started.
 
 **The normative SOLAR-001 package is Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE SOLAR-001`, approving `SOLAR-001-v1.0`, SOL-R-001–SOL-R-014, `NOAA-MEEUS-001-v1.0`, SOLAR-GOLDEN-001-v1.0, SOLAR-INTERMEDIATE-001-v1.0, the sea-level fixed policy, supported range/following-day condition, 60-second Sri Lankan validation tolerance, half-even millisecond anchors, local-wall minute/second presentation policies, pinned host-side NREL-SPA/pvlib validation method, source roles, and zero production dependency decision. M5 is the approved delivery placement and still requires the accepted M1 quality baseline and explicit task start; M6 depends on accepted M5 and CP-001. PA-004 does not approve CP-003, CP-002, implementation evidence, or release.
 
@@ -99,6 +99,13 @@ All successful Gradle runs emitted a non-fatal metrics warning because the Andro
 - APK measurements: debug 24,647,690 to 9,718,886 bytes; Android-test 2,112,168 to 965,432 bytes. Conditions were not an identical controlled clean comparison, so the negative deltas are non-isolated and not attributed to Lifecycle.
 - Independent QA found zero implementation issues and independently repeated unit/lint/build/connected verification. Dependency register and delivery evidence record Apache-2.0, maintained AndroidX provenance, public advisory-search result, and remaining evidence limits. Lead accepted V1-M1-03.
 
+## V1-M1-04 deterministic test foundation (2026-08-05)
+
+- Replaced the generated unit and instrumentation examples with a test-only `Clock.fixed` fixture, two deterministic JVM tests for repeated known-instant reads and explicit `Asia/Colombo` representation, and a launcher smoke test that verifies the package, installed launcher resolution to `MainActivity`, resumed lifecycle, and displayed root.
+- The forced JVM suite passed 2/2 on three runs. Unit, lint, debug APK, Android-test APK, installation, and connected checks passed; the launcher smoke passed 1/1 on `emulator-5556` API 36. Reinstalled cold launch returned `Status: ok`, `MainActivity` was top-resumed, and the crash buffer contained no fatal exception.
+- Scope/privacy audits found no production, Gradle, dependency, SDK, identity, version, Manifest, network, sleep, system-wall-clock, private-coordinate, family-data, secret, or generated-output change. Repository/provider/UI-state/location fakes were not invented before their approved production contracts exist.
+- Independent QA found zero open Critical, High, Medium, or Low issues and repeated the JVM and connected tests successfully. Lead accepted V1-M1-04. API-26 runtime, physical-device, process-death, extended accessibility/localization, and later domain/state suites remain assigned to later tasks; NFR-009–NFR-012 are not complete solely from this task.
+
 Static validation parsed `.codex/config.toml` and all seven agent TOML files successfully, confirming required fields and the requested sandbox modes. All 29 required documentation files and metadata fields were also found. A supplementary `codex --version` / `codex features list` check could not run because this environment denied execution of `codex.exe`, including on an escalated retry; this is an environment limitation, not a TOML parse failure.
 
 ## Phase B verification (2026-08-01)
@@ -159,4 +166,4 @@ The independent QA Reviewer initially found zero Critical/High, two Medium, and 
 
 The independent read-only QA recheck initially found zero Critical/High, five Medium, and zero Low issues. Corrections removed stale PA-004 language, made non-colour theme aliases/layout/motion tokens deterministic, made Dashboard location actions source-specific, restored CR-008 active-zone coverage in M6, and normalized the IA inventory/Now–Dashboard/Day–Timeline aliases. The final recheck found **zero open Critical, High, Medium, or Low findings**. It confirmed 39 complete tasks, full FR-001–FR-012/NFR-001–NFR-015 task/test traceability, M1–M4 independence from CP-003, M5/PA-004 alignment, M6/CP-001/CR-001–010 alignment, M8/PA-003 blocking, V1.1-only Kala/Panchama, exact DA-004/DP-001 gates, no Android/Gradle/dependency diff, and no secret/private-data indicator.
 
-V1-M1-01 through V1-M1-03 are Done on `milestone/M1-android-foundation`. V1-M1-04 is the exact next dependency-eligible task, but it has not started. Do not start V1-M1-04 or any other task, merge, or push without a new explicit prompt.
+V1-M1-01 through V1-M1-04 are Done on `milestone/M1-android-foundation`. V1-M1-05 is the exact next dependency-eligible task, but it has not started. Do not start V1-M1-05 or any other task, merge, or push without a new explicit prompt.

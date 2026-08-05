@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.2 |
-| Last updated | 2026-08-02 |
+| Last updated | 2026-08-05 |
 | Owner role | QA Reviewer |
 | Approval state | PA-001/CR-001 strategy and PA-004 SOLAR-001 test obligations are approved; no implementation task is authorized by this document |
 
@@ -56,7 +56,16 @@
 | T-NFR-PERF | NFR-006 | Slowest approved family-device measurement; complete result within the approved 1-second threshold; no main-thread blocking. |
 | T-NFR-PRIVACY | NFR-007, NFR-008, NFR-013 | Storage/log/manifest/backup/transfer/secret audit and signed-APK review. |
 | T-NFR-COMPAT | NFR-009, NFR-010 | API 26, 30, 31/32, 36 plus oldest/newest physical family devices; complete outcome matrix. |
-| T-NFR-ARCH | NFR-012 | Fake clock/zone/location/repository and pure calculation tests without Android runtime. |
+| T-NFR-ARCH | NFR-012 | V1-M1-04 implements a reusable test-only fixed clock/zone fixture. Location/repository/provider/UI-state fakes and pure calculation tests remain assigned to later tasks that introduce their approved contracts. |
+
+## Implemented V1-M1-04 foundation
+
+| Test ID | Scope | Evidence | Result |
+|---|---|---|---|
+| T-M1-04-UNIT | NFR-009–NFR-012 | Two JVM tests exercise repeated reads from `Clock.fixed` and explicit `Asia/Colombo` local representation from a known instant; the forced focused suite passed three times. | Passed 2/2 on every run |
+| T-M1-04-LAUNCH | NFR-009–NFR-012 | Instrumented smoke verifies the target package, installed launcher resolution to `MainActivity`, resumed lifecycle, and displayed root without text, style, network, sleep, or wall-clock coupling. | Passed 1/1 on API 36 emulator |
+
+The fixtures live only under `src/test` and `src/androidTest`. V1-M1-04 intentionally did not invent interfaces before their production contracts exist. Location-result and provider seams wait for V1-M4-01/V1-M4-02; persistence and repository seams wait for V1-M4-03/V1-M4-05; UI-state seams wait for V1-M7-01/V1-M7-02; injected clock/zone integration waits for V1-M6-03/V1-M7-03; and pure solar/Hora fixtures remain in M5/M6. API-26 runtime, physical-device, process-death, extended accessibility/localization, and later domain-boundary evidence remain open under their assigned tasks; this foundation does not complete NFR-009–NFR-012 by itself.
 
 ## SOLAR-001 planned verification
 
@@ -83,4 +92,4 @@ VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecyc
 
 ## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither starts implementation. Each task row specifies unit, UI/integration, and manual verification. No test is claimed as implemented by this plan. Test execution begins only through an explicitly started task, and task results do not bypass independent QA or Lead acceptance.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither starts implementation. Each task row specifies unit, UI/integration, and manual verification. Only the bounded V1-M1-04 foundation above is claimed as implemented here. Other test execution begins only through an explicitly started task, and task results do not bypass independent QA or Lead acceptance.
