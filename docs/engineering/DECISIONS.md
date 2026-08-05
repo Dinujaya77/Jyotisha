@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-02 |
+| Last updated | 2026-08-05 |
 | Owner role | Android Architect |
 | Approval state | ADR-001–ADR-009, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; implementation still requires explicit task start and evidence |
 
@@ -89,11 +89,11 @@
 
 ## ADR-006 — SDK support baseline
 
-- **State:** Approved under PA-002 on 2026-08-02 as the provisional install-floor policy; device evidence remains required.
+- **State:** Approved under PA-002 and implemented under V1-M1-03 on 2026-08-05; API-26 runtime and physical-device evidence remain required.
 - **Linked requirements:** NFR-009.
-- **Decision:** Retain `compileSdk 36` and `targetSdk 36`; lower only `minSdk` from 36 to 26 during an approved implementation task.
+- **Decision:** Retain `compileSdk 36` and `targetSdk 36`; `minSdk` is now the provisional value 26 under V1-M1-03.
 - **Rationale:** API 26 sets the desired provisional install floor and provides `java.time`; no current source or proposed V1 feature requires a newer minimum. Compile/target meanings are independent of install eligibility.
-- **Evidence:** Build, lint, JVM/instrumented tests at API 26 plus physical oldest-family/OEM device; actual family-device inventory remains required.
+- **Evidence:** API-26 compilation/metadata, JVM tests, lint, debug/test APKs, and API-36 install/launch/connected test passed under V1-M1-03. API-26 runtime plus physical oldest-family/OEM evidence and actual family-device inventory remain required.
 - **Consequences:** API branches and resource behavior need API 26 coverage. Do not lower compile/target or upgrade dependencies opportunistically.
 - **Approval record:** Architecture policy approved under PA-002 on 2026-08-02; device verification remains required before the final release support claim.
 
@@ -104,7 +104,7 @@
 - **Decision:** One app module/activity; domain/data/platform/UI packages; pure domain; immutable ViewModel `StateFlow`; atomic complete snapshots; manual composition root. Use a small sealed destination state for top-level Dashboard/Now, Hora Timeline/Day, and Method, plus bounded Location, Settings, and About/privacy child routes. Navigation Compose is not required.
 - **Lifecycle/time:** Injectable clock/zone; resume reconciliation; visible-only date/time/time-zone/provider observation; calculation snapshot separate from acquisition state; countdown does not rerun astronomy.
 - **Failures:** Typed domain/platform/storage failures; no raw exception reaches UI.
-- **Dependencies approved in principle:** Lifecycle ViewModel KTX, Lifecycle ViewModel Compose, Lifecycle Runtime Compose at the existing 2.9.2 family, plus Preferences DataStore 1.2.1. They are not authorized to be added until an implementation task satisfies the register prerequisites.
+- **Dependencies:** Lifecycle ViewModel KTX, Lifecycle ViewModel Compose, and Lifecycle Runtime Compose 2.9.2 were added and verified under V1-M1-03. Preferences DataStore 1.2.1 remains approved in principle but is not added until V1-M4-03 satisfies its register prerequisites.
 - **Rejected additions:** Hilt/DI, Navigation Compose, Room/database, solar library, Play Services Location, network, analytics, crash uploader, or logging framework.
 - **Performance:** Cold calculation/usable-location render under one second on the slowest approved family device; calculations and storage off-main.
 - **Security/release:** No Internet/background-location permissions; signing keys/properties outside Git; family APK ownership/update/fingerprint process remains release planning.

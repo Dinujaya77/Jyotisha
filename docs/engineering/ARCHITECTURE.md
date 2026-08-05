@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-02 |
+| Last updated | 2026-08-05 |
 | Owner role | Android Architect |
 | Approval state | PA-002 architecture, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; explicit task/data/profile/evidence/release gates remain |
 
@@ -33,13 +33,13 @@ PA-002 approves the architecture boundaries, PA-004 approves normative `SOLAR-00
 | Persistence | Approved | One application-scoped Preferences DataStore 1.2.1 with mutually exclusive device/manual/default records. Device zone is derived from the current `ZoneSource`, never persisted as authoritative; manual/default derive `Asia/Colombo`. |
 | Backup/transfer | Policy approved; release evidence blocker | Store location data under credential-protected `noBackupFilesDir/location-data/`; retain explicit legacy and Android 12+ cloud/device-transfer exclusions as defence in depth; prove clean-device restore/transfer. |
 | Package/namespace | Approved and implemented under V1-M1-02 | Visible name `Jyotisha`; namespace and application ID `io.github.dinujaya77.jyotisha`. Keep both identifiers identical and preserve this update lineage. |
-| Dependencies | Approved in principle; implementation prerequisite | PA-002 covers DEP-011–DEP-014 in principle. No Navigation, Hilt, Room, solar, Play Services, networking, analytics or encryption dependency. Direct coroutine APIs may not rely silently on transitives; record/approve exact direct artifacts or avoid them before code. |
+| Dependencies | DEP-011–DEP-013 implemented; DEP-014 deferred | V1-M1-03 added Lifecycle ViewModel KTX, ViewModel Compose, and Runtime Compose 2.9.2 with verified resolution/licence/API evidence. DataStore remains deferred to V1-M4-03. No Navigation, Hilt, Room, solar, Play Services, networking, analytics or encryption dependency. Direct coroutine APIs may not rely silently on transitives. |
 | Internal precision | Approved shared contract; solar anchor rule separate | `Double`/`StrictMath` only for solar intermediates; quantize each anchor once under `SOLAR-001`; thereafter integer UTC epoch nanoseconds with overflow-safe quotient/remainder partitions. |
 | Display precision | Approved under PA-004 as `SOLAR-DISPLAY-001-v1.0` | Formatting is versioned and outside calculators. Dashboard/shared boundaries use local-wall nearest-minute half-even; Method uses nearest-second half-even. Exact instants drive membership/countdown; shared boundaries format once. DA-004 governs component placement only. |
 
 ## Existing baseline
 
-The Gradle root `Jyotisha` has one Android application module with namespace/application ID `io.github.dinujaya77.jyotisha`. The launcher activity displays the generated Compose template under the approved visible name `Jyotisha`. Current SDK values are independently `compileSdk 36`, `targetSdk 36`, and `minSdk 36`; only `minSdk` sets the install floor. Existing AndroidX Core KTX 1.17.0 already provides `LocationManagerCompat`. The manifest has no location permissions and currently enables backup/data-extraction rules. No calculation, state-holder, repository, navigation, persistence, or meaningful feature test exists.
+The Gradle root `Jyotisha` has one Android application module with namespace/application ID `io.github.dinujaya77.jyotisha`. The launcher activity displays the generated Compose template under the approved visible name `Jyotisha`. Current SDK values are independently `compileSdk 36`, `targetSdk 36`, and provisional `minSdk 26`; only `minSdk` sets the install floor. Existing AndroidX Core KTX 1.17.0 provides `LocationManagerCompat`, and V1-M1-03 added the approved Lifecycle ViewModel KTX, ViewModel Compose, and Runtime Compose 2.9.2 artifacts. The manifest has no location permissions and currently enables backup/data-extraction rules. No calculation, state-holder, repository, navigation, persistence, or meaningful feature test exists.
 
 V1-M1-02 replaced the template identity once with the owner-approved permanent identity. Future changes to the application ID require an explicit update-lineage decision; do not introduce suffixes or flavours opportunistically.
 
