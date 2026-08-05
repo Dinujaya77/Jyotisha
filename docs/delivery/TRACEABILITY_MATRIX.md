@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-05 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-04 Done; remaining task mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 task execution complete pending milestone review/merge decision; remaining mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -80,5 +80,6 @@
 | V1-M1-02 | Done 2026-08-02 on `milestone/M1-android-foundation`; NFR-009/NFR-013 and ADR-006/007; permanent visible name `Jyotisha`, namespace/application ID `io.github.dinujaya77.jyotisha`; Developer and independent QA verified package paths, merged Manifest, APK identity, and required builds; Lead accepted |
 | V1-M1-03 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009/NFR-012, ADR-006, DEP-011–013; min SDK 26 with compile/target 36; exact Lifecycle 2.9.2 direct dependencies and transitive/licence/advisory/size evidence recorded; API-26 compile and API-36 install/launch/connected checks passed; Developer and independent QA verified; Lead accepted |
 | V1-M1-04 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009–NFR-012; generated template tests replaced by a test-only fixed clock/zone fixture and package/launcher/MainActivity/root smoke test; JVM 2/2 repeatedly and API-36 connected 1/1 passed; no production/dependency/private-location change; later contract fakes and broader compatibility suites remain assigned; Developer and independent QA verified; Lead accepted |
+| V1-M1-05 | Done 2026-08-05 on `milestone/M1-android-foundation`; FR-008/FR-011, NFR-005/NFR-012, ADR-007, UI-002–UI-007; one-activity manual root, immutable typed bounded shell reducer, exact origin-aware Back, primitive saveable restoration and externalized rendering-only placeholders; JVM 8/8 and connected 6/6 on API 36 passed, including nested and landscape Activity recreation; no dependency/future-feature expansion; Developer and independent QA verified; Lead accepted |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-04 have been explicitly started; no later task is authorized by their completion.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-05 have been explicitly started. M1 task execution is complete, but milestone acceptance/merge and every later task still require explicit authorization.

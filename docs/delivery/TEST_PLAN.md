@@ -67,6 +67,15 @@
 
 The fixtures live only under `src/test` and `src/androidTest`. V1-M1-04 intentionally did not invent interfaces before their production contracts exist. Location-result and provider seams wait for V1-M4-01/V1-M4-02; persistence and repository seams wait for V1-M4-03/V1-M4-05; UI-state seams wait for V1-M7-01/V1-M7-02; injected clock/zone integration waits for V1-M6-03/V1-M7-03; and pure solar/Hora fixtures remain in M5/M6. API-26 runtime, physical-device, process-death, extended accessibility/localization, and later domain-boundary evidence remain open under their assigned tasks; this foundation does not complete NFR-009–NFR-012 by itself.
 
+## Implemented V1-M1-05 shell evidence
+
+| Test ID | Scope | Evidence | Result |
+|---|---|---|---|
+| T-M1-05-REDUCER | FR-008, FR-011; NFR-012; ADR-007 | Pure reducer tests cover Dashboard initial state, bounded top-level switching, no-op reselection at a top-level root, child-to-top-level root reset, every permitted child/origin, non-default Back, invalid-transition rejection, and determinism. | Passed 6/6; full JVM suite passed 8/8 |
+| T-M1-05-SHELL | UI-002–UI-007; NFR-005, NFR-009, NFR-012 | Compose tests cover launcher Dashboard, Timeline/Method switching, Location/Settings/About and Back, top-level recreation, nested Method → Settings → Location recreation with exact origin restoration, and verified landscape/portrait Activity recreation. | Passed 5/5 independently; complete connected suite passed 6/6 on API 36 |
+
+V1-M1-05 establishes only rendering placeholders and bounded shell structure. Dashboard-root system Back delegates to normal Activity behavior by disabling the app Back handler there; destructive exit is code-reviewed rather than asserted. Activity/configuration recreation is proven through primitive saveable state, but full operating-system process-death restoration is not claimed. Final adaptive, accessibility, localization, visual, physical-device, and feature-state evidence remains assigned to later milestones.
+
 ## SOLAR-001 planned verification
 
 | Test ID | Scope | Required evidence | Gate |

@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Jyotisha</string>
+    <string name="navigation_dashboard">Dashboard</string>
+    <string name="navigation_timeline">Timeline</string>
+    <string name="navigation_method">Method</string>
+    <string name="navigation_dashboard_short">D</string>
+    <string name="navigation_timeline_short">T</string>
+    <string name="navigation_method_short">M</string>
+    <string name="screen_dashboard_title">Dashboard</string>
+    <string name="screen_timeline_title">Timeline</string>
+    <string name="screen_method_title">Method</string>
+    <string name="screen_location_title">Location</string>
+    <string name="screen_settings_title">Settings</string>
+    <string name="screen_about_title">About and privacy</string>
+    <string name="shell_placeholder_body">Structure placeholder. Content arrives in a later milestone.</string>
+    <string name="action_location">Open location</string>
+    <string name="action_settings">Open settings</string>
+    <string name="action_about">Open About and privacy</string>
+    <string name="action_back">Back</string>
+    <string name="action_back_to_settings">Back to settings</string>
 </resources>
