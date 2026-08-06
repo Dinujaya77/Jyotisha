@@ -52,7 +52,7 @@
 | UI-005 Settings | FR-004–011 | V1-M3-03, V1-M4-03/05, V1-M9-01 | DA-004 |
 | UI-006 Method | FR-003/008–012 | V1-M3-04, V1-M7-04, V1-M9-01 | DA-004; Rahu method additionally PA-003 |
 | UI-007 About/privacy | NFR-001/004/007/008/010–012 | V1-M3-04, V1-M9-01/04 | DA-004 |
-| THEME/A11Y | FR-011; NFR-005/011 | V1-M2-01–04, V1-M9-01 | DA-004; actual evidence at milestone/release gates |
+| THEME/A11Y | FR-011; NFR-005/011 | V1-M2-01–04, V1-M9-01 | DA-004; V1-M2-01 semantic light/dark color foundation Done with exact-role, fixed-theme and contrast evidence; component/device evidence remains at later gates |
 
 ## SOLAR-001 traceability
 
@@ -81,5 +81,6 @@
 | V1-M1-03 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009/NFR-012, ADR-006, DEP-011–013; min SDK 26 with compile/target 36; exact Lifecycle 2.9.2 direct dependencies and transitive/licence/advisory/size evidence recorded; API-26 compile and API-36 install/launch/connected checks passed; Developer and independent QA verified; Lead accepted |
 | V1-M1-04 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009–NFR-012; generated template tests replaced by a test-only fixed clock/zone fixture and package/launcher/MainActivity/root smoke test; JVM 2/2 repeatedly and API-36 connected 1/1 passed; no production/dependency/private-location change; later contract fakes and broader compatibility suites remain assigned; Developer and independent QA verified; Lead accepted |
 | V1-M1-05 | Done 2026-08-05 on `milestone/M1-android-foundation`; FR-008/FR-011, NFR-005/NFR-012, ADR-007, UI-002–UI-007; one-activity manual root, immutable typed bounded shell reducer, exact origin-aware Back/top-level reset, primitive saveable restoration and externalized rendering-only placeholders; JVM 9/9 and committed connected 6/6 on API 36 passed, including child-to-root no-history, nested and landscape Activity recreation; no dependency/future-feature expansion; Developer and independent QA verified; Lead accepted |
+| V1-M2-01 | Done 2026-08-06 on `milestone/M2-celestial-archive-design-system`; FR-011, NFR-005/NFR-011, UI/THEME; exact 21-role light/dark semantic palette, approved aliases, fixed approved-color-only Material mappings and dynamic-color-off theme boundary; focused JVM 7/7 twice, full JVM 16/16, lint and both debug APK builds passed; minimum text contrast 6.68:1 and outline/focus 4.40:1; no dependency/later-feature change; Developer, Lead verification and independent QA passed |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-05 have been explicitly started. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; every later task still requires explicit authorization. No M2 or later task has started.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is In Progress on its milestone branch. V1-M2-02 and every later task remain unstarted and require separate explicit authorization.

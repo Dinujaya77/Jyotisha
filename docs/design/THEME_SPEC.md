@@ -103,3 +103,9 @@ Illustration is limited to abstract celestial arcs, dots, horizon rules, and arc
 ## Implementation verification gate
 
 DA-004 approves this specification after documentation QA; it does not claim that application evidence already exists. During M2/M3 and before their acceptance/release, verify every component pairing (including outline, focus, disabled, pressed, and selected states), light/dark previews, 200% font scale, compact landscape, TalkBack order, keyboard/D-pad focus, reduced motion, and grayscale/non-color state recognition. Record the produced evidence against the UI IDs in `UI_SPEC.md`, `ACCESSIBILITY.md`, and the assigned delivery tasks.
+
+### V1-M2-01 implementation evidence (2026-08-06)
+
+V1-M2-01 implements the complete approved 21-role light/dark semantic palette, deterministic later/pending/completed aliases, fixed approved-color-only Material 3 mappings, and a `MaterialTheme` semantic-color boundary. Dynamic platform color is removed from the Version 1.0 theme API. Focused JVM evidence verifies every exact value, light/dark role equivalence, alias stability, mapping omissions, deterministic selection, normal-text contrast and outline/focus contrast. The focused suite passed 7/7 twice and the complete JVM suite passed 16/16; lint and both debug APK builds passed. No dependency or later token/component/feature behavior was added.
+
+The measured minimum normal-text ratio is 6.68:1 and the measured minimum outline/focus ratio is 4.40:1. These results close only the V1-M2-01 color-foundation gate. Component-level compositing and pressed/selected/disabled evidence, previews, OLED/manual inspection, grayscale/non-color recognition, font-scale, TalkBack, D-pad, adaptive and physical-device evidence remain open under later M2/M9 tasks.

@@ -4,7 +4,7 @@ Jyotisha is an early Android application intended for private, family-only APK d
 
 ## Current status
 
-The delivery foundation and controlled Codex virtual team are established. Requirements, Option C, Version 1.0 architecture, Celestial Archive UI, `SOLAR-001`, and the delivery plan are approved. V1-M1-01 through V1-M1-05 and corrective commits `580bab1`/`79d5116` are incorporated into `dev`; M1 is **Done** and Lead/owner accepted. The milestone branch remains available, no remote push occurred, and M2 or later work has not started. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu requires separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-013 Lifecycle 2.9.2 are added and verified; DEP-014 DataStore remains deferred.
+The delivery foundation and controlled Codex virtual team are established. Requirements, Option C, Version 1.0 architecture, Celestial Archive UI, `SOLAR-001`, and the delivery plan are approved. V1-M1-01 through V1-M1-05 and corrective commits `580bab1`/`79d5116` are incorporated into `dev`; M1 is **Done** and Lead/owner accepted. M2 is **In Progress** on its retained milestone branch: V1-M2-01 implements the approved semantic light/dark color foundation, while V1-M2-02 through V1-M2-04 and every later milestone remain unstarted. No remote push occurred. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu requires separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-013 Lifecycle 2.9.2 are added and verified; DEP-014 DataStore remains deferred.
 
 ## Project baseline
 

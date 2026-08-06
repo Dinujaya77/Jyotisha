@@ -76,6 +76,15 @@ The fixtures live only under `src/test` and `src/androidTest`. V1-M1-04 intentio
 
 V1-M1-05 establishes only rendering placeholders and bounded shell structure. Dashboard-root system Back delegates to normal Activity behavior by disabling the app Back handler there; destructive exit is code-reviewed rather than asserted. Activity/configuration recreation is proven through primitive saveable state, but full operating-system process-death restoration is not claimed. Final adaptive, accessibility, localization, visual, physical-device, and feature-state evidence remains assigned to later milestones.
 
+## Implemented V1-M2-01 color-foundation evidence
+
+| Test ID | Scope | Evidence | Result |
+|---|---|---|---|
+| T-M2-01-COLOR | FR-011; NFR-005, NFR-011; UI/THEME | Seven focused JVM tests verify every exact approved light/dark semantic value, the complete 21-role equivalence set, deterministic later/pending/completed aliases, fixed Material mappings using approved colors only, stable light/dark selection with no dynamic-palette input, all approved text pairs, and outline/focus contrast on background and surface. | Passed 7/7 in two forced runs; full JVM suite passed 16/16 |
+| T-M2-01-BUILD | NFR-005, NFR-011 | Project discovery, debug runtime dependency audit, lint, debug APK, Android-test APK, package/launcher/merged-Manifest/SDK checks, direct-color/dynamic-color/scope and repository-integrity audits. | Passed; no dependency or build-file delta; connected execution unavailable because no device was attached |
+
+WCAG calculations use the approved exact sRGB values. The weakest tested normal-text pair is 6.68:1 and the weakest outline/focus pair is 4.40:1, exceeding the 4.5:1 and 3.0:1 gates respectively. This task establishes the runtime semantic palette and fixed Compose theme boundary only. Component compositing, pressed/selected/disabled use, OLED/manual appearance, grayscale/non-color recognition, TalkBack, font-scale, adaptive, and physical-device evidence remain assigned to V1-M2-02 through V1-M2-04 and V1-M9-01.
+
 ## SOLAR-001 planned verification
 
 | Test ID | Scope | Required evidence | Gate |
@@ -101,4 +110,4 @@ VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecyc
 
 ## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded V1-M1-04 deterministic foundation and V1-M1-05 shell suites above are implemented evidence. All other test execution begins only through an explicitly started task, and task results do not bypass independent QA, Lead acceptance, milestone merge, or later release gates.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded V1-M1-04 deterministic foundation, V1-M1-05 shell suites, and V1-M2-01 semantic-color evidence above are implemented. All other test execution begins only through an explicitly started task, and task results do not bypass independent QA, Lead acceptance, milestone merge, or later release gates.
