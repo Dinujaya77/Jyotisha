@@ -43,7 +43,7 @@ The Gradle root `Jyotisha` has one Android application module with namespace/app
 
 V1-M1-02 replaced the template identity once with the owner-approved permanent identity. Future changes to the application ID require an explicit update-lineage decision; do not introduce suffixes or flavours opportunistically.
 
-V1-M1-01 through V1-M1-05 are Done and M1 is In Review on the unmerged `milestone/M1-android-foundation` branch. The shell uses primitive saveable state for activity/configuration recreation; full operating-system process-death restoration is not claimed. API-26 runtime, physical-family-device, final adaptive/accessibility/localization, and Celestial Archive visual evidence remain later gates. M2 and later tasks have not started.
+V1-M1-01 through V1-M1-05 are Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; the milestone branch remains available and no remote push occurred. The shell uses primitive saveable state for activity/configuration recreation; full operating-system process-death restoration is not claimed. API-26 runtime, physical-family-device, final adaptive/accessibility/localization, and Celestial Archive visual evidence remain later gates. M2 and later tasks have not started.
 
 ## System shape
 

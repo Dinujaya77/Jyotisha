@@ -6,7 +6,7 @@
 | Version | 1.0 |
 | Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; Project Manager read-only reviewer |
-| Approval state | DP-001 Approved on 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 task execution complete and In Review pending final acceptance/merge decision; all later tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
+| Approval state | DP-001 Approved on 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; all later tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
 
 Each row is one focused Codex session where practical. `Tests` always lists unit, UI/integration, and manual verification. Only the Android Developer may normally edit production Android/Gradle files; independent QA and Lead acceptance follow Developer verification.
 
@@ -96,4 +96,4 @@ Each row is one focused Codex session where practical. `Tests` always lists unit
 
 ## Start and completion rules
 
-DA-004 and DP-001 are Approved. V1-M1-01 through V1-M1-05 are Done on `milestone/M1-android-foundation`; M1 task execution is complete with the permanent identity, provisional API-26/Lifecycle foundation, bounded deterministic tests, and approved application shell established. No M2 or later task has started. The exact next safe action is an explicit M1 milestone review and merge decision; completion does not itself authorize merge or M2. M5 still needs an accepted M1 quality baseline; M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated.
+DA-004 and DP-001 are Approved. V1-M1-01 through V1-M1-05 are Done; the reviewed M1 history, including corrective commits `580bab1` and `79d5116`, is incorporated into `dev`, and M1 is Done and Lead/owner accepted. No remote push occurred, the milestone branch remains available, and no M2 or later task has started. The next implementation action requires a separate explicit M2 task authorization. M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated.

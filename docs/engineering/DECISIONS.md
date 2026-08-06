@@ -99,7 +99,7 @@
 
 ## ADR-007 — Application structure, state, and dependencies
 
-- **State:** Approved under PA-002 on 2026-08-02; the bounded M1 shell portion was implemented under V1-M1-05 and remains In Review with the milestone. The full ViewModel `StateFlow` feature state remains assigned to V1-M7.
+- **State:** Approved under PA-002 on 2026-08-02; the bounded M1 shell portion was implemented under V1-M1-05, accepted with M1, and incorporated into `dev` through `79d5116`. The full ViewModel `StateFlow` feature state remains assigned to V1-M7.
 - **Linked requirements:** FR-001–FR-015; NFR-001–NFR-015.
 - **Decision:** One app module/activity; domain/data/platform/UI packages; pure domain; immutable ViewModel `StateFlow`; atomic complete snapshots; manual composition root. Use a small sealed destination state for top-level Dashboard/Now, Hora Timeline/Day, and Method, plus bounded Location, Settings, and About/privacy child routes. Navigation Compose is not required.
 - **Lifecycle/time:** Injectable clock/zone; resume reconciliation; visible-only date/time/time-zone/provider observation; calculation snapshot separate from acquisition state; countdown does not rerun astronomy.
@@ -131,4 +131,4 @@
 
 ## Remaining decisions outside this gate
 
-CP-002 coverage, CP-003 rule evidence, direct coroutine dependency decisions for later production use, family-device inventory, product town-catalogue rows/family-town coverage, traditional authority, final DA-004 UI evidence, signing owner/distribution mechanics, SOLAR-001 implementation evidence, and release calculation accuracy remain separately gated. The permanent package/application identity is complete under V1-M1-02. The bounded shell is implemented under V1-M1-05, but M1 remains In Review and unmerged; DA-004 and DP-001 do not automatically start a later task or approve a subordinate profile.
+CP-002 coverage, CP-003 rule evidence, direct coroutine dependency decisions for later production use, family-device inventory, product town-catalogue rows/family-town coverage, traditional authority, final DA-004 UI evidence, signing owner/distribution mechanics, SOLAR-001 implementation evidence, and release calculation accuracy remain separately gated. The permanent package/application identity is complete under V1-M1-02. The bounded shell is implemented under V1-M1-05, accepted with M1, and incorporated into `dev`; DA-004 and DP-001 do not automatically start a later task or approve a subordinate profile.

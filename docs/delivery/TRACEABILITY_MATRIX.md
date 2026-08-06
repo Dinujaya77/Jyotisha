@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 task execution complete and In Review pending final acceptance/merge decision; remaining mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; remaining mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -82,4 +82,4 @@
 | V1-M1-04 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009–NFR-012; generated template tests replaced by a test-only fixed clock/zone fixture and package/launcher/MainActivity/root smoke test; JVM 2/2 repeatedly and API-36 connected 1/1 passed; no production/dependency/private-location change; later contract fakes and broader compatibility suites remain assigned; Developer and independent QA verified; Lead accepted |
 | V1-M1-05 | Done 2026-08-05 on `milestone/M1-android-foundation`; FR-008/FR-011, NFR-005/NFR-012, ADR-007, UI-002–UI-007; one-activity manual root, immutable typed bounded shell reducer, exact origin-aware Back/top-level reset, primitive saveable restoration and externalized rendering-only placeholders; JVM 9/9 and committed connected 6/6 on API 36 passed, including child-to-root no-history, nested and landscape Activity recreation; no dependency/future-feature expansion; Developer and independent QA verified; Lead accepted |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-05 have been explicitly started. M1 task execution is complete, but milestone acceptance/merge and every later task still require explicit authorization.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. Only V1-M1-01 through V1-M1-05 have been explicitly started. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; every later task still requires explicit authorization. No M2 or later task has started.
