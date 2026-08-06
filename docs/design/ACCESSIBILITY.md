@@ -75,3 +75,9 @@ Before PA-003, the Rahu slot speaks only that its calculation method is not appr
 | A11Y-MAN-007 | Grayscale/non-color recognition and long English/pseudolocale expansion. |
 
 Compose previews and screenshot fixtures use fixed clocks and only public approved or clearly synthetic locations. They never contain real family/device coordinates. Evidence is linked back to UI-001–UI-007 and the corresponding delivery task; screenshots alone do not prove accessibility.
+
+## M2 implementation evidence (2026-08-06)
+
+V1-M2-01 through V1-M2-04 implement the semantic-colour and exact-token foundation, 48dp action contract, explicit text/non-colour component states, deliberately merged timing-folio summary with separate action, domain-neutral state models and eight deterministic synthetic adaptive/theme/state/reduced-motion preview fixtures. Focused M2 JVM tests passed 26/26, the complete JVM suite passed 35/35, and the complete connected suite passed 13/13 on an API-36 emulator, including component and representative preview semantics. Lint and both APK builds passed, and final independent QA found zero open findings.
+
+This automated evidence does not claim manual TalkBack traversal, keyboard/D-pad focus and restoration, actual 200% font-scale or compact-landscape visual inspection, grayscale/high-contrast/OLED appearance, pressed/focus/disabled visual contrast, screen magnification, API-26 runtime or physical-family-device results. A11Y-MAN-001 through A11Y-MAN-007 remain required under V1-M9-01 or release validation.

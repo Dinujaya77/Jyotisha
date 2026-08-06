@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; V1-M1-01 through V1-M1-05 Done; M1 Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; remaining mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; M1 Done, accepted and incorporated into `dev`; V1-M2-01 through V1-M2-04 Done on the milestone branch; M2 In Review and unmerged; remaining mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -52,7 +52,7 @@
 | UI-005 Settings | FR-004–011 | V1-M3-03, V1-M4-03/05, V1-M9-01 | DA-004 |
 | UI-006 Method | FR-003/008–012 | V1-M3-04, V1-M7-04, V1-M9-01 | DA-004; Rahu method additionally PA-003 |
 | UI-007 About/privacy | NFR-001/004/007/008/010–012 | V1-M3-04, V1-M9-01/04 | DA-004 |
-| THEME/A11Y | FR-011; NFR-005/011 | V1-M2-01–04, V1-M9-01 | DA-004; V1-M2-01 semantic light/dark color foundation Done with exact-role, fixed-theme and contrast evidence; component/device evidence remains at later gates |
+| THEME/A11Y | FR-011; NFR-005/011 | V1-M2-01–04, V1-M9-01 | DA-004; all M2 tasks Done with exact semantic-colour, token, reusable-component, deterministic-preview, automated semantics and API-36 connected evidence; manual/device evidence remains at M9/release gates |
 
 ## SOLAR-001 traceability
 
@@ -82,5 +82,8 @@
 | V1-M1-04 | Done 2026-08-05 on `milestone/M1-android-foundation`; NFR-009–NFR-012; generated template tests replaced by a test-only fixed clock/zone fixture and package/launcher/MainActivity/root smoke test; JVM 2/2 repeatedly and API-36 connected 1/1 passed; no production/dependency/private-location change; later contract fakes and broader compatibility suites remain assigned; Developer and independent QA verified; Lead accepted |
 | V1-M1-05 | Done 2026-08-05 on `milestone/M1-android-foundation`; FR-008/FR-011, NFR-005/NFR-012, ADR-007, UI-002–UI-007; one-activity manual root, immutable typed bounded shell reducer, exact origin-aware Back/top-level reset, primitive saveable restoration and externalized rendering-only placeholders; JVM 9/9 and committed connected 6/6 on API 36 passed, including child-to-root no-history, nested and landscape Activity recreation; no dependency/future-feature expansion; Developer and independent QA verified; Lead accepted |
 | V1-M2-01 | Done 2026-08-06 on `milestone/M2-celestial-archive-design-system`; FR-011, NFR-005/NFR-011, UI/THEME; exact 21-role light/dark semantic palette, approved aliases, fixed approved-color-only Material mappings and dynamic-color-off theme boundary; focused JVM 7/7 twice, full JVM 16/16, lint and both debug APK builds passed; minimum text contrast 6.68:1 and outline/focus 4.40:1; no dependency/later-feature change; Developer, Lead verification and independent QA passed |
+| V1-M2-02 | Done 2026-08-06 at `f6fbe1c`; FR-011, NFR-005/NFR-011, UI/THEME; exact approved typography, spacing, gutter, shape, elevation, wash, motion, icon, illustration, focus and touch-target tokens; focused 8/8; no dependency or feature change |
+| V1-M2-03 | Done 2026-08-06 at `a353c4f`; FR-001–003, FR-009–012, NFR-005; domain-neutral timing folio, anchors, provenance/status, timeline, actions and unavailable components with explicit semantics/non-colour cues; JVM 4/4 and connected component evidence passed |
+| V1-M2-04 | Done 2026-08-06 at `55c5d77`; NFR-005/NFR-011, A11Y; eight deterministic synthetic adaptive/theme/state/reduced-motion preview fixtures; JVM 7/7 and connected preview evidence passed; complete M2 focused 26/26, JVM 35/35 and connected 13/13 on API 36; independent QA zero open findings |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is In Progress on its milestone branch. V1-M2-02 and every later task remain unstarted and require separate explicit authorization.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 through V1-M2-04 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is In Review on its milestone branch after final independent QA and remains unmerged and unpushed. M3 and every later task remain unstarted and require separate explicit authorization.
