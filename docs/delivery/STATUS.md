@@ -10,7 +10,7 @@
 
 ## Current phase
 
-**Version 1.0 M1 task execution is complete; V1-M1-01 through V1-M1-05 are Done and M1 is In Review.** V1-M1-05 establishes the approved one-activity bounded shell and rendering-only placeholders. The unmerged `milestone/M1-android-foundation` branch is undergoing bounded merge-readiness evidence correction; no push, M2, or later task has started.
+**Version 1.0 M1 task execution is complete; V1-M1-01 through V1-M1-05 are Done and M1 is In Review.** V1-M1-05 establishes the approved one-activity bounded shell and rendering-only placeholders. The bounded merge-readiness corrective task is complete in commit `580bab1`, and its two original Medium findings are resolved. M1 remains In Review on the unmerged and unpushed `milestone/M1-android-foundation` branch, awaiting a repeat merge-readiness review and Lead merge decision; M2 and later tasks have not started.
 
 **Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
 
