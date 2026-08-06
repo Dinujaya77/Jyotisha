@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.2 |
-| Last updated | 2026-08-05 |
+| Last updated | 2026-08-06 |
 | Owner role | QA Reviewer |
 | Approval state | PA-001/CR-001 strategy and PA-004 SOLAR-001 test obligations are approved; no implementation task is authorized by this document |
 
@@ -71,7 +71,7 @@ The fixtures live only under `src/test` and `src/androidTest`. V1-M1-04 intentio
 
 | Test ID | Scope | Evidence | Result |
 |---|---|---|---|
-| T-M1-05-REDUCER | FR-008, FR-011; NFR-012; ADR-007 | Pure reducer tests cover Dashboard initial state, bounded top-level switching, no-op reselection at a top-level root, child-to-top-level root reset, every permitted child/origin, non-default Back, invalid-transition rejection, and determinism. | Passed 6/6; full JVM suite passed 8/8 |
+| T-M1-05-REDUCER | FR-008, FR-011; NFR-012; ADR-007 | Pure reducer tests cover Dashboard initial state, bounded top-level switching, no-op reselection at a top-level root, representative Location/Settings/About child-to-top-level root resets with canonical no-history state, every permitted child/origin, non-default Back, invalid-transition rejection, and determinism. | Passed 7/7 repeatedly; full JVM suite passed 9/9 |
 | T-M1-05-SHELL | UI-002–UI-007; NFR-005, NFR-009, NFR-012 | Compose tests cover launcher Dashboard, Timeline/Method switching, Location/Settings/About and Back, top-level recreation, nested Method → Settings → Location recreation with exact origin restoration, and verified landscape/portrait Activity recreation. | Passed 5/5 independently; complete connected suite passed 6/6 on API 36 |
 
 V1-M1-05 establishes only rendering placeholders and bounded shell structure. Dashboard-root system Back delegates to normal Activity behavior by disabling the app Back handler there; destructive exit is code-reviewed rather than asserted. Activity/configuration recreation is proven through primitive saveable state, but full operating-system process-death restoration is not claimed. Final adaptive, accessibility, localization, visual, physical-device, and feature-state evidence remains assigned to later milestones.
@@ -101,4 +101,4 @@ VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecyc
 
 ## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither starts implementation. Each task row specifies unit, UI/integration, and manual verification. Only the bounded V1-M1-04 foundation above is claimed as implemented here. Other test execution begins only through an explicitly started task, and task results do not bypass independent QA or Lead acceptance.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded V1-M1-04 deterministic foundation and V1-M1-05 shell suites above are implemented evidence. All other test execution begins only through an explicitly started task, and task results do not bypass independent QA, Lead acceptance, milestone merge, or later release gates.

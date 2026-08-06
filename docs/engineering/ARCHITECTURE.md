@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-05 |
+| Last updated | 2026-08-06 |
 | Owner role | Android Architect |
 | Approval state | PA-002 architecture, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; explicit task/data/profile/evidence/release gates remain |
 
@@ -37,11 +37,13 @@ PA-002 approves the architecture boundaries, PA-004 approves normative `SOLAR-00
 | Internal precision | Approved shared contract; solar anchor rule separate | `Double`/`StrictMath` only for solar intermediates; quantize each anchor once under `SOLAR-001`; thereafter integer UTC epoch nanoseconds with overflow-safe quotient/remainder partitions. |
 | Display precision | Approved under PA-004 as `SOLAR-DISPLAY-001-v1.0` | Formatting is versioned and outside calculators. Dashboard/shared boundaries use local-wall nearest-minute half-even; Method uses nearest-second half-even. Exact instants drive membership/countdown; shared boundaries format once. DA-004 governs component placement only. |
 
-## Existing baseline
+## Current M1 baseline
 
-The Gradle root `Jyotisha` has one Android application module with namespace/application ID `io.github.dinujaya77.jyotisha`. The launcher activity displays the generated Compose template under the approved visible name `Jyotisha`. Current SDK values are independently `compileSdk 36`, `targetSdk 36`, and provisional `minSdk 26`; only `minSdk` sets the install floor. Existing AndroidX Core KTX 1.17.0 provides `LocationManagerCompat`, and V1-M1-03 added the approved Lifecycle ViewModel KTX, ViewModel Compose, and Runtime Compose 2.9.2 artifacts. The manifest has no location permissions and currently enables backup/data-extraction rules. No calculation, state-holder, repository, navigation, persistence, or meaningful feature test exists.
+The Gradle root `Jyotisha` has one Android application module with namespace/application ID `io.github.dinujaya77.jyotisha`. One `MainActivity` hosts a bounded manual Compose shell for Dashboard, Timeline, and Method plus Location, Settings, and About rendering-only children. Current SDK values are `compileSdk 36`, `targetSdk 36`, and provisional `minSdk 26`; only `minSdk` sets the install floor. Existing AndroidX Core KTX 1.17.0 provides `LocationManagerCompat`, and V1-M1-03 added the approved Lifecycle ViewModel KTX, ViewModel Compose, and Runtime Compose 2.9.2 artifacts. The manifest has no location permissions and retains the baseline backup/data-extraction rules. Deterministic clock/zone and shell reducer/Compose tests exist. No solar, Hora, Rahu, location acquisition, repository, persistence, final theme, or feature-state implementation exists.
 
 V1-M1-02 replaced the template identity once with the owner-approved permanent identity. Future changes to the application ID require an explicit update-lineage decision; do not introduce suffixes or flavours opportunistically.
+
+V1-M1-01 through V1-M1-05 are Done and M1 is In Review on the unmerged `milestone/M1-android-foundation` branch. The shell uses primitive saveable state for activity/configuration recreation; full operating-system process-death restoration is not claimed. API-26 runtime, physical-family-device, final adaptive/accessibility/localization, and Celestial Archive visual evidence remain later gates. M2 and later tasks have not started.
 
 ## System shape
 

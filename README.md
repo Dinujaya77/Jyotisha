@@ -1,16 +1,16 @@
 # Jyotisha
 
-Jyotisha is an early Android application intended for private, family-only APK distribution. The repository currently contains the original single-screen Android Studio Compose template; no Jyotisha calculation feature is claimed or approved yet.
+Jyotisha is an early Android application intended for private, family-only APK distribution. The repository now contains the completed M1 Android foundation and bounded application shell; no solar, Hora, Rahu, location-acquisition, or persistence feature is implemented yet.
 
 ## Current status
 
-The delivery foundation and controlled Codex virtual team are established. Requirements, Option C, Version 1.0 architecture, Celestial Archive UI, `SOLAR-001`, and the delivery plan are approved. M1 implementation is in progress: V1-M1-01 and V1-M1-02 are complete, while later tasks remain separately gated. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu requires separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-014 are approved in principle but not added.
+The delivery foundation and controlled Codex virtual team are established. Requirements, Option C, Version 1.0 architecture, Celestial Archive UI, `SOLAR-001`, and the delivery plan are approved. V1-M1-01 through V1-M1-05 are Done and M1 is **In Review** on `milestone/M1-android-foundation`; it has not been merged or pushed, and M2 or later work has not started. CP-001 Seasonal Planetary Hora remains the Version 1.0 primary system; daytime Rahu requires separate CP-003/RK approval, while fixed Kala/Panchama is allocated to Version 1.1 and remains blocked on CP-002/KH/PK approval. DEP-011–DEP-013 Lifecycle 2.9.2 are added and verified; DEP-014 DataStore remains deferred.
 
 ## Project baseline
 
 - One Android application module: `:app`
 - Application ID and namespace: `io.github.dinujaya77.jyotisha`
-- `compileSdk`: 36; `targetSdk`: 36; current `minSdk`: 36. Only `minSdk` sets the installation floor; API 26 is the PA-002-approved provisional V1.0 floor pending device verification and an authorized implementation task.
+- `compileSdk`: 36; `targetSdk`: 36; provisional `minSdk`: 26. API 26 runtime and physical-family-device verification remain later gates.
 - Kotlin 2.0.21; Java source/target and Kotlin JVM target 11
 - Jetpack Compose enabled with Material 3
 - Entry point: `app/src/main/java/io/github/dinujaya77/jyotisha/MainActivity.kt`

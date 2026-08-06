@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.1 |
-| Last updated | 2026-08-02 |
+| Last updated | 2026-08-06 |
 | Owner role | Business Analyst |
 | Approval state | PA-001 product brief and CR-001 Option C amendment approved |
 
@@ -44,6 +44,6 @@ The reference website `jothishya.lk` is competitor evidence only. Its wording, c
 - Location timeout/staleness/movement/uncertainty thresholds are approved product and PA-002 architecture constraints, subject only to an explicitly approved revision.
 - A trusted Sri Lankan practitioner or printed Panchanga is not yet nominated; this blocks final V1.0 release approval, not drafting, architecture, UI, implementation, or automated tests.
 - Permanent Android identity is approved and implemented under V1-M1-02: visible name `Jyotisha`, namespace and application ID `io.github.dinujaya77.jyotisha`.
-- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. M1 development has started through explicitly assigned tasks; CP-003/RK, exact town data, dependency evidence, later implementation evidence, and release gates remain separate.
+- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. V1-M1-01 through V1-M1-05 are Done and M1 is In Review on an unmerged branch; M2 and later tasks have not started. CP-003/RK, exact town data, later dependency/implementation evidence, and release gates remain separate.
 - The Sri Lankan fixed Kala/Panchama profile remains blocked on fixed-period coverage at following sunrise, day/night behavior, the approved five-subdivision matrix, and reviewed Sinhala terminology.
 - Daytime Rahu is proposed for V1.0, but its exact selected Sri Lankan convention and golden cases remain pending; nighttime Rahu is not proposed for V1.0.

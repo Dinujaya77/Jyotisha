@@ -4,13 +4,13 @@
 |---|---|
 | Status | In Progress |
 | Version | 1.2 |
-| Last updated | 2026-08-05 |
+| Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 through V1-M1-05 Done; M1 task execution complete pending milestone review/merge decision; PA-003/CP-003 Blocked |
+| Approval state | PA-001, CR-001, PA-002, DA-001, PA-004, DA-004, and DP-001 Approved; V1-M1-01 through V1-M1-05 Done; M1 In Review pending final acceptance/merge decision; PA-003/CP-003 Blocked |
 
 ## Current phase
 
-**Version 1.0 M1 task execution is complete; V1-M1-01 through V1-M1-05 are Done.** V1-M1-05 establishes the approved one-activity bounded shell and rendering-only placeholders. The milestone remains on `milestone/M1-android-foundation` pending an explicit review and merge decision; no M2 or later task has started.
+**Version 1.0 M1 task execution is complete; V1-M1-01 through V1-M1-05 are Done and M1 is In Review.** V1-M1-05 establishes the approved one-activity bounded shell and rendering-only placeholders. The unmerged `milestone/M1-android-foundation` branch is undergoing bounded merge-readiness evidence correction; no push, M2, or later task has started.
 
 **Requirements Amendment CR-001 and Option C are Approved.** On 2026-08-02 the repository owner supplied the exact phrase `APPROVE REQUIREMENTS AMENDMENT CR-001`, approving only the staged Version 1.0/1.1 allocation, FR-012–FR-015, NFR-015, US-011–US-013, conditional deltas, and linked validation obligations/case definitions. The repository owner later explicitly authorized the staged baseline commit, created on `dev` as `be1b132` with message `chore: establish Codex team and approved requirements baseline`.
 
@@ -111,9 +111,18 @@ All successful Gradle runs emitted a non-fatal metrics warning because the Andro
 - Implementation: one `MainActivity` hosts a manual `JyotishaApp` composition root. Immutable `ShellState`, typed bounded top-level/child/origin values, a pure reducer, and primitive `rememberSaveable` state provide Dashboard/Timeline/Method plus Location/Settings/About without Navigation Compose or another dependency.
 - Policy: reselecting an active top-level at its root is a no-op; selecting any top level while a child is open returns to that top-level root without accumulating history; Timeline/Method Back returns Dashboard; Location returns its top-level or Settings origin; Settings returns its originating top level; About returns Settings; Dashboard-root system Back delegates normally because the app handler is disabled.
 - UI scope: six rendering-only, scrollable placeholders use externalized strings, headings, Material selected semantics, understandable Back labels, stable test tags, and decorative glyphs hidden from accessibility. No final Celestial Archive tokens/layout, domain calculation, location, persistence, settings storage, or methodology content was introduced.
-- Verification: pure shell tests passed 6/6 and the full JVM suite 8/8. Lint, debug APK, Android-test APK, install, merged Manifest/APK identity, cold launch, no-fatal, dependency/scope/privacy/secret/generated-output audits passed. The complete connected suite passed 6/6 on `emulator-5556` API 36.
+- Verification: pure shell tests passed 7/7 after merge-readiness coverage closure and the full JVM suite passed 9/9. Lint, debug APK, Android-test APK, install, merged Manifest/APK identity, cold launch, no-fatal, dependency/scope/privacy/secret/generated-output audits passed. The committed complete connected suite passed 6/6 on `emulator-5556` API 36.
 - QA: two Medium evidence gaps initially required nested child-origin recreation and proof of actual landscape Activity recreation. Tests were corrected without a production change; independent QA rebuilt/installed and passed the corrected shell suite 5/5, then found zero open Critical, High, Medium, or Low findings. Lead accepted V1-M1-05.
 - Boundary: activity/configuration recreation and exact nested origin restoration are proven. Full operating-system process-death, API-26 runtime, physical devices, final adaptive/accessibility/localization, and final visual evidence remain later gates and are not claimed by M1.
+
+## M1 merge-readiness corrective evidence (2026-08-06)
+
+- The initial milestone review found two Medium evidence gaps: direct deterministic JVM coverage for selecting top-level destinations while representative children were open, and stale current-state wording across authoritative documents.
+- One table-driven reducer test now covers Location from Dashboard to Timeline, Settings from Timeline to Dashboard, and About through Settings from Method back to Method. Each case proves the exact canonical root, deterministic repetition, root reselection, and Back without retained child history. The reducer suite passed 7/7 repeatedly and the forced full JVM suite passed 9/9.
+- Current-state wording now consistently records V1-M1-01 through V1-M1-05 Done, M1 In Review and unmerged, M2 and later tasks unstarted, provisional `minSdk 26`, implemented DEP-011–DEP-013, deferred DEP-014, and the bounded shell. Historical approval-time statements remain explicitly historical; no approval state changed.
+- Forced project discovery, dependency resolution, JVM tests, lint, debug APK, and Android-test APK builds passed. APK and merged-Manifest inspection retained application ID `io.github.dinujaya77.jyotisha`, launcher `MainActivity`, label `Jyotisha`, minSdk 26, targetSdk 36, and compileSdk 36. No device was attached, so fresh installation and connected tests were unavailable; the committed API-36 connected result remains 6/6.
+- Scope audit found no production Android, Compose, resource, Manifest, Gradle, dependency, SDK, identity, signing, or application-behavior change. M1 remains In Review pending repeat merge-readiness review and an explicit merge decision.
+- Independent corrective QA passed with zero open Critical, High, Medium, or Low findings and confirmed the branch is ready for a fresh merge-readiness review.
 
 Static validation parsed `.codex/config.toml` and all seven agent TOML files successfully, confirming required fields and the requested sandbox modes. All 29 required documentation files and metadata fields were also found. A supplementary `codex --version` / `codex features list` check could not run because this environment denied execution of `codex.exe`, including on an escalated retry; this is an environment limitation, not a TOML parse failure.
 
@@ -175,4 +184,4 @@ The independent QA Reviewer initially found zero Critical/High, two Medium, and 
 
 The independent read-only QA recheck initially found zero Critical/High, five Medium, and zero Low issues. Corrections removed stale PA-004 language, made non-colour theme aliases/layout/motion tokens deterministic, made Dashboard location actions source-specific, restored CR-008 active-zone coverage in M6, and normalized the IA inventory/Now–Dashboard/Day–Timeline aliases. The final recheck found **zero open Critical, High, Medium, or Low findings**. It confirmed 39 complete tasks, full FR-001–FR-012/NFR-001–NFR-015 task/test traceability, M1–M4 independence from CP-003, M5/PA-004 alignment, M6/CP-001/CR-001–010 alignment, M8/PA-003 blocking, V1.1-only Kala/Panchama, exact DA-004/DP-001 gates, no Android/Gradle/dependency diff, and no secret/private-data indicator.
 
-V1-M1-01 through V1-M1-05 are Done on `milestone/M1-android-foundation`; M1 task execution is complete. The exact next safe action is an explicit M1 milestone review and merge decision. Do not merge, push, start M2, or start any later task without a new explicit prompt.
+V1-M1-01 through V1-M1-05 are Done on `milestone/M1-android-foundation`; M1 task execution is complete and the corrective evidence gaps are closed. The exact next safe action is to repeat the read-only M1 merge-readiness review after the corrective commit. Do not merge, push, start M2, or start any later task without a new explicit prompt.

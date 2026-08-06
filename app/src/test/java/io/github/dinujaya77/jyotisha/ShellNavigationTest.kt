@@ -34,6 +34,52 @@ class ShellNavigationTest {
     }
 
     @Test
+    fun selectingTopLevelFromChildReturnsToRequestedRootWithoutHistory() {
+        val locationFromDashboard = reduceShellState(ShellState(), ShellAction.OpenLocation)
+        val settingsFromTimeline = reduceShellState(
+            ShellState(topLevel = TopLevelDestination.Timeline),
+            ShellAction.OpenSettings,
+        )
+        val aboutThroughSettingsFromMethod = reduceShellState(
+            reduceShellState(
+                ShellState(topLevel = TopLevelDestination.Method),
+                ShellAction.OpenSettings,
+            ),
+            ShellAction.OpenAbout,
+        )
+        val cases = listOf(
+            Triple(
+                locationFromDashboard,
+                TopLevelDestination.Timeline,
+                ShellState(topLevel = TopLevelDestination.Timeline),
+            ),
+            Triple(
+                settingsFromTimeline,
+                TopLevelDestination.Dashboard,
+                ShellState(),
+            ),
+            Triple(
+                aboutThroughSettingsFromMethod,
+                TopLevelDestination.Method,
+                ShellState(topLevel = TopLevelDestination.Method),
+            ),
+        )
+
+        cases.forEach { (childState, destination, expectedRoot) ->
+            val action = ShellAction.SelectTopLevel(destination)
+            val firstResult = reduceShellState(childState, action)
+
+            assertEquals(expectedRoot, firstResult)
+            assertEquals(firstResult, reduceShellState(childState, action))
+            assertEquals(firstResult, reduceShellState(firstResult, action))
+            assertEquals(
+                if (destination == TopLevelDestination.Dashboard) expectedRoot else ShellState(),
+                reduceShellState(firstResult, ShellAction.Back),
+            )
+        }
+    }
+
+    @Test
     fun eachChildOpensOnlyFromAnApprovedParentAndBackReturnsThere() {
         val dashboard = ShellState()
         val location = reduceShellState(dashboard, ShellAction.OpenLocation)

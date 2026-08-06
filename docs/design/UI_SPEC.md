@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.0 |
-| Last updated | 2026-08-02 |
+| Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; UI/UX Designer reviewed read-only |
 | Approval state | DA-004 Approved through exact phrase `APPROVE VERSION 1.0 UI` received 2026-08-02 |
 
@@ -196,4 +196,4 @@ Screenshot tests use deterministic clocks, public/synthetic coordinates, fixed z
 - [x] Independent final QA/recheck recorded in delivery status with zero open findings.
 - [x] Repository owner supplied `APPROVE VERSION 1.0 UI` on 2026-08-02.
 
-DA-004 and DP-001 are Approved, but coding has not started. Android/Compose/resource/Gradle work begins only after the Lead explicitly starts the applicable non-blocked task; implementation evidence, QA, Lead acceptance, and release gates remain.
+DA-004 and DP-001 were approved before coding began. The owner subsequently started the M1 tasks: a bounded single-activity shell now provides Dashboard, Timeline, and Method top-level destinations plus Location, Settings, and About children using rendering-only placeholders. M1 remains In Review and unmerged; final Celestial Archive tokens/layouts, adaptive/accessibility/localization/visual evidence, feature content, and every M2 or later task remain unstarted and separately gated.

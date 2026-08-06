@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-05 |
+| Last updated | 2026-08-06 |
 | Owner role | Android Architect |
 | Approval state | DEP-011–DEP-013 implemented and verified under V1-M1-03; DEP-014 remains approved in principle but not added; PA-004 approves SOLAR-001 with zero additional Android/Gradle dependencies |
 
@@ -13,7 +13,7 @@
 | DEP-001 | Android Gradle Plugin | 8.11.2 | Build plugin | Review with Gradle/JDK compatibility | Existing |
 | DEP-002 | Kotlin Android + Compose plugins | 2.0.21 | Kotlin/Compose compilation | Keep versions aligned | Existing |
 | DEP-003 | AndroidX Core KTX | 1.17.0 | Android Kotlin extensions | Review transitive baseline | Existing |
-| DEP-004 | Lifecycle Runtime KTX | 2.9.2 | Lifecycle runtime | No ViewModel dependency yet | Existing |
+| DEP-004 | Lifecycle Runtime KTX | 2.9.2 | Lifecycle runtime | Existing baseline artifact; ViewModel artifacts are separately registered as DEP-011/012 | Existing |
 | DEP-005 | Activity Compose | 1.10.1 | Compose activity host | — | Existing |
 | DEP-006 | Compose BOM | 2024.09.00 | Compose version alignment | Verify compatibility before upgrades | Existing |
 | DEP-007 | Compose UI/graphics/tooling-preview + Material 3 | BOM-managed | UI foundation | Tooling implementation is debug-only | Existing |
