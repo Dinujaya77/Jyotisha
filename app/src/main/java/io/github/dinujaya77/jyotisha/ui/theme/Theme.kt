@@ -14,10 +14,19 @@ private val LocalCelestialArchiveColors = staticCompositionLocalOf {
     LightCelestialArchiveColors
 }
 
+private val LocalCelestialArchiveType = staticCompositionLocalOf {
+    CelestialArchiveType
+}
+
 val MaterialTheme.celestialArchiveColors: CelestialArchiveColors
     @Composable
     @ReadOnlyComposable
     get() = LocalCelestialArchiveColors.current
+
+val MaterialTheme.celestialArchiveType: CelestialArchiveTypeScale
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalCelestialArchiveType.current
 
 internal val CelestialArchiveLightColorScheme = celestialArchiveLightColorScheme()
 internal val CelestialArchiveDarkColorScheme = celestialArchiveDarkColorScheme()
@@ -36,10 +45,14 @@ fun JyotishaTheme(
         LightCelestialArchiveColors
     }
 
-    CompositionLocalProvider(LocalCelestialArchiveColors provides semanticColors) {
+    CompositionLocalProvider(
+        LocalCelestialArchiveColors provides semanticColors,
+        LocalCelestialArchiveType provides CelestialArchiveType,
+    ) {
         MaterialTheme(
             colorScheme = celestialArchiveColorScheme(darkTheme),
             typography = Typography,
+            shapes = CelestialArchiveMaterialShapes,
             content = content,
         )
     }
