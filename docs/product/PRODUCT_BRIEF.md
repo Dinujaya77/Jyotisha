@@ -12,7 +12,7 @@
 
 Jyotisha is a private, family-oriented Android application initially intended for the owner's parents and relatives. It will be maintained in Git and manually installed as a signed APK. Version 1.0 has no backend, login, advertising, analytics, cloud synchronization, or background location. Its primary value is a clear, trustworthy, primarily offline answer to: “Which planetary Hora is active now, when does it end, and what comes next?”
 
-The existing single-module Compose application is the implementation starting point. It currently has no Hora, solar-event, location, persistence, or production UI behavior.
+The current single-module Compose implementation contains the accepted M1 shell plus the M2 Celestial Archive semantic theme and tokens, reusable presentation components, and deterministic synthetic previews. It still has no Hora, solar-event, location, persistence, or integrated feature behavior.
 
 ## Version 1.0 outcome
 
@@ -44,6 +44,6 @@ The reference website `jothishya.lk` is competitor evidence only. Its wording, c
 - Location timeout/staleness/movement/uncertainty thresholds are approved product and PA-002 architecture constraints, subject only to an explicitly approved revision.
 - A trusted Sri Lankan practitioner or printed Panchanga is not yet nominated; this blocks final V1.0 release approval, not drafting, architecture, UI, implementation, or automated tests.
 - Permanent Android identity is approved and implemented under V1-M1-02: visible name `Jyotisha`, namespace and application ID `io.github.dinujaya77.jyotisha`.
-- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. V1-M1-01 through V1-M1-05 are Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; M2 and later tasks have not started. CP-003/RK, exact town data, later dependency/implementation evidence, and release gates remain separate.
+- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. V1-M1-01 through V1-M1-05 are Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`. V1-M2-01 through V1-M2-04 are Done; M2 task execution is complete, while M2 remains In Review, not Lead/owner accepted, not merged into `dev`, and not pushed. M3 and later milestones remain unstarted. CP-003/RK, exact town data, remaining dependency/implementation evidence, and release gates remain separate.
 - The Sri Lankan fixed Kala/Panchama profile remains blocked on fixed-period coverage at following sunrise, day/night behavior, the approved five-subdivision matrix, and reviewed Sinhala terminology.
 - Daytime Rahu is proposed for V1.0, but its exact selected Sri Lankan convention and golden cases remain pending; nighttime Rahu is not proposed for V1.0.
