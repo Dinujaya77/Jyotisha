@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | Android Architect |
 | Approval state | PA-002 architecture, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; explicit task/data/profile/evidence/release gates remain |
 
@@ -43,7 +43,7 @@ The Gradle root `Jyotisha` has one Android application module with namespace/app
 
 V1-M1-02 replaced the template identity once with the owner-approved permanent identity. Future changes to the application ID require an explicit update-lineage decision; do not introduce suffixes or flavours opportunistically.
 
-V1-M1-01 through V1-M1-05 are Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; the milestone branch remains available and no remote push occurred. The shell uses primitive saveable state for activity/configuration recreation; full operating-system process-death restoration is not claimed. V1-M2-01 through V1-M2-04 and M2 are Done; M2 received explicit Lead/owner acceptance and was incorporated into `dev` through accepted commit `7e0db33`. The M2 milestone branch remains available and no remote push occurred. Automated Compose/theme/component evidence, source and preview compilation, semantic/accessibility assertions, and API-36 install, cold-launch and connected-test evidence are complete. Manual TalkBack, D-pad/focus-restoration, actual 200% font-scale and compact-landscape inspection, grayscale/high-contrast/OLED review, magnification, API-26 runtime, physical-family-device, screenshot, signing, update-lineage and release evidence remain mandatory under their approved task-specific gates. M3 and later milestones remain unstarted.
+M1 and M2 are Done, Lead/owner accepted, and incorporated into `dev`; neither was pushed. The shell uses primitive saveable state for activity/configuration recreation; full operating-system process-death restoration is not claimed. V1-M3-01 through V1-M3-04 are Done with the bounded shell preserved; M3 is In Review on its milestone branch, not Lead/owner accepted, incorporated into `dev`, or pushed. Production calculation/location states remain unavailable and synthetic data remains preview/test-only; no M4+ architecture behavior was added. Manual TalkBack, D-pad/focus-restoration, actual 200% font-scale and compact-landscape inspection, grayscale/high-contrast/OLED review, magnification, API-26 runtime, physical-family-device, screenshot, signing, update-lineage and release evidence remain mandatory under their approved task-specific gates. M4 and later milestones remain unstarted (or Blocked where recorded).
 
 ## System shape
 

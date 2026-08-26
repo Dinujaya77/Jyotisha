@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.1 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | Business Analyst |
 | Approval state | PA-001 product brief and CR-001 Option C amendment approved |
 
@@ -44,6 +44,6 @@ The reference website `jothishya.lk` is competitor evidence only. Its wording, c
 - Location timeout/staleness/movement/uncertainty thresholds are approved product and PA-002 architecture constraints, subject only to an explicitly approved revision.
 - A trusted Sri Lankan practitioner or printed Panchanga is not yet nominated; this blocks final V1.0 release approval, not drafting, architecture, UI, implementation, or automated tests.
 - Permanent Android identity is approved and implemented under V1-M1-02: visible name `Jyotisha`, namespace and application ID `io.github.dinujaya77.jyotisha`.
-- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. V1-M1-01 through V1-M1-05 are Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`. V1-M2-01 through V1-M2-04 and M2 are Done; M2 received explicit Lead/owner acceptance and was incorporated into `dev` through accepted commit `7e0db33`. The milestone branch remains available, no remote push occurred, and M3 and later milestones remain unstarted. CP-003/RK, exact town data, remaining dependency/implementation evidence, and task-specific M9/release gates remain separate.
+- Change Request CR-001, Option C, PA-002 architecture, DA-001 Direction A, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery were approved 2026-08-02. M1 and M2 are Done, Lead/owner accepted, and incorporated into `dev`. V1-M3-01 through V1-M3-04 are Done; M3 is In Review on its milestone branch, not Lead/owner accepted, incorporated into `dev`, or pushed. M4 and later milestones remain unstarted (or Blocked where recorded). CP-003/RK, exact town data, remaining dependency/implementation evidence, and task-specific M9/release gates remain separate.
 - The Sri Lankan fixed Kala/Panchama profile remains blocked on fixed-period coverage at following sunrise, day/night behavior, the approved five-subdivision matrix, and reviewed Sinhala terminology.
 - Daytime Rahu is proposed for V1.0, but its exact selected Sri Lankan convention and golden cases remain pending; nighttime Rahu is not proposed for V1.0.

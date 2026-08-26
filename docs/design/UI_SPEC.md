@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.0 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | Lead Coordinator; UI/UX Designer reviewed read-only |
 | Approval state | DA-004 Approved through exact phrase `APPROVE VERSION 1.0 UI` received 2026-08-02 |
 
@@ -196,4 +196,4 @@ Screenshot tests use deterministic clocks, public/synthetic coordinates, fixed z
 - [x] Independent final QA/recheck recorded in delivery status with zero open findings.
 - [x] Repository owner supplied `APPROVE VERSION 1.0 UI` on 2026-08-02.
 
-DA-004 and DP-001 were approved before coding began. The owner subsequently started and accepted the M1 tasks: a bounded single-activity shell provides Dashboard, Timeline, and Method top-level destinations plus Location, Settings, and About children using rendering-only placeholders. M1 is Done and incorporated into `dev` through `79d5116`. V1-M2-01 through V1-M2-04 and M2 are Done: the approved semantic colours and tokens, reusable domain-neutral components, and deterministic adaptive/theme/state preview fixtures received explicit Lead/owner acceptance and were incorporated into `dev` through accepted commit `7e0db33`. The milestone branch remains available and no remote push occurred; these components and fixtures do not implement feature screens or calculation behavior. M3 and later tasks remain unstarted and separately gated, while final manual accessibility, localization, visual and physical-device evidence remains mandatory under its approved task-specific M9/release gates.
+DA-004 and DP-001 were approved before coding began. M1 and M2 are Done, explicitly Lead/owner accepted, and incorporated into `dev`. V1-M3-01 through V1-M3-04 are Done: the bounded shell now presents the approved static Dashboard, Timeline, Method, first-use/Location, Settings and About UI using M2 tokens/components. Production calculation/location states remain honestly unavailable and synthetic values remain preview/test-only. M3 is In Review on its milestone branch, not Lead/owner accepted, incorporated into `dev`, or pushed; M4 and later tasks remain unstarted (or Blocked where recorded). Final manual accessibility, localization, visual and physical-device evidence remains mandatory under its approved task-specific M9/release gates.

@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.2 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | QA Reviewer |
 | Approval state | PA-001/CR-001 strategy and PA-004 SOLAR-001 test obligations are approved; no implementation task is authorized by this document |
 
@@ -89,6 +89,19 @@ V1-M1-05 establishes only rendering placeholders and bounded shell structure. Da
 
 WCAG calculations use the approved exact sRGB values. The weakest tested normal-text pair is 6.68:1 and the weakest outline/focus pair is 4.40:1, exceeding the 4.5:1 and 3.0:1 gates respectively. M2 establishes the semantic palette, exact design tokens, reusable domain-neutral components and deterministic preview matrix. Automated semantics, state, reduced-motion and adaptive-fixture evidence is complete for this milestone. Deferred evidence retains its approved task-specific release gates: V1-M9-01 closes manual OLED/grayscale/high-contrast and pressed/focus/disabled visual review, TalkBack, keyboard/D-pad/focus restoration, actual 200% font-scale, compact-landscape/adaptive inspection, screen magnification, non-colour recognition, localization/expansion, and final screenshot/manual visual evidence; V1-M9-02 supplies API-26 runtime and the complete API/state regression matrix; V1-M9-03 supplies oldest/newest physical-family-device and OEM performance/privacy evidence; V1-M9-04 supplies signing and reproducible APK install/update/rollback/update-lineage evidence; and V1-M9-05 performs final independent QA, owner family acceptance, and release validation.
 
+## Implemented M3 static-product-UI evidence
+
+| Test ID | Scope | Evidence | Result |
+|---|---|---|---|
+| T-M3-01-DASHBOARD | V1-M3-01; FR-001/003/009/011; UI-002 | JVM preview mapping and Compose tests cover the honest runtime-unavailable state and preview/test-only synthetic Hora ruler, anchors, provenance, calculation time and four actions. Portrait light/dark and corrected landscape-rail presentations were inspected. | Passed; independent QA found the corrected synthetic success complete and production runtime free of fabricated values |
+| T-M3-02-TIMELINE | V1-M3-02; FR-002/003/008/011; UI-003 | JVM fixtures require exactly 12 Day plus 12 Night rows, strict order and at most one Current row. Compose checks cover navigation, scrolling and adaptive presentation without UI interval calculation. | Passed; independent QA accepted the fixed synthetic schedule boundary |
+| T-M3-03-LOCATION | V1-M3-03; FR-004–007/009; UI-001/004/005 | JVM and Compose checks cover ten preview-only precise/approximate/saved/manual/default/denied/disabled/timeout/invalid/stale presentations with explicit selection, rationale and state-specific recovery actions; production remains unavailable/read-only. | Passed after `bca3f7f`; no provider, permission or persistence behavior added |
+| T-M3-04-CONTENT | V1-M3-04; FR-003/010/011; UI-006/007 | JVM and Compose checks cover the approved seven-section Method order, headings, offline About/privacy copy, installed versionName/versionCode and honest unavailable semantics. | Passed after the approved documentation-order correction `25756f9` and implementation review |
+| T-M3-SHELL-ADAPTIVE | M3; NFR-005/012; UI-002–007 | Shell tests and visual inspection cover preserved bounded navigation/Back behavior, route-local scroll state, compact bottom navigation, medium/expanded content-before-rail traversal and the 720dp readable-width cap. | Passed after `2bc95be` and `045ed65`; no navigation dependency or M4+ behavior added |
+| T-M3-FULL | M3; DA-004; DP-001 | Forced full JVM, lint, debug APK, Android-test APK, compile, install/cold-launch, complete diff/scope/integrity audits, emulator visual review and independent QA. | JVM 41/41; lint 0 errors; debug and Android-test APK builds passed; application/navigation/Compose connected tests 17/17 passed. The separate launcher smoke test was obstructed by an emulator SystemUI ANR focus surface after the last correction; pre-correction complete connected suite passed 16/16 and no app crash/ANR or launcher-code delta was found. Independent QA: PASS, zero open findings. |
+
+The connected launcher-smoke deviation is recorded as an emulator-environment residual, not as evidence for API-family or physical-device release acceptance. V1-M9-01 through V1-M9-05 retain the mandatory task-specific obligations listed above.
+
 ## SOLAR-001 planned verification
 
 | Test ID | Scope | Required evidence | Gate |
@@ -114,4 +127,4 @@ VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecyc
 
 ## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded V1-M1-04 deterministic foundation, V1-M1-05 shell suites, and V1-M2-01 through V1-M2-04 design-system evidence above are implemented. M2 is Done, explicitly Lead/owner accepted, and incorporated into `dev` through accepted commit `7e0db33`; no remote push occurred. M3 and later test execution begins only through an explicitly started task. Task results do not bypass independent QA, Lead acceptance, milestone integration, or later task-specific release gates.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded M1 foundation, M2 design-system evidence, and V1-M3-01 through V1-M3-04 static-product-UI evidence above are implemented. M2 is Done, explicitly Lead/owner accepted, and incorporated into `dev` through accepted commit `7e0db33`; no remote push occurred. M3 is In Review on its milestone branch and is not Lead/owner accepted, incorporated into `dev`, or pushed. M4 and later test execution begins only through an explicitly started task. Task results do not bypass independent QA, Lead acceptance, milestone integration, or later task-specific release gates.
