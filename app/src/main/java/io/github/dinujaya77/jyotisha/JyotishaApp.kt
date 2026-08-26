@@ -2,10 +2,14 @@ package io.github.dinujaya77.jyotisha
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.unit.dp
 import io.github.dinujaya77.jyotisha.ui.about.AboutScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardCallbacks
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
@@ -40,34 +48,89 @@ fun JyotishaApp() {
         dispatch(ShellAction.Back)
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            NavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
-                    val selected = state.topLevel == destination
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = { dispatch(ShellAction.SelectTopLevel(destination)) },
-                        icon = {
-                            Text(
-                                text = stringResource(destination.shortLabel),
-                                modifier = Modifier.clearAndSetSemantics { },
-                            )
-                        },
-                        label = { Text(stringResource(destination.label)) },
-                        modifier = Modifier.testTag("nav_${destination.name.lowercase()}"),
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        if (maxWidth < 600.dp) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                bottomBar = { CompactNavigationBar(state, dispatch) },
+            ) { innerPadding ->
+                ShellContent(
+                    state = state,
+                    innerPadding = innerPadding,
+                    dispatch = dispatch,
+                )
+            }
+        } else {
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .semantics { isTraversalGroup = true },
+            ) {
+                AdaptiveNavigationRail(state, dispatch)
+                Scaffold(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .semantics { traversalIndex = 0f },
+                ) { innerPadding ->
+                    ShellContent(
+                        state = state,
+                        innerPadding = innerPadding,
+                        dispatch = dispatch,
                     )
                 }
             }
-        },
-    ) { innerPadding ->
-        ShellContent(
-            state = state,
-            innerPadding = innerPadding,
-            dispatch = dispatch,
-        )
+        }
     }
+}
+
+@Composable
+private fun CompactNavigationBar(
+    state: ShellState,
+    dispatch: (ShellAction) -> Unit,
+) {
+    NavigationBar(modifier = Modifier.testTag("navigation_bottom")) {
+        TopLevelDestination.entries.forEach { destination ->
+            NavigationBarItem(
+                selected = state.topLevel == destination,
+                onClick = { dispatch(ShellAction.SelectTopLevel(destination)) },
+                icon = { DestinationIcon(destination) },
+                label = { Text(stringResource(destination.label)) },
+                modifier = Modifier.testTag("nav_${destination.name.lowercase()}"),
+            )
+        }
+    }
+}
+
+@Composable
+private fun AdaptiveNavigationRail(
+    state: ShellState,
+    dispatch: (ShellAction) -> Unit,
+) {
+    NavigationRail(
+        modifier = Modifier
+            .testTag("navigation_rail")
+            .semantics { traversalIndex = 1f },
+    ) {
+        TopLevelDestination.entries.forEach { destination ->
+            NavigationRailItem(
+                selected = state.topLevel == destination,
+                onClick = { dispatch(ShellAction.SelectTopLevel(destination)) },
+                icon = { DestinationIcon(destination) },
+                label = { Text(stringResource(destination.label)) },
+                alwaysShowLabel = true,
+                modifier = Modifier.testTag("nav_${destination.name.lowercase()}"),
+            )
+        }
+    }
+}
+
+@Composable
+private fun DestinationIcon(destination: TopLevelDestination) {
+    Text(
+        text = stringResource(destination.shortLabel),
+        modifier = Modifier.clearAndSetSemantics { },
+    )
 }
 
 @Composable

@@ -55,7 +55,7 @@ internal fun CelestialScreenLayout(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .widthIn(max = 760.dp),
+                    .widthIn(max = 720.dp),
                 verticalArrangement = Arrangement.spacedBy(CelestialArchiveSpacing.spaceLg),
             ) {
                 Text(

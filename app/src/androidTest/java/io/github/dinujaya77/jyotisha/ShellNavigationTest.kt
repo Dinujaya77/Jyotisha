@@ -2,8 +2,11 @@ package io.github.dinujaya77.jyotisha
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -19,7 +22,10 @@ class ShellNavigationTest {
 
     @Test
     fun launcherAndTopLevelNavigationUseStableDestinations() {
+        composeRule.onNodeWithTag("navigation_bottom").assertIsDisplayed()
+        composeRule.onAllNodesWithTag("navigation_rail").assertCountEquals(0)
         composeRule.onNodeWithTag("screen_dashboard").assertIsDisplayed()
+        composeRule.onNodeWithTag("nav_dashboard").assertIsSelected()
         composeRule.onNodeWithTag("nav_timeline").performClick()
         composeRule.onNodeWithTag("screen_timeline").assertIsDisplayed()
         composeRule.onNodeWithTag("nav_method").performClick()
@@ -79,6 +85,9 @@ class ShellNavigationTest {
                     Configuration.ORIENTATION_LANDSCAPE
             }
             composeRule.onNodeWithTag("screen_timeline").assertIsDisplayed()
+            composeRule.onNodeWithTag("navigation_rail").assertIsDisplayed()
+            composeRule.onAllNodesWithTag("navigation_bottom").assertCountEquals(0)
+            composeRule.onNodeWithTag("nav_timeline").assertIsSelected()
         } finally {
             val landscapeActivity = composeRule.activity
             landscapeActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -88,5 +97,7 @@ class ShellNavigationTest {
                     Configuration.ORIENTATION_PORTRAIT
             }
         }
+        composeRule.onNodeWithTag("navigation_bottom").assertIsDisplayed()
+        composeRule.onAllNodesWithTag("navigation_rail").assertCountEquals(0)
     }
 }
