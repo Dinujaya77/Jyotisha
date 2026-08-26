@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -125,8 +126,10 @@ private fun UnavailableDashboard(
         presentation = presentation.location,
         primaryActionLabel = stringResource(R.string.action_choose_location),
         onPrimaryAction = callbacks.openLocation,
+        primaryActionModifier = Modifier.testTag("action_location"),
         secondaryActionLabel = stringResource(R.string.action_settings),
         onSecondaryAction = callbacks.openSettings,
+        secondaryActionModifier = Modifier.testTag("action_settings"),
     )
     CelestialUnavailablePanel(
         presentation = presentation.seasonalHora,

@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardCallbacks
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.RuntimeDashboardPresentation
+import io.github.dinujaya77.jyotisha.ui.location.LocationScreen
+import io.github.dinujaya77.jyotisha.ui.settings.SettingsScreen
 import io.github.dinujaya77.jyotisha.ui.timeline.RuntimeTimelinePresentation
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineCallbacks
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineScreen
 
 private const val METHOD_SCREEN_TAG = "screen_method"
-private const val LOCATION_SCREEN_TAG = "screen_location"
-private const val SETTINGS_SCREEN_TAG = "screen_settings"
 private const val ABOUT_SCREEN_TAG = "screen_about"
 
 @Composable
@@ -86,24 +86,19 @@ private fun ShellContent(
     dispatch: (ShellAction) -> Unit,
 ) {
     when (state.child) {
-        ChildDestination.Location -> PlaceholderScreen(
-            title = R.string.screen_location_title,
-            tag = LOCATION_SCREEN_TAG,
+        ChildDestination.Location -> LocationScreen(
+            onBack = { dispatch(ShellAction.Back) },
             innerPadding = innerPadding,
-            actions = listOf(
-                ScreenAction(R.string.action_back, "action_back") { dispatch(ShellAction.Back) },
-            ),
         )
 
-        ChildDestination.Settings -> PlaceholderScreen(
-            title = R.string.screen_settings_title,
-            tag = SETTINGS_SCREEN_TAG,
+        ChildDestination.Settings -> SettingsScreen(
+            openLocation = { dispatch(ShellAction.OpenLocation) },
+            openMethod = {
+                dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Method))
+            },
+            openAbout = { dispatch(ShellAction.OpenAbout) },
+            onBack = { dispatch(ShellAction.Back) },
             innerPadding = innerPadding,
-            actions = listOf(
-                ScreenAction(R.string.action_location, "action_location") { dispatch(ShellAction.OpenLocation) },
-                ScreenAction(R.string.action_about, "action_about") { dispatch(ShellAction.OpenAbout) },
-                ScreenAction(R.string.action_back, "action_back") { dispatch(ShellAction.Back) },
-            ),
         )
 
         ChildDestination.About -> PlaceholderScreen(
