@@ -29,8 +29,10 @@ import androidx.compose.ui.unit.dp
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardCallbacks
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.RuntimeDashboardPresentation
+import io.github.dinujaya77.jyotisha.ui.timeline.RuntimeTimelinePresentation
+import io.github.dinujaya77.jyotisha.ui.timeline.TimelineCallbacks
+import io.github.dinujaya77.jyotisha.ui.timeline.TimelineScreen
 
-private const val TIMELINE_SCREEN_TAG = "screen_timeline"
 private const val METHOD_SCREEN_TAG = "screen_method"
 private const val LOCATION_SCREEN_TAG = "screen_location"
 private const val SETTINGS_SCREEN_TAG = "screen_settings"
@@ -131,9 +133,17 @@ private fun ShellContent(
                 innerPadding = innerPadding,
             )
 
-            TopLevelDestination.Timeline -> PlaceholderScreen(
-                title = R.string.screen_timeline_title,
-                tag = TIMELINE_SCREEN_TAG,
+            TopLevelDestination.Timeline -> TimelineScreen(
+                presentation = RuntimeTimelinePresentation(),
+                callbacks = TimelineCallbacks(
+                    openDashboard = {
+                        dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Dashboard))
+                    },
+                    openMethod = {
+                        dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Method))
+                    },
+                    goToCurrentHora = {},
+                ),
                 innerPadding = innerPadding,
             )
 

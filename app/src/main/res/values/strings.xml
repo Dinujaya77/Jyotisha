@@ -39,4 +39,11 @@
     <string name="dashboard_calculation_profile_unavailable">No calculation profile has run in this presentation milestone.</string>
     <string name="dashboard_rahu_heading">Daytime Rahu</string>
     <string name="dashboard_rahu_unapproved">Rahu Kalaya isn’t available yet. Its calculation method has not been approved.</string>
+    <string name="action_dashboard">Open Dashboard</string>
+    <string name="timeline_unavailable_heading">24-Hora timeline unavailable</string>
+    <string name="timeline_unavailable_reason">No Hora-day timeline has been calculated.</string>
+    <string name="timeline_unavailable_supporting">Exactly 24 chronological Day and Night rows appear only after a complete location, sunrise, sunset, and following sunrise are available. M3 shows no sample rows at runtime.</string>
+    <string name="timeline_action_go_to_current">Go to current Hora</string>
+    <string name="timeline_day_heading">Day — 12 Horas</string>
+    <string name="timeline_night_heading">Night — 12 Horas</string>
 </resources>
