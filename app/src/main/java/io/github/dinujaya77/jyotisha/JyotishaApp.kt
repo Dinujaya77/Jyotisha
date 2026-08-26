@@ -2,14 +2,8 @@ package io.github.dinujaya77.jyotisha
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -23,20 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
+import io.github.dinujaya77.jyotisha.ui.about.AboutScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardCallbacks
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.RuntimeDashboardPresentation
 import io.github.dinujaya77.jyotisha.ui.location.LocationScreen
+import io.github.dinujaya77.jyotisha.ui.method.MethodCallbacks
+import io.github.dinujaya77.jyotisha.ui.method.MethodScreen
 import io.github.dinujaya77.jyotisha.ui.settings.SettingsScreen
 import io.github.dinujaya77.jyotisha.ui.timeline.RuntimeTimelinePresentation
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineCallbacks
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineScreen
-
-private const val METHOD_SCREEN_TAG = "screen_method"
-private const val ABOUT_SCREEN_TAG = "screen_about"
 
 @Composable
 fun JyotishaApp() {
@@ -101,15 +92,12 @@ private fun ShellContent(
             innerPadding = innerPadding,
         )
 
-        ChildDestination.About -> PlaceholderScreen(
-            title = R.string.screen_about_title,
-            tag = ABOUT_SCREEN_TAG,
+        ChildDestination.About -> AboutScreen(
+            openMethod = {
+                dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Method))
+            },
+            onBackToSettings = { dispatch(ShellAction.Back) },
             innerPadding = innerPadding,
-            actions = listOf(
-                ScreenAction(R.string.action_back_to_settings, "action_back_to_settings") {
-                    dispatch(ShellAction.Back)
-                },
-            ),
         )
 
         null -> when (state.topLevel) {
@@ -142,54 +130,12 @@ private fun ShellContent(
                 innerPadding = innerPadding,
             )
 
-            TopLevelDestination.Method -> PlaceholderScreen(
-                title = R.string.screen_method_title,
-                tag = METHOD_SCREEN_TAG,
-                innerPadding = innerPadding,
-                actions = listOf(
-                    ScreenAction(R.string.action_settings, "action_settings") {
-                        dispatch(ShellAction.OpenSettings)
-                    },
+            TopLevelDestination.Method -> MethodScreen(
+                callbacks = MethodCallbacks(
+                    openSettings = { dispatch(ShellAction.OpenSettings) },
                 ),
+                innerPadding = innerPadding,
             )
-        }
-    }
-}
-
-private data class ScreenAction(
-    @StringRes val label: Int,
-    val testTag: String,
-    val onClick: () -> Unit,
-)
-
-@Composable
-private fun PlaceholderScreen(
-    @StringRes title: Int,
-    tag: String,
-    innerPadding: PaddingValues,
-    actions: List<ScreenAction> = emptyList(),
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp)
-            .testTag(tag),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = stringResource(title),
-            modifier = Modifier.semantics { heading() },
-        )
-        Text(stringResource(R.string.shell_placeholder_body))
-        actions.forEach { action ->
-            Button(
-                onClick = action.onClick,
-                modifier = Modifier.testTag(action.testTag),
-            ) {
-                Text(stringResource(action.label))
-            }
         }
     }
 }

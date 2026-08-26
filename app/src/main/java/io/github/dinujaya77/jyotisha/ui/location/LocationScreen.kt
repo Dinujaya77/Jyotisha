@@ -56,6 +56,7 @@ internal fun LocationScreen(
         CelestialSecondaryTextAction(
             label = stringResource(R.string.location_action_use_current),
             onClick = {},
+            modifier = Modifier.testTag("action_use_current_disabled"),
             enabled = capabilities.canAcquireDeviceLocation,
         )
 
@@ -77,6 +78,7 @@ internal fun LocationScreen(
         CelestialSecondaryTextAction(
             label = stringResource(R.string.location_action_choose_town),
             onClick = {},
+            modifier = Modifier.testTag("action_choose_town_disabled"),
             enabled = capabilities.hasApprovedTownCatalogue && capabilities.canPersistSelection,
         )
 
@@ -89,6 +91,7 @@ internal fun LocationScreen(
         CelestialSecondaryTextAction(
             label = stringResource(R.string.location_action_use_default),
             onClick = {},
+            modifier = Modifier.testTag("action_use_default_disabled"),
             enabled = capabilities.canPersistSelection,
         )
         CelestialPrimaryTextAction(

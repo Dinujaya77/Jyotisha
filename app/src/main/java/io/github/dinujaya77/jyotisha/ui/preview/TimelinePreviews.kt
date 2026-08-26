@@ -11,6 +11,7 @@ import io.github.dinujaya77.jyotisha.ui.theme.JyotishaTheme
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineCallbacks
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelinePresentation
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineScreen
+import java.util.Locale
 
 @Preview(name = "M3 Timeline synthetic 24 rows", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
@@ -36,12 +37,18 @@ internal fun syntheticTimelineFixture(): TimelinePresentation.Success {
             groupLabel = if (day) "Day" else "Night",
             ordinalLabel = "Hora $ordinal",
             primaryValue = rulers[(position - 1) % rulers.size],
-            start = LabelledValuePresentation("Start", "%02d:00".format(startHour)),
-            end = LabelledValuePresentation("End", "%02d:00".format(endHour)),
+            start = LabelledValuePresentation(
+                "Start",
+                String.format(Locale.ROOT, "%02d:00", startHour),
+            ),
+            end = LabelledValuePresentation(
+                "End",
+                String.format(Locale.ROOT, "%02d:00", endHour),
+            ),
             currentLabel = if (position == 4) "Current" else null,
             spokenSummary = "${if (day) "Day" else "Night"} Hora $ordinal, " +
                 "${rulers[(position - 1) % rulers.size]}, " +
-                "%02d:00 to %02d:00".format(startHour, endHour) +
+                String.format(Locale.ROOT, "%02d:00 to %02d:00", startHour, endHour) +
                 if (position == 4) ", Current" else "",
         )
     }

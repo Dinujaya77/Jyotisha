@@ -63,6 +63,7 @@ internal fun SettingsScreen(
         CelestialSecondaryTextAction(
             label = stringResource(R.string.settings_action_reset_location),
             onClick = {},
+            modifier = Modifier.testTag("action_reset_location_disabled"),
             enabled = false,
         )
         CelestialPrimaryTextAction(
