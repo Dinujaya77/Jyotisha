@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.3 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | Lead Coordinator |
 | Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery plan Approved; PA-003 Blocked |
 
@@ -73,4 +73,4 @@ The exact phrase was received on 2026-08-02 after reconciliation and an independ
 | DA-004 | `UI-V1.0-001`, `THEME-CELESTIAL-ARCHIVE-001`, and `A11Y-V1.0-001` v1.0 | `APPROVE VERSION 1.0 UI` | Approved — exact phrase supplied 2026-08-02 after independent QA/recheck found zero open findings |
 | DP-001 | M1–M9, 39 tasks V1-M1-01–V1-M9-05, trace/test/branch gates v1.0 | `APPROVE DELIVERY PLAN` | Approved — exact phrase supplied 2026-08-02 |
 
-DA-004 and DP-001 became valid only when the repository owner explicitly supplied both phrases. They approved the Version 1.0 UI specification and delivery plan, not automatic implementation; at the time of approval, coding had not started. The owner subsequently started and accepted V1-M1-01 through V1-M1-05; M1 is Done and incorporated into `dev` through `79d5116`. V1-M2-01 through V1-M2-04 and M2 are now Done; M2 received explicit Lead/owner acceptance and was incorporated into `dev` through accepted commit `7e0db33`. The milestone branch remains available, no remote push occurred, and M3 and later milestones remain unstarted. M5 depends on an accepted M1, M6 depends on accepted M5 and CP-001, and M8 remains Blocked by PA-003/CP-003. Fixed Kala Hora and Panchama remain Version 1.1, and deferred M9/release obligations retain their approved task-specific gates.
+DA-004 and DP-001 became valid only when the repository owner explicitly supplied both phrases. They approved the Version 1.0 UI specification and delivery plan, not automatic implementation; at the time of approval, coding had not started. M1, M2, and M3 were subsequently started, completed, explicitly Lead/owner accepted, and incorporated into `dev`. V1-M3-01 through V1-M3-04 passed Developer verification and independent QA. M4 and later milestones remain unstarted (or Blocked where recorded). M5 depends on an accepted M1, M6 depends on accepted M5 and CP-001, and M8 remains Blocked by PA-003/CP-003. Fixed Kala Hora and Panchama remain Version 1.1, and deferred M9/release obligations retain their approved task-specific gates.

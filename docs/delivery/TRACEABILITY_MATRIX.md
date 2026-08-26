@@ -4,9 +4,9 @@
 |---|---|
 | Status | Approved |
 | Version | 2.0 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-26 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; M1 Done, accepted and incorporated into `dev`; V1-M2-01 through V1-M2-04 and M2 Done, explicitly Lead/owner accepted, and incorporated into `dev` through `7e0db33`; no remote push occurred; remaining mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; M1, M2, and M3 Done, explicitly Lead/owner accepted, and incorporated into `dev`; V1-M3-01 through V1-M3-04 Done; remaining mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -19,7 +19,7 @@
 | FR-005 | CR-009/010 | VC-010–012/016/037; T-FR-005, T-NFR-COMPAT | V1-M3-03, V1-M4-01/02/05, V1-M7-02 |
 | FR-006 | CR-008–010; exact town data separately gated | VC-006/011–013/034/037; T-FR-006, T-NFR-OFFLINE | V1-M3-03, V1-M4-04/05, V1-M7-02 |
 | FR-007 | CR-009/010 | VC-012/016/017/019/037; T-FR-007, T-NFR-PRIVACY | V1-M3-03, V1-M4-01/03/05, V1-M7-02 |
-| FR-008 | CR-002/006/008/010; SOL-R-004/005 | VC-003/005/008/014/017/035/037; T-FR-008, T-NFR-CALC, T-SOL-002 | V1-M5-01, V1-M6-03, V1-M7-03 |
+| FR-008 | CR-002/006/008/010; SOL-R-004/005 | VC-003/005/008/014/017/035/037; T-FR-008, T-NFR-CALC, T-SOL-002 | V1-M3-02 (presentation only), V1-M5-01, V1-M6-03, V1-M7-03 |
 | FR-009 | CR-009/010 | VC-010/011/013/016/037; T-FR-009, T-NFR-A11Y | V1-M3-01/03, V1-M4-01/04/05, V1-M7-01/04 |
 | FR-010 | CP-001; CR-001–010; SOL-R-010/014 | VC-018/038; SOL-G; T-FR-010, T-NFR-PRIVACY, T-SOL-006/007 | V1-M3-04, V1-M5-01, V1-M6-04, V1-M7-02 |
 | FR-011 | Approved terminology; DA-004 Approved | Content/A11Y cases; T-FR-011, T-NFR-A11Y | V1-M2-01/02, V1-M3-01/04, V1-M7-04 |
@@ -85,5 +85,9 @@
 | V1-M2-02 | Done 2026-08-06 at `f6fbe1c`; FR-011, NFR-005/NFR-011, UI/THEME; exact approved typography, spacing, gutter, shape, elevation, wash, motion, icon, illustration, focus and touch-target tokens; focused 8/8; no dependency or feature change |
 | V1-M2-03 | Done 2026-08-06 at `a353c4f`; FR-001–003, FR-009–012, NFR-005; domain-neutral timing folio, anchors, provenance/status, timeline, actions and unavailable components with explicit semantics/non-colour cues; JVM 4/4 and connected component evidence passed |
 | V1-M2-04 | Done 2026-08-06 at `55c5d77`; NFR-005/NFR-011, A11Y; eight deterministic synthetic adaptive/theme/state/reduced-motion preview fixtures; JVM 7/7 and connected preview evidence passed; complete M2 focused 26/26, JVM 35/35 and connected 13/13 on API 36; independent QA zero open findings |
+| V1-M3-01 | Done 2026-08-26 at `3de1c15`, corrected through `045ed65`/`bca3f7f`; FR-001/003/009/011, UI-002; static production-unavailable Dashboard plus preview/test-only complete synthetic success, adaptive navigation and readable-width evidence; Developer and independent QA passed |
+| V1-M3-02 | Done 2026-08-26 at `4cdb1b2`, corrected through `2bc95be`/`045ed65`; FR-002/003/008/011, UI-003; production-unavailable Timeline plus preview/test-only exactly 24 ordered rows, at most one Current, isolated scroll state and adaptive evidence; Developer and independent QA passed |
+| V1-M3-03 | Done 2026-08-26 at `7686976`, corrected through `bca3f7f`; FR-004–007/009, UI-001/004/005; production-unavailable/read-only flows plus ten preview/test-only Location state presentations; no provider, permission or persistence; Developer and independent QA passed |
+| V1-M3-04 | Done 2026-08-26 at `ec1d1df`, with approved Method-order correction `25756f9` and QA correction `bca3f7f`; FR-003/010/011, UI-006/007; seven-section Method, About/privacy, installed version and honest unavailable content; Developer and independent QA passed |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 through V1-M2-04 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is Done, final independent QA passed, the owner explicitly accepted it, and its accepted history through `7e0db33` is incorporated into `dev`. The M2 milestone branch remains available and no remote push occurred. M3 and every later task remain unstarted and require separate explicit authorization; deferred M9/release evidence remains mandatory under its approved task-specific ownership.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M3-04 have been explicitly started and are Done. M1, M2, and M3 are explicitly Lead/owner accepted and incorporated into `dev`; accepted M3 history and evidence is recorded through `3d9d9d2`. M4 and every later task remain unstarted (or Blocked where recorded) and require separate explicit authorization. Deferred M9/release evidence remains mandatory under its approved task-specific ownership: V1-M9-01 accessibility/adaptive/localization/manual visual; V1-M9-02 API runtime and complete API/state regression; V1-M9-03 physical-family/OEM/performance/privacy; V1-M9-04 signing/reproducible APK/install-update-rollback/update lineage; V1-M9-05 final QA/family acceptance/release validation.

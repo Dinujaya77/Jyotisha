@@ -222,8 +222,10 @@ fun CelestialUnavailablePanel(
     modifier: Modifier = Modifier,
     primaryActionLabel: String? = null,
     onPrimaryAction: (() -> Unit)? = null,
+    primaryActionModifier: Modifier = Modifier,
     secondaryActionLabel: String? = null,
     onSecondaryAction: (() -> Unit)? = null,
+    secondaryActionModifier: Modifier = Modifier,
 ) {
     require((primaryActionLabel == null) == (onPrimaryAction == null))
     require((secondaryActionLabel == null) == (onSecondaryAction == null))
@@ -249,7 +251,7 @@ fun CelestialUnavailablePanel(
             CelestialPrimaryTextAction(
                 label = label,
                 onClick = requireNotNull(onPrimaryAction),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = primaryActionModifier.fillMaxWidth(),
             )
         }
         secondaryActionLabel?.let { label ->
@@ -257,7 +259,7 @@ fun CelestialUnavailablePanel(
             CelestialSecondaryTextAction(
                 label = label,
                 onClick = requireNotNull(onSecondaryAction),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = secondaryActionModifier.fillMaxWidth(),
             )
         }
     }
