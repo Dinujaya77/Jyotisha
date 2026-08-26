@@ -11,6 +11,15 @@ class DashboardPreviewFixtureTest {
 
         assertTrue(fixture.location.details.any { it.value.contains("Synthetic") })
         assertTrue(fixture.seasonalHora.heading.contains("synthetic", ignoreCase = true))
+        assertTrue(fixture.calculationStatus.details.any {
+            it.label == "Calculated" && it.value == "Synthetic 2026-08-02 12:34:00"
+        })
+        assertTrue(fixture.calculationStatus.details.any {
+            it.label == "Active zone" && it.value.contains("Asia/Colombo")
+        })
+        assertTrue(fixture.calculationStatus.details.any {
+            it.label == "Profile" && it.value.contains("CP-001-v1.0")
+        })
         assertEquals("Calculation method not approved", fixture.rahuStatus.message)
     }
 }

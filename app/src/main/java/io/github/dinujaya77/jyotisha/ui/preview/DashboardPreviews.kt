@@ -14,7 +14,7 @@ import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardPresentation
 import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
 import io.github.dinujaya77.jyotisha.ui.theme.JyotishaTheme
 
-@Preview(name = "M3 Dashboard synthetic success", widthDp = 360, heightDp = 800, showBackground = true)
+@Preview(name = "Dashboard synthetic success", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
 private fun DashboardSyntheticSuccessPreview() {
     JyotishaTheme {
@@ -53,7 +53,20 @@ internal fun syntheticDashboardSuccessFixture(): DashboardPresentation.Success =
         ),
         calculationStatus = ProvenanceStatusPresentation(
             heading = "Synthetic calculation status",
-            details = listOf(LabelledValuePresentation("Calculated", "Preview fixture only")),
+            details = listOf(
+                LabelledValuePresentation(
+                    "Calculated",
+                    "Synthetic 2026-08-02 12:34:00",
+                ),
+                LabelledValuePresentation(
+                    "Active zone",
+                    "Asia/Colombo — synthetic fixture",
+                ),
+                LabelledValuePresentation(
+                    "Profile",
+                    "CP-001-v1.0 — synthetic fixture",
+                ),
+            ),
         ),
         rahuStatus = StatusPresentation(
             label = "Daytime Rahu",

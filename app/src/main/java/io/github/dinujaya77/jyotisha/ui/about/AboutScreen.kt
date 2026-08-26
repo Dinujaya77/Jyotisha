@@ -5,11 +5,14 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.core.content.pm.PackageInfoCompat
 import io.github.dinujaya77.jyotisha.R
 import io.github.dinujaya77.jyotisha.ui.components.CelestialPrimaryTextAction
 import io.github.dinujaya77.jyotisha.ui.components.CelestialSecondaryTextAction
@@ -25,6 +28,11 @@ internal fun AboutScreen(
     onBackToSettings: () -> Unit,
     innerPadding: PaddingValues,
 ) {
+    val context = LocalContext.current
+    @Suppress("DEPRECATION")
+    val packageInfo = remember(context) {
+        context.packageManager.getPackageInfo(context.packageName, 0)
+    }
     CelestialScreenLayout(
         title = stringResource(R.string.screen_about_title),
         testTag = ABOUT_SCREEN_TAG,
@@ -32,7 +40,12 @@ internal fun AboutScreen(
     ) {
         AboutSection(
             heading = stringResource(R.string.about_identity_heading),
-            body = stringResource(R.string.about_identity_body, stringResource(R.string.app_name)),
+            body = stringResource(
+                R.string.about_identity_body,
+                stringResource(R.string.app_name),
+                packageInfo.versionName.orEmpty(),
+                PackageInfoCompat.getLongVersionCode(packageInfo),
+            ),
         )
         AboutSection(
             heading = stringResource(R.string.about_purpose_heading),

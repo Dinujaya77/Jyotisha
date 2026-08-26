@@ -14,6 +14,8 @@ import io.github.dinujaya77.jyotisha.R
 import io.github.dinujaya77.jyotisha.ui.components.AnchorRowPresentation
 import io.github.dinujaya77.jyotisha.ui.components.CelestialAnchorRow
 import io.github.dinujaya77.jyotisha.ui.components.CelestialProvenanceStatus
+import io.github.dinujaya77.jyotisha.ui.components.CelestialPrimaryTextAction
+import io.github.dinujaya77.jyotisha.ui.components.CelestialSecondaryTextAction
 import io.github.dinujaya77.jyotisha.ui.components.CelestialTimingFolio
 import io.github.dinujaya77.jyotisha.ui.components.CelestialUnavailablePanel
 import io.github.dinujaya77.jyotisha.ui.components.PresentationStatusKind
@@ -151,6 +153,16 @@ private fun SuccessDashboard(
     callbacks: DashboardCallbacks,
 ) {
     CelestialProvenanceStatus(presentation.location)
+    CelestialPrimaryTextAction(
+        label = stringResource(R.string.action_location),
+        onClick = callbacks.openLocation,
+        modifier = Modifier.testTag("action_location"),
+    )
+    CelestialSecondaryTextAction(
+        label = stringResource(R.string.action_settings),
+        onClick = callbacks.openSettings,
+        modifier = Modifier.testTag("action_settings"),
+    )
     CelestialTimingFolio(
         presentation = presentation.seasonalHora,
         actionLabel = stringResource(R.string.action_view_all_horas),
@@ -159,6 +171,11 @@ private fun SuccessDashboard(
     CelestialAnchorRow(presentation.solarAnchors)
     StatusSection(presentation.rahuStatus)
     CelestialProvenanceStatus(presentation.calculationStatus)
+    CelestialSecondaryTextAction(
+        label = stringResource(R.string.action_method),
+        onClick = callbacks.openMethod,
+        modifier = Modifier.testTag("action_method"),
+    )
 }
 
 @Composable

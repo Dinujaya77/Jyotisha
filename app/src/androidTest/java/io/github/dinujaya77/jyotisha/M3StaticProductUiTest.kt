@@ -57,6 +57,11 @@ class M3StaticProductUiTest {
         composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
         composeRule.onNodeWithTag("action_about").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_about").assertIsDisplayed()
+        composeRule.onNodeWithText(
+            "Jyotisha is a family-only Android application. Version 1.0, build 1. " +
+                "Signing, contact, and update identity remain release-owned and unavailable; " +
+                "credentials are never displayed.",
+        ).assertIsDisplayed()
         composeRule.onNodeWithText("Purpose and boundaries").assertIsDisplayed()
         composeRule.onNodeWithText("Release-owned information").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithTag("action_method").performScrollTo().performClick()
