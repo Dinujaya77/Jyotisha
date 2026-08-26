@@ -6,7 +6,7 @@
 | Version | 2.0 |
 | Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; Project Manager and QA Reviewer read-only reviewers |
-| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; M1 Done, accepted and incorporated into `dev`; V1-M2-01 through V1-M2-04 Done on the milestone branch; M2 In Review and unmerged; remaining mappings do not start implementation |
+| Approval state | Requirements/rules/architecture/SOLAR/UI/delivery trace Approved as recorded; DA-004 and DP-001 Approved 2026-08-02; M1 Done, accepted and incorporated into `dev`; V1-M2-01 through V1-M2-04 and M2 Done, explicitly Lead/owner accepted, and incorporated into `dev` through `7e0db33`; no remote push occurred; remaining mappings do not start implementation |
 
 ## Version 1.0 functional traceability
 
@@ -86,4 +86,4 @@
 | V1-M2-03 | Done 2026-08-06 at `a353c4f`; FR-001–003, FR-009–012, NFR-005; domain-neutral timing folio, anchors, provenance/status, timeline, actions and unavailable components with explicit semantics/non-colour cues; JVM 4/4 and connected component evidence passed |
 | V1-M2-04 | Done 2026-08-06 at `55c5d77`; NFR-005/NFR-011, A11Y; eight deterministic synthetic adaptive/theme/state/reduced-motion preview fixtures; JVM 7/7 and connected preview evidence passed; complete M2 focused 26/26, JVM 35/35 and connected 13/13 on API 36; independent QA zero open findings |
 
-Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 through V1-M2-04 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is In Review on its milestone branch after final independent QA and remains unmerged and unpushed. M3 and every later task remain unstarted and require separate explicit authorization.
+Approved planning task IDs are traceability assignments, not automatic task-start authorization. V1-M1-01 through V1-M1-05 and V1-M2-01 through V1-M2-04 have been explicitly started and are Done. M1 is Done, Lead/owner accepted, and incorporated into `dev` with corrective commits `580bab1` and `79d5116`; M2 is Done, final independent QA passed, the owner explicitly accepted it, and its accepted history through `7e0db33` is incorporated into `dev`. The M2 milestone branch remains available and no remote push occurred. M3 and every later task remain unstarted and require separate explicit authorization; deferred M9/release evidence remains mandatory under its approved task-specific ownership.

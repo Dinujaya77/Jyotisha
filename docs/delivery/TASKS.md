@@ -6,7 +6,7 @@
 | Version | 1.0 |
 | Last updated | 2026-08-06 |
 | Owner role | Lead Coordinator; Project Manager read-only reviewer |
-| Approval state | DP-001 Approved on 2026-08-02; M1 Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; V1-M2-01 through V1-M2-04 Done on the M2 milestone branch; M2 In Review and not merged or pushed; later tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
+| Approval state | DP-001 Approved on 2026-08-02; M1 Done, Lead/owner accepted, and incorporated into `dev` through `79d5116`; V1-M2-01 through V1-M2-04 and M2 Done, explicitly Lead/owner accepted, and incorporated into `dev` through `7e0db33`; the M2 branch remains available and was not pushed; later tasks retain their listed dependencies and remain Proposed or Blocked until explicitly started |
 
 Each row is one focused Codex session where practical. `Tests` always lists unit, UI/integration, and manual verification. Only the Android Developer may normally edit production Android/Gradle files; independent QA and Lead acceptance follow Developer verification.
 
@@ -96,4 +96,4 @@ Each row is one focused Codex session where practical. `Tests` always lists unit
 
 ## Start and completion rules
 
-DA-004 and DP-001 are Approved. V1-M1-01 through V1-M1-05 are Done; the reviewed M1 history, including corrective commits `580bab1` and `79d5116`, is incorporated into `dev`, and M1 is Done and Lead/owner accepted. V1-M2-01 through V1-M2-04 are Done on `milestone/M2-celestial-archive-design-system`; M2 is In Review after final independent QA and has not been merged or pushed. M3 and later milestones remain unstarted. The exact next safe action is a separate M2 milestone merge-readiness review and Lead acceptance decision. M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated.
+DA-004 and DP-001 are Approved. V1-M1-01 through V1-M1-05 are Done; the reviewed M1 history, including corrective commits `580bab1` and `79d5116`, is incorporated into `dev`, and M1 is Done and Lead/owner accepted. V1-M2-01 through V1-M2-04 and M2 are Done; final independent QA passed, the owner explicitly accepted M2, and the accepted M2 history through `7e0db33` is incorporated into `dev`. The milestone branch remains available and no remote push occurred. M3 and later milestones remain unstarted and require separate explicit authorization. M6 waits for accepted M5 and approved CP-001; M7 waits for M3–M6; M8 remains Blocked by PA-003/CP-003; M9 remains evidence/release gated under its approved task-specific ownership.
