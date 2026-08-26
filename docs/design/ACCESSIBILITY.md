@@ -28,7 +28,7 @@
 | UI-003 Timeline | Heading/context; Go to current; Day heading and rows 1–12; Night heading and rows 13–24; Method. Each row speaks group, ordinal, ruler, start, end, and Current when applicable. |
 | UI-004 Location | Heading/privacy; device-location status/actions; active selection; town-list heading/filter; selectable town rows; Colombo default. Selection exposes selectable-group and selected semantics. |
 | UI-005 Settings | Heading; active location/change/reset; device appearance statement; device reduced-motion statement; Method; About/privacy. Confirmation focus begins on its heading and returns to the invoking action. |
-| UI-006 Method | Heading; structured section headings; calculation context; assumptions/limitations; profile/engine/source details; privacy; CP-003-gated Rahu status. Disclosures announce expanded/collapsed state. |
+| UI-006 Method | Heading; Seasonal Planetary Hora method and seven-ruler sequence; solar event convention, assumptions/limitations, supported range, and following-day requirement; current calculation context; diagnostics; validation and source roles; CP-003-gated daytime Rahu status; privacy and About links. Disclosures announce expanded/collapsed state. |
 | UI-007 About/privacy | Heading; purpose/version; offline/privacy; stored-location/reset path; backup exclusion; attribution; Method link. Back restores focus to the opening action. |
 
 Location/About child routes return focus to the action that opened them where practical. Platform permission and Settings screens are opened only after explicit action. `Go to current` may scroll visually but must not unexpectedly move TalkBack focus.
