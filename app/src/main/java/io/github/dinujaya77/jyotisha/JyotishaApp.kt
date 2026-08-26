@@ -26,8 +26,10 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardCallbacks
+import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
+import io.github.dinujaya77.jyotisha.ui.dashboard.RuntimeDashboardPresentation
 
-private const val DASHBOARD_SCREEN_TAG = "screen_dashboard"
 private const val TIMELINE_SCREEN_TAG = "screen_timeline"
 private const val METHOD_SCREEN_TAG = "screen_method"
 private const val LOCATION_SCREEN_TAG = "screen_location"
@@ -114,18 +116,19 @@ private fun ShellContent(
         )
 
         null -> when (state.topLevel) {
-            TopLevelDestination.Dashboard -> PlaceholderScreen(
-                title = R.string.screen_dashboard_title,
-                tag = DASHBOARD_SCREEN_TAG,
-                innerPadding = innerPadding,
-                actions = listOf(
-                    ScreenAction(R.string.action_location, "action_location") {
-                        dispatch(ShellAction.OpenLocation)
+            TopLevelDestination.Dashboard -> DashboardScreen(
+                presentation = RuntimeDashboardPresentation(),
+                callbacks = DashboardCallbacks(
+                    openLocation = { dispatch(ShellAction.OpenLocation) },
+                    openSettings = { dispatch(ShellAction.OpenSettings) },
+                    openTimeline = {
+                        dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Timeline))
                     },
-                    ScreenAction(R.string.action_settings, "action_settings") {
-                        dispatch(ShellAction.OpenSettings)
+                    openMethod = {
+                        dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Method))
                     },
                 ),
+                innerPadding = innerPadding,
             )
 
             TopLevelDestination.Timeline -> PlaceholderScreen(

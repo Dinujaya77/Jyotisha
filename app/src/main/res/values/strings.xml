@@ -18,4 +18,25 @@
     <string name="action_about">Open About and privacy</string>
     <string name="action_back">Back</string>
     <string name="action_back_to_settings">Back to settings</string>
+    <string name="action_choose_location">Choose location</string>
+    <string name="action_view_all_horas">View all 24 Horas</string>
+    <string name="action_method">Open Method</string>
+    <string name="value_not_yet_calculated">Not yet calculated</string>
+    <string name="value_unavailable">Unavailable</string>
+    <string name="dashboard_location_unavailable_heading">Location unavailable</string>
+    <string name="dashboard_location_unavailable_reason">A location has not been selected for calculation.</string>
+    <string name="dashboard_location_unavailable_supporting">M3 does not access device location or store a town. Choose Location to review the available paths.</string>
+    <string name="dashboard_hora_unavailable_heading">Seasonal Planetary Hora not yet calculated</string>
+    <string name="dashboard_hora_unavailable_reason">No current ruler, time range, remaining duration, or next Hora is available.</string>
+    <string name="dashboard_hora_unavailable_supporting">A complete location and calculated astronomical sunrise and sunset are required.</string>
+    <string name="dashboard_solar_unavailable_heading">Calculated astronomical anchors unavailable</string>
+    <string name="dashboard_solar_unavailable_reason">Sunrise and sunset have not been calculated.</string>
+    <string name="dashboard_solar_unavailable_supporting">No placeholder times are shown. Method explains the approved calculation convention and limitations.</string>
+    <string name="dashboard_calculation_status_heading">Calculation status</string>
+    <string name="dashboard_calculation_last_label">Last calculated</string>
+    <string name="dashboard_calculation_zone_label">Active zone</string>
+    <string name="dashboard_calculation_profile_label">Calculation profile</string>
+    <string name="dashboard_calculation_profile_unavailable">No calculation profile has run in this presentation milestone.</string>
+    <string name="dashboard_rahu_heading">Daytime Rahu</string>
+    <string name="dashboard_rahu_unapproved">Rahu Kalaya isn’t available yet. Its calculation method has not been approved.</string>
 </resources>
