@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -32,6 +33,7 @@ internal fun CelestialScreenLayout(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
+    val scrollState = key(testTag) { rememberScrollState() }
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
@@ -45,7 +47,7 @@ internal fun CelestialScreenLayout(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = horizontalGutter, vertical = CelestialArchiveSpacing.spaceXl)
                 .testTag(testTag),
             contentAlignment = Alignment.TopCenter,

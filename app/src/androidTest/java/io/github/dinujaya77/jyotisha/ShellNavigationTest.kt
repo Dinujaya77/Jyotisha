@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
@@ -29,19 +30,19 @@ class ShellNavigationTest {
 
     @Test
     fun childRoutesReturnToTheirBoundedParents() {
-        composeRule.onNodeWithTag("action_location").performClick()
+        composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_back").performClick()
+        composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_dashboard").assertIsDisplayed()
 
-        composeRule.onNodeWithTag("action_settings").performClick()
+        composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_location").performClick()
-        composeRule.onNodeWithTag("action_back").performClick()
+        composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
+        composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_about").performClick()
+        composeRule.onNodeWithTag("action_about").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_about").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_back_to_settings").performClick()
+        composeRule.onNodeWithTag("action_back_to_settings").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
     }
 
@@ -55,14 +56,14 @@ class ShellNavigationTest {
     @Test
     fun recreationRetainsNestedChildAndExactOrigin() {
         composeRule.onNodeWithTag("nav_method").performClick()
-        composeRule.onNodeWithTag("action_settings").performClick()
-        composeRule.onNodeWithTag("action_location").performClick()
+        composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
+        composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
 
         composeRule.activityRule.scenario.recreate()
         composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_back").performClick()
+        composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_back").performClick()
+        composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_method").assertIsDisplayed()
     }
 
