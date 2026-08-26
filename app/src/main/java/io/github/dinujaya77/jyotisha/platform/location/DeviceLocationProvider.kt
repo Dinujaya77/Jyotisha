@@ -1,0 +1,225 @@
+package io.github.dinujaya77.jyotisha.platform.location
+
+import io.github.dinujaya77.jyotisha.domain.location.DeviceFixUsability
+import io.github.dinujaya77.jyotisha.domain.location.DeviceLocationFix
+import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermission
+import io.github.dinujaya77.jyotisha.domain.location.LocationPolicy
+import io.github.dinujaya77.jyotisha.domain.location.ReturnedFixFreshness
+
+data class DeviceLocationRequest(
+    val permission: ForegroundLocationPermission,
+)
+
+sealed interface DeviceLocationResult {
+    data class Success(val fix: DeviceLocationFix) : DeviceLocationResult
+    data class Unavailable(val reason: DeviceLocationUnavailableReason) : DeviceLocationResult
+}
+
+enum class DeviceLocationUnavailableReason {
+    PERMISSION_DENIED,
+    SERVICES_DISABLED,
+    PROVIDER_UNAVAILABLE,
+    TIMEOUT,
+    NULL_RESULT,
+    SECURITY_EXCEPTION,
+    INVALID_PROVIDER,
+    INVALID_RESULT,
+    OLD_RESULT,
+}
+
+interface DeviceLocationProvider {
+    fun requestCurrentLocation(
+        request: DeviceLocationRequest,
+        onResult: (DeviceLocationResult) -> Unit,
+    )
+
+    fun cancelActiveRequest()
+}
+
+internal interface LocationPlatformCancellation {
+    fun cancel()
+}
+
+internal data class LocationPlatformState(
+    val apiLevel: Int,
+    val locationEnabled: Boolean,
+    val enabledProviders: Set<String>,
+    val bestProvider: String?,
+)
+
+internal interface LocationPlatform {
+    fun stateFor(permission: ForegroundLocationPermission): LocationPlatformState
+    fun createCancellation(): LocationPlatformCancellation
+    fun requestCurrentLocation(
+        provider: String,
+        permission: ForegroundLocationPermission,
+        cancellation: LocationPlatformCancellation,
+        onLocation: (DeviceLocationFix?) -> Unit,
+    )
+
+    fun elapsedRealtimeMillis(): Long
+}
+
+internal interface TimeoutHandle {
+    fun cancel()
+}
+
+internal interface LocationTimeoutScheduler {
+    fun schedule(delayMillis: Long, action: () -> Unit): TimeoutHandle
+}
+
+internal class OneShotDeviceLocationProvider(
+    private val platform: LocationPlatform,
+    private val timeoutScheduler: LocationTimeoutScheduler,
+) : DeviceLocationProvider {
+    private val lock = Any()
+    private var nextToken = 0L
+    private var activeRequest: ActiveRequest? = null
+
+    override fun requestCurrentLocation(
+        request: DeviceLocationRequest,
+        onResult: (DeviceLocationResult) -> Unit,
+    ) {
+        cancelActiveRequest()
+        if (request.permission == ForegroundLocationPermission.NONE) {
+            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.PERMISSION_DENIED))
+            return
+        }
+
+        val state = try {
+            platform.stateFor(request.permission)
+        } catch (_: SecurityException) {
+            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SECURITY_EXCEPTION))
+            return
+        } catch (_: IllegalArgumentException) {
+            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_PROVIDER))
+            return
+        }
+        if (!state.locationEnabled) {
+            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SERVICES_DISABLED))
+            return
+        }
+        val provider = selectProvider(state, request.permission)
+        if (provider == null) {
+            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.PROVIDER_UNAVAILABLE))
+            return
+        }
+
+        val cancellation = platform.createCancellation()
+        val token = synchronized(lock) {
+            nextToken += 1L
+            activeRequest = ActiveRequest(
+                token = nextToken,
+                cancellation = cancellation,
+                onResult = onResult,
+            )
+            nextToken
+        }
+        val timeout = timeoutScheduler.schedule(LocationPolicy.CURRENT_LOCATION_TIMEOUT_MILLIS) {
+            complete(
+                token,
+                DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.TIMEOUT),
+            )
+        }
+        synchronized(lock) {
+            val active = activeRequest?.takeIf { it.token == token }
+            if (active == null) {
+                timeout.cancel()
+            } else {
+                active.timeout = timeout
+            }
+        }
+
+        try {
+            platform.requestCurrentLocation(provider, request.permission, cancellation) { fix ->
+                complete(token, classifyPlatformResult(fix))
+            }
+        } catch (_: SecurityException) {
+            complete(
+                token,
+                DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SECURITY_EXCEPTION),
+            )
+        } catch (_: IllegalArgumentException) {
+            complete(
+                token,
+                DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_PROVIDER),
+            )
+        }
+    }
+
+    override fun cancelActiveRequest() {
+        val request = synchronized(lock) {
+            activeRequest.also { activeRequest = null }
+        }
+        request?.timeout?.cancel()
+        request?.cancellation?.cancel()
+    }
+
+    private fun classifyPlatformResult(fix: DeviceLocationFix?): DeviceLocationResult {
+        if (fix == null) {
+            return DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.NULL_RESULT)
+        }
+        if (LocationPolicy.deviceFixUsability(fix) != DeviceFixUsability.USABLE) {
+            return DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_RESULT)
+        }
+        return when (
+            LocationPolicy.returnedFixFreshness(
+                fix.elapsedRealtimeMillis,
+                platform.elapsedRealtimeMillis(),
+            )
+        ) {
+            ReturnedFixFreshness.FRESH -> DeviceLocationResult.Success(fix)
+            ReturnedFixFreshness.OLD -> {
+                DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.OLD_RESULT)
+            }
+
+            ReturnedFixFreshness.INVALID_TIMESTAMP -> {
+                DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_RESULT)
+            }
+        }
+    }
+
+    private fun complete(token: Long, result: DeviceLocationResult) {
+        val request = synchronized(lock) {
+            activeRequest?.takeIf { it.token == token }?.also { activeRequest = null }
+        } ?: return
+        request.timeout?.cancel()
+        request.cancellation.cancel()
+        request.onResult(result)
+    }
+
+    private data class ActiveRequest(
+        val token: Long,
+        val cancellation: LocationPlatformCancellation,
+        val onResult: (DeviceLocationResult) -> Unit,
+        var timeout: TimeoutHandle? = null,
+    )
+
+    companion object {
+        private const val API_31 = 31
+        internal const val FUSED_PROVIDER = "fused"
+        internal const val GPS_PROVIDER = "gps"
+        internal const val NETWORK_PROVIDER = "network"
+        internal const val PASSIVE_PROVIDER = "passive"
+
+        internal fun selectProvider(
+            state: LocationPlatformState,
+            permission: ForegroundLocationPermission,
+        ): String? {
+            if (state.apiLevel >= API_31) {
+                if (FUSED_PROVIDER in state.enabledProviders) return FUSED_PROVIDER
+                return when (permission) {
+                    ForegroundLocationPermission.PRECISE -> GPS_PROVIDER
+                        .takeIf { it in state.enabledProviders }
+
+                    ForegroundLocationPermission.APPROXIMATE -> NETWORK_PROVIDER
+                        .takeIf { it in state.enabledProviders }
+
+                    ForegroundLocationPermission.NONE -> null
+                }
+            }
+            return state.bestProvider
+                ?.takeIf { it != PASSIVE_PROVIDER && it in state.enabledProviders }
+        }
+    }
+}
