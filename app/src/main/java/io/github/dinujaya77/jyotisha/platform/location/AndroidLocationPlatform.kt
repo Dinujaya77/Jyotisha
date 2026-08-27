@@ -1,6 +1,9 @@
 package io.github.dinujaya77.jyotisha.platform.location
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.LocationManager
 import android.os.CancellationSignal
@@ -8,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.core.location.LocationManagerCompat
+import androidx.core.content.ContextCompat
 import io.github.dinujaya77.jyotisha.domain.location.DeviceLocationFix
 import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermission
 import io.github.dinujaya77.jyotisha.domain.location.GeoCoordinates
@@ -25,6 +29,7 @@ class AndroidDeviceLocationProvider private constructor(
             val handler = Handler(Looper.getMainLooper())
             return AndroidDeviceLocationProvider(
                 platform = AndroidLocationPlatform(
+                    context = applicationContext,
                     locationManager = locationManager,
                     callbackExecutor = Executor { runnable -> handler.post(runnable) },
                 ),
@@ -35,6 +40,7 @@ class AndroidDeviceLocationProvider private constructor(
 }
 
 private class AndroidLocationPlatform(
+    private val context: Context,
     private val locationManager: LocationManager,
     private val callbackExecutor: Executor,
 ) : LocationPlatform {
@@ -67,6 +73,19 @@ private class AndroidLocationPlatform(
         onLocation: (DeviceLocationFix?) -> Unit,
     ) {
         val signal = (cancellation as AndroidLocationPlatformCancellation).signal
+        val fineGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarseGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!ForegroundPermissionGate.hasRequiredGrant(permission, fineGranted, coarseGranted)) {
+            throw SecurityException("A platform request requires the matching foreground location grant.")
+        }
+        // The immediate ContextCompat check above establishes the exact permission for this call.
+        @SuppressLint("MissingPermission")
         LocationManagerCompat.getCurrentLocation(
             locationManager,
             provider,
@@ -98,6 +117,18 @@ private class AndroidLocationPlatform(
     }
 
     override fun elapsedRealtimeMillis(): Long = SystemClock.elapsedRealtime()
+}
+
+internal object ForegroundPermissionGate {
+    fun hasRequiredGrant(
+        permission: ForegroundLocationPermission,
+        fineGranted: Boolean,
+        coarseGranted: Boolean,
+    ): Boolean = when (permission) {
+        ForegroundLocationPermission.PRECISE -> fineGranted
+        ForegroundLocationPermission.APPROXIMATE -> coarseGranted
+        ForegroundLocationPermission.NONE -> false
+    }
 }
 
 private class AndroidLocationPlatformCancellation(
