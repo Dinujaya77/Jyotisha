@@ -29,7 +29,7 @@ PA-002 approves the architecture boundaries, PA-004 approves normative `SOLAR-00
 | `SOLAR-001` | Method family and engine package Approved | PA-002 selects pure-Kotlin NOAA/Meeus. PA-004 approves `SOLAR-001-v1.0`, SOL-R-001–SOL-R-014, SOLAR-GOLDEN-001-v1.0, and SOLAR-INTERMEDIATE-001-v1.0; implementation requires a later approved milestone/task. |
 | Device location | Approved | Existing AndroidX Core `LocationManagerCompat.getCurrentLocation()` behind `DeviceLocationProvider`; no Play Services; permission-derived precision, explicit provider filtering, one-winner cancellation and API/OEM evidence required. |
 | Freshness/uncertainty | Approved | Timeout 20 s; returned monotonic age `<=2 min`; persisted wall-clock stale age `>=24 h`; movement `>=10 km`; accuracy improvement requires both `>=50 m` and `>=25%`; finite reported accuracy `0..20,000 m`; warn above 10 km. |
-| Sri Lankan towns | Source/schema approved; exact data pending | Frozen GeoNames CC BY 4.0/WGS84 source, schema, stable IDs, offline use and attribution are selected; separately review the snapshot/hash, extraction, exact rows, Colombo default and family-town coverage. Town coordinates are source/town-centre points, not physical-accuracy claims. |
+| Sri Lankan towns | Exact nine-row product data approved; V1-M4-04 In Review | Frozen GeoNames CC BY 4.0/WGS84 snapshot, schema, stable IDs, offline use, attribution, extraction, exact rows and Colombo default are recorded in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md). Private family-town coverage remains outside this subset. Town coordinates are source/town-centre points, not physical-accuracy claims. |
 | Persistence | Approved | One application-scoped Preferences DataStore 1.2.1 with mutually exclusive device/manual/default records. Device zone is derived from the current `ZoneSource`, never persisted as authoritative; manual/default derive `Asia/Colombo`. |
 | Backup/transfer | Policy approved; release evidence blocker | Store location data under credential-protected `noBackupFilesDir/location-data/`; retain explicit legacy and Android 12+ cloud/device-transfer exclusions as defence in depth; prove clean-device restore/transfer. |
 | Package/namespace | Approved and implemented under V1-M1-02 | Visible name `Jyotisha`; namespace and application ID `io.github.dinujaya77.jyotisha`. Keep both identifiers identical and preserve this update lineage. |
@@ -248,9 +248,9 @@ Approved privacy behavior on mode/permission change: switching to manual or defa
 
 ## Sri Lankan town catalogue
 
-Propose a bundled, reviewed subset of the daily GeoNames `LK.zip` country extract (CC BY 4.0, WGS84). Runtime uses no web service, geocoder, or network. Freeze the source URL, download date, SHA-256, extraction rule, reviewer, and dataset version; show attribution in Method/About.
+The exact bundled product subset is the owner-approved, reviewed GeoNames `LK.zip` snapshot recorded in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md) (CC BY 4.0, WGS84). Runtime uses no web service, geocoder, or network. The evidence freezes the source URL, download date, SHA-256, extraction rule, reviewer, and dataset version; Method/About attribution remains assigned to later approved UI work.
 
-Proposed V1 towns—one representative per province—are Colombo, Kandy, Galle, Jaffna, Trincomalee, Kurunegala, Anuradhapura, Badulla, and Ratnapura. Add the family's actual town before catalogue approval if absent. This list does not approve or guess coordinates; values remain provisional until imported and reviewed from the frozen source.
+The exact V1 product rows are Colombo, Kandy, Galle, Jaffna, Trincomalee, Kurunegala, Anuradhapura, Badulla, and Ratnapura, with Colombo as the default. Their stable IDs, English resource keys, microdegree coordinates, zones, feature codes, and source equality are frozen in that evidence; no private family town or unreviewed row is included. `SRC-023` remains validation-input-only for SOLAR-001 and is not the product-catalogue source record; the distinct product-data record is documented in the Source Register.
 
 ```text
 TownRecord(
@@ -265,7 +265,7 @@ TownRecord(
 )
 ```
 
-Validation checks unique IDs, coordinate ranges, Sri Lanka containment, exact zone, source-record equality, attribution, snapshot hash, resource existence, and independent human/map review of every selected point. Do not publish unreviewed alternate names as Sinhala UI text.
+Validation checks unique IDs, coordinate ranges, Sri Lanka containment, exact zone, source-record equality, attribution, snapshot hash, resource existence, and independent map sanity review of every selected point are recorded in the evidence. Do not publish unreviewed alternate names as Sinhala UI text.
 
 ## Persistence, backup, and reset
 

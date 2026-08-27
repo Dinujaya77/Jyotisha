@@ -58,6 +58,15 @@
     <string name="location_town_unavailable_reason">An approved town catalogue has not been provided.</string>
     <string name="location_town_unavailable_supporting">No town names or coordinates are guessed, and search does not send network traffic.</string>
     <string name="location_action_choose_town">Choose a town</string>
+    <string name="town_name_colombo">Colombo</string>
+    <string name="town_name_kandy">Kandy</string>
+    <string name="town_name_galle">Galle</string>
+    <string name="town_name_jaffna">Jaffna</string>
+    <string name="town_name_trincomalee">Trincomalee</string>
+    <string name="town_name_kurunegala">Kurunegala</string>
+    <string name="town_name_anuradhapura">Anuradhapura</string>
+    <string name="town_name_badulla">Badulla</string>
+    <string name="town_name_ratnapura">Ratnapura</string>
     <string name="location_default_heading">Colombo default</string>
     <string name="location_default_explanation">The Colombo default is a recovery path, but it is not available until location selection is enabled.</string>
     <string name="location_action_use_default">Use Colombo default</string>

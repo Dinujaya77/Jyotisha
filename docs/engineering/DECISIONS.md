@@ -73,6 +73,8 @@
 - **Rollback:** Dataset is separately versioned; corrections preserve stable IDs where the source entity is unchanged.
 - **Approval record:** Source/schema policy approved under PA-002 on 2026-08-02; exact snapshot/records remain a separately reviewed prerequisite.
 
+**2026-08-27 owner catalogue-data decision:** The preceding exact-data-pending wording is preserved as the historical PA-002 state. For the exact nine owner-approved rows, frozen source facts, and Colombo default only, it is superseded by [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md). This does not authorize M4-05, UI, repository, provider, network, or Sinhala-label work.
+
 ## ADR-005 — Location persistence, migration, reset, and backup
 
 - **State:** Approved under PA-002 on 2026-08-02; implementation and restore/transfer evidence remain gated.

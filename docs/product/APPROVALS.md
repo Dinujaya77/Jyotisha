@@ -4,9 +4,9 @@
 |---|---|
 | Status | Approved |
 | Version | 1.3 |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-08-27 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, and DP-001 delivery plan Approved; PA-003 Blocked |
+| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, DP-001 delivery plan, and the owner-authorized exact M4-04 catalogue data Approved; PA-003 Blocked |
 
 ## Confirmed stakeholder decisions
 
@@ -19,6 +19,12 @@
 | PD-005 | 2026-08-01 | `minSdk 26` is provisional; compile/target SDK remain modern and independent. | Confirmed provisional direction | Owner Phase A response |
 | PD-006 | 2026-08-01 | Missing traditional authority blocks release approval only; expected results must never be changed merely to pass. | Confirmed | Owner Phase A response |
 | PD-007 | 2026-08-01 | Investigate Sri Lankan Kala Hora, Panchama Kala and Rahu Kalaya as distinct concepts; USR-DOM-001 is user supplied but not independently verified. | Confirmed request, not an approved rule | Owner Change Request CR-001 |
+
+## Owner catalogue-data decision
+
+On 2026-08-27, the owner approved only the exact V1-M4-04 product-data subset: the nine public GeoNames LK rows for Colombo, Kandy, Galle, Jaffna, Trincomalee, Kurunegala, Anuradhapura, Badulla, and Ratnapura; stable IDs, WGS84 microdegree coordinates, fixed `Asia/Colombo`, Colombo default mapping, and the frozen GeoNames source facts recorded in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md). This decision supersedes the earlier exact-town-data pending state for those rows only.
+
+It does not authorize V1-M4-05, UI or picker assembly, repository wiring, location-provider changes, runtime networking/downloads/geocoding, Sinhala labels, another data source, any town outside the nine approved rows, or release acceptance.
 
 ## Package approval
 
