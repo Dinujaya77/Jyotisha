@@ -105,7 +105,7 @@ The Hora folio is one merged summary read as: `Seasonal Planetary Hora, [ruler],
 
 - Sections: `Use current location`; current acquisition/permission/services status; selected location; searchable/selectable approved Sri Lankan town list; `Colombo default` explanation.
 - Town selection requires an explicit tap and publishes one atomic recalculation before returning. Search/filter never sends network traffic.
-- Selected state uses text and platform selected semantics plus icon/outline. Town rows show town and province/region only; coordinates are not primary UI.
+- Selected state uses text and platform selected semantics plus icon/outline. Town rows show town and province/region only; coordinates are not primary UI. **V1-M4-04 exception (owner-authorized 2026-08-29):** for the frozen approved nine-town GeoNames catalogue only, rows may show the town name, selection state, and already-approved provenance/status information without province/region text. The authoritative catalogue schema contains no sourced province/region field; do not invent or infer one. A future separately approved catalogue/schema expansion may restore province/region presentation.
 - Recovery actions are conditional: Retry after retryable failure, request permission after rationale, system Settings only for applicable denial/disabled states, town/default always available.
 - Saved device location is not presented as a town. Stale/device accuracy is labelled plainly.
 - Empty town-filter results state `No matching towns` and preserve the query/action; an unavailable catalogue keeps current/default paths.

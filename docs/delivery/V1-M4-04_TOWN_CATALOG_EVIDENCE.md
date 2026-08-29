@@ -14,7 +14,7 @@
 | Default | Colombo, `geonames:1248991` |
 | Validation scope | Automated source-row equality, stable-ID uniqueness, global coordinate range, `LK` source-country containment, exact `Asia/Colombo`, resource-key compilation, default mapping, provenance/hash/version, and no-extra-row checks |
 | Automated reviewer | Codex developer automated review |
-| Owner catalogue-data decision | 2026-08-27; exact nine rows/default/source facts approved only; no M4-05, UI, repository, provider, network, or Sinhala-label authorization |
+| Owner catalogue-data decision | 2026-08-27; exact nine rows/default/source facts approved. 2026-08-29 UI-004 exception additionally approves town-only display plus selection/provenance/status for this frozen catalogue; no province/region data, UI schema expansion, coordinate/ID/provenance change, networking, or Sinhala-label authorization. |
 | Independent reviewer / review date | Codex (AI agent) / 2026-08-27 |
 | Independent review method | Automated hash-verified GeoNames `LK.zip` row comparison plus independent OpenStreetMap Nominatim reverse-geographic review (public API) |
 
