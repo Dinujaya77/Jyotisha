@@ -2,7 +2,10 @@ package io.github.dinujaya77.jyotisha
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -32,18 +35,43 @@ class M3StaticProductUiTest {
     }
 
     @Test
-    fun v1M303_locationAndSettingsRemainReadOnlyAndBounded() {
-        composeRule.onNodeWithTag("action_location").performClick()
+    fun v1M405_locationAndSettingsUseTheApprovedOnDeviceSelectionFlowAfterRestore() {
+        // Start from the approved reset path so this root test covers first use regardless of
+        // data retained by a preceding instrumentation test.
+        composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
+        composeRule.onNodeWithTag("action_reset_location").performScrollTo().performClick()
+        composeRule.onNodeWithTag("action_confirm_reset_location").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodesWithText("Reset location data?").fetchSemanticsNodes().isEmpty()
+        }
+
+        composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodesWithText("Choose how Jyotisha uses location").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRule.onNodeWithTag("screen_first_use").assertIsDisplayed()
+        composeRule.onNodeWithText("Calculated times change with location. Choose current location, a reviewed Sri Lankan town, or the Colombo default when those paths become available.")
+            .assertIsDisplayed()
+        composeRule.onNodeWithTag("action_first_use_choose_town").assertIsEnabled()
+        composeRule.onNodeWithTag("action_first_use_default").assertIsEnabled().performClick()
+
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodes(hasTestTag("location_selected") and isSelected())
+                .fetchSemanticsNodes()
+                .isNotEmpty()
+        }
+
         composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
-        composeRule.onNodeWithTag("action_use_current_disabled").assertIsNotEnabled()
-        composeRule.onNodeWithTag("action_choose_town_disabled").assertIsNotEnabled()
-        composeRule.onNodeWithTag("action_use_default_disabled").assertIsNotEnabled()
+        composeRule.onNodeWithTag("location_selected").assertIsSelected()
+        composeRule.onNodeWithTag("action_use_current").assertIsEnabled()
+        composeRule.onNodeWithTag("town_1248991").performScrollTo().assertIsEnabled()
+        composeRule.onNodeWithTag("action_use_default").performScrollTo().assertIsEnabled()
         composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
 
         composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
         composeRule.onNodeWithText("Celestial Archive light and dark appearance follows the device. Dynamic colour and theme packs are not used.")
             .assertIsDisplayed()
-        composeRule.onNodeWithTag("action_reset_location_disabled").assertIsNotEnabled()
+        composeRule.onNodeWithTag("action_reset_location").performScrollTo().assertIsEnabled()
     }
 
     @Test

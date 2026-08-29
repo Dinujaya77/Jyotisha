@@ -6,6 +6,8 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -37,13 +39,14 @@ class ShellNavigationTest {
     @Test
     fun childRoutesReturnToTheirBoundedParents() {
         composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
-        composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
+        assertSettledLiveLocationRoute()
         composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_dashboard").assertIsDisplayed()
 
         composeRule.onNodeWithTag("action_settings").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
         composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
+        assertSettledLiveLocationRoute()
         composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
         composeRule.onNodeWithTag("action_about").performScrollTo().performClick()
@@ -66,7 +69,7 @@ class ShellNavigationTest {
         composeRule.onNodeWithTag("action_location").performScrollTo().performClick()
 
         composeRule.activityRule.scenario.recreate()
-        composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
+        assertSettledLiveLocationRoute()
         composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
         composeRule.onNodeWithTag("screen_settings").assertIsDisplayed()
         composeRule.onNodeWithTag("action_back").performScrollTo().performClick()
@@ -99,5 +102,28 @@ class ShellNavigationTest {
         }
         composeRule.onNodeWithTag("navigation_bottom").assertIsDisplayed()
         composeRule.onAllNodesWithTag("navigation_rail").assertCountEquals(0)
+    }
+
+    /**
+     * A route is initially composed before the asynchronous local restore completes.  Verify
+     * only one of the approved settled contracts, rather than treating that transient shell as
+     * the normal-selection contract.
+     */
+    private fun assertSettledLiveLocationRoute() {
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodesWithTag("screen_first_use").fetchSemanticsNodes().isNotEmpty() ||
+                composeRule.onAllNodes(hasTestTag("location_selected") and isSelected())
+                    .fetchSemanticsNodes()
+                    .isNotEmpty()
+        }
+        if (composeRule.onAllNodesWithTag("screen_first_use").fetchSemanticsNodes().isNotEmpty()) {
+            composeRule.onNodeWithTag("screen_first_use").assertIsDisplayed()
+            composeRule.onNodeWithTag("action_first_use_choose_town").assertIsDisplayed()
+            composeRule.onNodeWithTag("action_first_use_default").assertIsDisplayed()
+        } else {
+            composeRule.onNodeWithTag("screen_location").assertIsDisplayed()
+            composeRule.onNodeWithTag("location_selected").assertIsSelected()
+            composeRule.onNodeWithTag("action_use_current").assertIsDisplayed()
+        }
     }
 }

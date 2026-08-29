@@ -61,8 +61,8 @@ data class PersistedLocationSelectionRead(
  */
 class LocationSelectionStore private constructor(
     private val dataStore: DataStore<Preferences>,
-) {
-    suspend fun read(): PersistedLocationSelectionRead {
+) : LocationSelectionPersistence {
+    override suspend fun read(): PersistedLocationSelectionRead {
         val decoded = LocationSelectionCodec.decode(dataStore.updateData { it })
         val recovered = if (decoded.requiresRewrite) {
             dataStore.edit { preferences ->
@@ -87,20 +87,42 @@ class LocationSelectionStore private constructor(
         return PersistedLocationSelectionRead(recovered.selection, recovered.recoveryWarning)
     }
 
-    suspend fun selectDevice(selection: PersistedLocationSelection.Device): Boolean {
+    override suspend fun selectDevice(selection: PersistedLocationSelection.Device): Boolean {
         if (!LocationSelectionCodec.isValid(selection)) return false
         dataStore.edit { LocationSelectionCodec.writeDevice(it, selection) }
         return true
     }
 
-    suspend fun selectManualTown(townId: String, selectedAtEpochMillis: Long): Boolean {
+    /**
+     * A repository generation check evaluated inside the same DataStore edit as the write.
+     * This keeps an in-flight device callback from committing after a later selection action.
+     */
+    override suspend fun selectDeviceIfCurrent(
+        selection: PersistedLocationSelection.Device,
+        mayWrite: () -> Boolean,
+    ): Boolean {
+        if (!LocationSelectionCodec.isValid(selection)) return false
+        var wrote = false
+        dataStore.edit { preferences ->
+            if (mayWrite()) {
+                LocationSelectionCodec.writeDevice(preferences, selection)
+                wrote = true
+            }
+        }
+        return wrote
+    }
+
+    override suspend fun selectManualTown(townId: String, selectedAtEpochMillis: Long): Boolean {
         val selection = PersistedLocationSelection.ManualTown(townId, selectedAtEpochMillis)
         if (!LocationSelectionCodec.isValid(selection)) return false
         dataStore.edit { LocationSelectionCodec.writeManualTown(it, selection) }
         return true
     }
 
-    suspend fun selectDefault(datasetVersion: String? = null): Boolean {
+    /** Retains the M4-03 default-selection call shape while the repository supplies provenance. */
+    suspend fun selectDefault(): Boolean = selectDefault(datasetVersion = null)
+
+    override suspend fun selectDefault(datasetVersion: String?): Boolean {
         val selection = PersistedLocationSelection.Default(datasetVersion)
         if (!LocationSelectionCodec.isValid(selection)) return false
         dataStore.edit { LocationSelectionCodec.writeDefault(it, selection) }
@@ -108,7 +130,7 @@ class LocationSelectionStore private constructor(
     }
 
     /** Deletes the entire record. The absence of a record resolves to the labelled default. */
-    suspend fun resetLocationData() {
+    override suspend fun resetLocationData() {
         dataStore.edit { LocationSelectionCodec.clearRecord(it) }
     }
 

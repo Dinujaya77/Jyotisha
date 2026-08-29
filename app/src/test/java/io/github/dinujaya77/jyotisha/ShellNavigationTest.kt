@@ -101,6 +101,16 @@ class ShellNavigationTest {
     }
 
     @Test
+    fun locationFirstUseLinksPreserveTheLocationRouteForBackOrCancel() {
+        val location = reduceShellState(ShellState(), ShellAction.OpenLocation)
+        val about = reduceShellState(location, ShellAction.OpenAboutFromLocation)
+
+        assertEquals(ChildDestination.About, about.child)
+        assertEquals(location, reduceShellState(about, ShellAction.Back))
+        assertEquals(ShellState(), reduceShellState(location, ShellAction.Back))
+    }
+
+    @Test
     fun backFromNonDefaultTopLevelReturnsDashboard() {
         TopLevelDestination.entries
             .filterNot { it == TopLevelDestination.Dashboard }

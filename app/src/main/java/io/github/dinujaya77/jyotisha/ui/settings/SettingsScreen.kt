@@ -2,8 +2,13 @@ package io.github.dinujaya77.jyotisha.ui.settings
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -23,9 +28,12 @@ internal fun SettingsScreen(
     openLocation: () -> Unit,
     openMethod: () -> Unit,
     openAbout: () -> Unit,
+    locationSummary: String,
+    onResetLocation: () -> Unit,
     onBack: () -> Unit,
     innerPadding: PaddingValues,
 ) {
+    var confirmReset by remember { mutableStateOf(false) }
     CelestialScreenLayout(
         title = stringResource(R.string.screen_settings_title),
         testTag = SETTINGS_SCREEN_TAG,
@@ -33,7 +41,7 @@ internal fun SettingsScreen(
     ) {
         ReadOnlySettingSection(
             heading = stringResource(R.string.settings_location_heading),
-            body = stringResource(R.string.settings_location_body),
+            body = locationSummary,
         )
         CelestialPrimaryTextAction(
             label = stringResource(R.string.settings_action_change_location),
@@ -62,10 +70,32 @@ internal fun SettingsScreen(
         )
         CelestialSecondaryTextAction(
             label = stringResource(R.string.settings_action_reset_location),
-            onClick = {},
-            modifier = Modifier.testTag("action_reset_location_disabled"),
-            enabled = false,
+            onClick = { confirmReset = true },
+            modifier = Modifier.testTag("action_reset_location"),
         )
+        if (confirmReset) {
+            AlertDialog(
+                onDismissRequest = { confirmReset = false },
+                title = { Text(stringResource(R.string.settings_reset_confirmation_title)) },
+                text = { Text(stringResource(R.string.settings_reset_confirmation_body)) },
+                confirmButton = {
+                    CelestialPrimaryTextAction(
+                        label = stringResource(R.string.settings_reset_confirmation_confirm),
+                        onClick = {
+                            confirmReset = false
+                            onResetLocation()
+                        },
+                        modifier = Modifier.testTag("action_confirm_reset_location"),
+                    )
+                },
+                dismissButton = {
+                    CelestialSecondaryTextAction(
+                        label = stringResource(R.string.settings_reset_confirmation_cancel),
+                        onClick = { confirmReset = false },
+                    )
+                },
+            )
+        }
         CelestialPrimaryTextAction(
             label = stringResource(R.string.action_about),
             onClick = openAbout,

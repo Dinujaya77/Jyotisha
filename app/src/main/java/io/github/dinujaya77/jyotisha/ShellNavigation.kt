@@ -24,6 +24,7 @@ data class ShellState(
     val topLevel: TopLevelDestination = TopLevelDestination.Dashboard,
     val child: ChildDestination? = null,
     val locationParent: LocationParent = LocationParent.TopLevel,
+    val aboutReturnsToLocation: Boolean = false,
 ) {
     val canHandleBack: Boolean
         get() = child != null || topLevel != TopLevelDestination.Dashboard
@@ -35,6 +36,7 @@ data class ShellState(
                     state.topLevel.ordinal,
                     state.child?.ordinal ?: -1,
                     state.locationParent.ordinal,
+                    state.aboutReturnsToLocation,
                 )
             },
             restore = { values ->
@@ -48,6 +50,7 @@ data class ShellState(
                     locationParent = LocationParent.entries.getOrElse(values[2] as Int) {
                         LocationParent.TopLevel
                     },
+                    aboutReturnsToLocation = values.getOrNull(3) as? Boolean ?: false,
                 )
             },
         )
@@ -59,6 +62,7 @@ sealed interface ShellAction {
     data object OpenLocation : ShellAction
     data object OpenSettings : ShellAction
     data object OpenAbout : ShellAction
+    data object OpenAboutFromLocation : ShellAction
     data object Back : ShellAction
 }
 
@@ -93,6 +97,14 @@ fun reduceShellState(state: ShellState, action: ShellAction): ShellState = when 
         else state
     }
 
+    ShellAction.OpenAboutFromLocation -> {
+        if (state.child == ChildDestination.Location) {
+            state.copy(child = ChildDestination.About, aboutReturnsToLocation = true)
+        } else {
+            state
+        }
+    }
+
     ShellAction.Back -> when (state.child) {
         ChildDestination.Location -> when (state.locationParent) {
             LocationParent.TopLevel -> state.copy(child = null)
@@ -102,7 +114,11 @@ fun reduceShellState(state: ShellState, action: ShellAction): ShellState = when 
             )
         }
 
-        ChildDestination.About -> state.copy(child = ChildDestination.Settings)
+        ChildDestination.About -> if (state.aboutReturnsToLocation) {
+            state.copy(child = ChildDestination.Location, aboutReturnsToLocation = false)
+        } else {
+            state.copy(child = ChildDestination.Settings)
+        }
         ChildDestination.Settings -> state.copy(child = null)
         null -> if (state.topLevel == TopLevelDestination.Dashboard) {
             state

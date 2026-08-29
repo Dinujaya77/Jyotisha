@@ -1,6 +1,7 @@
 package io.github.dinujaya77.jyotisha.ui.location
 
 import androidx.compose.runtime.Immutable
+import io.github.dinujaya77.jyotisha.data.location.TownRecord
 import io.github.dinujaya77.jyotisha.ui.components.ProvenanceStatusPresentation
 import io.github.dinujaya77.jyotisha.ui.components.UnavailablePanelPresentation
 
@@ -43,6 +44,10 @@ internal data class LocationPresentation(
     val townAction: LocationActionPresentation,
     val defaultExplanation: String,
     val defaultAction: LocationActionPresentation,
+    val towns: List<TownSelectionPresentation> = emptyList(),
+    val townSearchEnabled: Boolean = false,
+    val townSearchQuery: String = "",
+    val noMatchingTowns: Boolean = false,
 ) {
     init {
         require(currentActions.isNotEmpty())
@@ -55,9 +60,18 @@ internal data class LocationPresentation(
 }
 
 @Immutable
+internal data class TownSelectionPresentation(
+    val town: TownRecord,
+    val label: String,
+    val selected: Boolean,
+)
+
+@Immutable
 internal data class LocationCallbacks(
     val onAction: (LocationAction) -> Unit,
     val onBack: () -> Unit,
+    val onTownSelected: (String) -> Unit = {},
+    val onTownSearchChanged: (String) -> Unit = {},
 )
 
 internal fun locationActionTestTag(action: LocationAction, enabled: Boolean): String = when (action) {
