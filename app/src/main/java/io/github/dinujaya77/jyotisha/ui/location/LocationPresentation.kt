@@ -10,6 +10,7 @@ internal enum class LocationAction {
     RequestPermission,
     OpenSystemSettings,
     RetryCurrentLocation,
+    ImprovePrecision,
     ChooseTown,
     UseDefault,
 }
@@ -83,6 +84,7 @@ internal fun locationActionTestTag(action: LocationAction, enabled: Boolean): St
     LocationAction.RequestPermission -> "action_request_location_permission"
     LocationAction.OpenSystemSettings -> "action_open_location_settings"
     LocationAction.RetryCurrentLocation -> "action_retry_current_location"
+    LocationAction.ImprovePrecision -> "action_improve_location_precision"
     LocationAction.ChooseTown -> if (enabled) {
         "action_choose_town"
     } else {

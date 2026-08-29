@@ -36,6 +36,16 @@ interface LocationSelectionPersistence {
     suspend fun resetLocationData()
 }
 
+/** UI-controller seam for deterministic lifecycle and supersession tests. */
+interface LocationSelectionOperations {
+    suspend fun restore(currentPermission: ForegroundLocationPermission): LocationSelectionState
+    suspend fun refreshCurrentLocation(currentPermission: ForegroundLocationPermission): LocationSelectionState
+    suspend fun selectManualTown(townStableId: String): LocationSelectionState
+    suspend fun selectDefault(): LocationSelectionState
+    suspend fun resetLocationData(): LocationSelectionState
+    fun cancelCurrentLocationRequest()
+}
+
 /** Device zones are deliberately resolved at use time and are never persisted with a fix. */
 fun interface ZoneSource {
     fun currentZoneId(): String
@@ -64,6 +74,7 @@ enum class LocationFallback {
 sealed interface LocationSelectionWarning {
     data object STORAGE_RECOVERED : LocationSelectionWarning
     data object SAVED_DEVICE_STALE : LocationSelectionWarning
+    data object LOW_ACCURACY : LocationSelectionWarning
     data object DEVICE_DATA_REMOVED_FOR_PERMISSION : LocationSelectionWarning
     data object INVALID_STORED_SELECTION : LocationSelectionWarning
     data object INVALID_TOWN_SELECTION : LocationSelectionWarning
@@ -85,18 +96,18 @@ class LocationSelectionRepository(
     private val deviceLocationProvider: DeviceLocationProvider,
     private val clock: Clock = Clock.systemUTC(),
     private val zoneSource: ZoneSource = ZoneSource { ZoneId.systemDefault().id },
-) {
+) : LocationSelectionOperations {
     private val selectionGeneration = AtomicLong()
     private val requestLock = Any()
     private var activeForegroundRequest: ActiveForegroundRequest? = null
 
     /** Restores a locally saved selection, reconciling privacy on a permission downgrade. */
-    suspend fun restore(
+    override suspend fun restore(
         currentPermission: ForegroundLocationPermission,
     ): LocationSelectionState = resolve(persistence.read(), currentPermission)
 
     /** Selects a bundled public town and atomically deletes any persisted device payload. */
-    suspend fun selectManualTown(townStableId: String): LocationSelectionState {
+    override suspend fun selectManualTown(townStableId: String): LocationSelectionState {
         val town = TownCatalog.findByStableId(townStableId)
             ?: return resolve(persistence.read(), currentPermission = null).withWarning(
                 LocationSelectionWarning.INVALID_TOWN_SELECTION,
@@ -112,12 +123,12 @@ class LocationSelectionRepository(
                 manualState(town, selectedAtEpochMillis)
             }
         } finally {
-            cancelledRequest?.complete(ForegroundRequestResult.Cancelled)
+            cancelledRequest?.complete?.invoke(ForegroundRequestResult.Cancelled)
         }
     }
 
     /** Selects the labelled Colombo default and atomically removes a device payload. */
-    suspend fun selectDefault(): LocationSelectionState {
+    override suspend fun selectDefault(): LocationSelectionState {
         val cancelledRequest = detachForegroundRequest()
         return try {
             val persisted = persistence.selectDefault(TownCatalog.provenance.datasetVersion)
@@ -129,23 +140,23 @@ class LocationSelectionRepository(
                 )
             }
         } finally {
-            cancelledRequest?.complete(ForegroundRequestResult.Cancelled)
+            cancelledRequest?.complete?.invoke(ForegroundRequestResult.Cancelled)
         }
     }
 
     /** Deletes the complete record. Absence resolves locally to the labelled default. */
-    suspend fun resetLocationData(): LocationSelectionState {
+    override suspend fun resetLocationData(): LocationSelectionState {
         val cancelledRequest = detachForegroundRequest()
         return try {
             persistence.resetLocationData()
             defaultState(isFirstUse = true)
         } finally {
-            cancelledRequest?.complete(ForegroundRequestResult.Cancelled)
+            cancelledRequest?.complete?.invoke(ForegroundRequestResult.Cancelled)
         }
     }
 
     /** Cancels a foreground request without creating a retrieval-failure warning. */
-    fun cancelCurrentLocationRequest() {
+    override fun cancelCurrentLocationRequest() {
         invalidateForegroundRequest()
     }
 
@@ -153,27 +164,34 @@ class LocationSelectionRepository(
      * Performs one foreground request. Failure preserves the restored manual/default/saved state;
      * it never creates a history entry or a replacement device record.
      */
-    suspend fun refreshCurrentLocation(
+    override suspend fun refreshCurrentLocation(
         currentPermission: ForegroundLocationPermission,
     ): LocationSelectionState {
         val requestGeneration = startForegroundRequest()
-        val prior = restore(currentPermission)
-        return when (val result = awaitCurrentLocation(currentPermission, requestGeneration)) {
-            ForegroundRequestResult.Cancelled -> restore(currentPermission)
+        try {
+            val prior = restore(currentPermission)
+            // Restore may have overlapped an explicit cancellation or another selection.  Do not
+            // start a provider request after that newer action has won.
+            if (!isForegroundRequestCurrent(requestGeneration)) return restore(currentPermission)
+            return when (val result = awaitCurrentLocation(currentPermission, requestGeneration)) {
+                ForegroundRequestResult.Cancelled -> restore(currentPermission)
 
-            is ForegroundRequestResult.Result -> when (val value = result.value) {
-                is DeviceLocationResult.Unavailable -> prior.withWarning(
-                    LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(value.reason),
-                )
+                is ForegroundRequestResult.Result -> when (val value = result.value) {
+                    is DeviceLocationResult.Unavailable -> prior.withWarning(
+                        LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(value.reason),
+                    )
 
-                is DeviceLocationResult.Success -> {
-                    if (selectionGeneration.get() != requestGeneration) {
-                        restore(currentPermission)
-                    } else {
-                    adoptCurrentFix(value.fix, prior, currentPermission, requestGeneration)
+                    is DeviceLocationResult.Success -> {
+                        if (selectionGeneration.get() != requestGeneration) {
+                            restore(currentPermission)
+                        } else {
+                            adoptCurrentFix(value.fix, prior, currentPermission, requestGeneration)
+                        }
                     }
                 }
             }
+        } finally {
+            finishForegroundRequest(requestGeneration)
         }
     }
 
@@ -184,6 +202,11 @@ class LocationSelectionRepository(
         requestGeneration: Long,
     ): LocationSelectionState {
         if (LocationPolicy.deviceFixUsability(candidate) != DeviceFixUsability.USABLE) {
+            return prior.withWarning(LocationSelectionWarning.INVALID_CURRENT_LOCATION)
+        }
+        // A wall-clock timestamp beyond the current clock is not a current location candidate.
+        // It must neither become the active selection nor be persisted for a later restore.
+        if (candidate.acquisitionEpochMillis > clock.millis()) {
             return prior.withWarning(LocationSelectionWarning.INVALID_CURRENT_LOCATION)
         }
         val deviceZone = validDeviceZoneId()
@@ -213,7 +236,7 @@ class LocationSelectionRepository(
             source = LocationSource.CURRENT_DEVICE,
         )
         if (!persistence.selectDeviceIfCurrent(selection) {
-                selectionGeneration.get() == requestGeneration
+                isForegroundRequestCurrent(requestGeneration)
             }
         ) {
             return if (selectionGeneration.get() == requestGeneration) {
@@ -268,6 +291,10 @@ class LocationSelectionRepository(
                                     ) == SavedFixAge.STALE
                                 ) {
                                     LocationSelectionWarning.SAVED_DEVICE_STALE
+                                } else if (fix.horizontalAccuracyMeters >
+                                    LocationPolicy.LOW_ACCURACY_WARNING_METERS
+                                ) {
+                                    LocationSelectionWarning.LOW_ACCURACY
                                 } else {
                                     null
                                 },
@@ -321,6 +348,11 @@ class LocationSelectionRepository(
         selectedMode = SelectedLocationMode.CURRENT_DEVICE,
         fallback = LocationFallback.CURRENT_DEVICE,
         isFirstUse = false,
+        warning = if (fix.horizontalAccuracyMeters > LocationPolicy.LOW_ACCURACY_WARNING_METERS) {
+            LocationSelectionWarning.LOW_ACCURACY
+        } else {
+            null
+        },
     )
 
     private fun savedDeviceState(
@@ -385,33 +417,53 @@ class LocationSelectionRepository(
         permission: ForegroundLocationPermission,
         requestGeneration: Long,
     ): ForegroundRequestResult = suspendCoroutine { continuation ->
-        val active = ActiveForegroundRequest(requestGeneration) { result -> continuation.resume(result) }
-        synchronized(requestLock) {
-            activeForegroundRequest = active
+        val shouldStart = synchronized(requestLock) {
+            val active = activeForegroundRequest
+            if (active?.generation != requestGeneration ||
+                selectionGeneration.get() != requestGeneration
+            ) {
+                false
+            } else {
+                active.complete = { result -> continuation.resume(result) }
+                true
+            }
         }
-        deviceLocationProvider.requestCurrentLocation(DeviceLocationRequest(permission)) { result ->
-            completeForegroundRequest(requestGeneration, ForegroundRequestResult.Result(result))
+        if (!shouldStart) {
+            continuation.resume(ForegroundRequestResult.Cancelled)
+        } else {
+            deviceLocationProvider.requestCurrentLocation(DeviceLocationRequest(permission)) { result ->
+                completeForegroundRequest(requestGeneration, ForegroundRequestResult.Result(result))
+            }
         }
     }
 
     private fun startForegroundRequest(): Long {
-        invalidateForegroundRequest()
-        return selectionGeneration.get()
+        detachForegroundRequest()?.complete?.invoke(ForegroundRequestResult.Cancelled)
+        val requestGeneration = selectionGeneration.get()
+        synchronized(requestLock) {
+            activeForegroundRequest = ActiveForegroundRequest(requestGeneration)
+        }
+        return requestGeneration
     }
 
     private fun invalidateForegroundRequest() {
-        detachForegroundRequest()?.complete(ForegroundRequestResult.Cancelled)
+        detachForegroundRequest()?.complete?.invoke(ForegroundRequestResult.Cancelled)
     }
 
     private fun detachForegroundRequest(): ActiveForegroundRequest? {
         selectionGeneration.incrementAndGet()
-        val active = synchronized(requestLock) {
-            activeForegroundRequest.also { activeForegroundRequest = null }
+        var detached: ActiveForegroundRequest? = null
+        val completion = synchronized(requestLock) {
+            detached = activeForegroundRequest
+            activeForegroundRequest = null
+            detached?.takeIf { !it.completionDelivered }?.also {
+                it.completionDelivered = true
+            }
         }
-        if (active != null) {
+        if (detached?.complete != null) {
             deviceLocationProvider.cancelActiveRequest()
         }
-        return active
+        return completion
     }
 
     private fun completeForegroundRequest(
@@ -419,12 +471,27 @@ class LocationSelectionRepository(
         result: ForegroundRequestResult,
     ) {
         val active = synchronized(requestLock) {
-            activeForegroundRequest?.takeIf { it.generation == generation }?.also {
+            activeForegroundRequest?.takeIf {
+                it.generation == generation && !it.completionDelivered
+            }?.also {
+                it.completionDelivered = true
+            }
+        }
+        active?.complete?.invoke(result)
+    }
+
+    private fun finishForegroundRequest(generation: Long) {
+        synchronized(requestLock) {
+            if (activeForegroundRequest?.generation == generation) {
                 activeForegroundRequest = null
             }
         }
-        active?.complete(result)
     }
+
+    private fun isForegroundRequestCurrent(requestGeneration: Long): Boolean =
+        selectionGeneration.get() == requestGeneration && synchronized(requestLock) {
+            activeForegroundRequest?.generation == requestGeneration
+        }
 
     private fun validDeviceZoneId(): String? = try {
         zoneSource.currentZoneId()
@@ -453,7 +520,8 @@ class LocationSelectionRepository(
 
     private data class ActiveForegroundRequest(
         val generation: Long,
-        val complete: (ForegroundRequestResult) -> Unit,
+        var complete: ((ForegroundRequestResult) -> Unit)? = null,
+        var completionDelivered: Boolean = false,
     )
 
     private sealed interface ForegroundRequestResult {

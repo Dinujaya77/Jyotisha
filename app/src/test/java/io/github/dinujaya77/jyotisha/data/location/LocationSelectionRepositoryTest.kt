@@ -155,6 +155,21 @@ class LocationSelectionRepositoryTest {
     }
 
     @Test
+    fun futureCurrentLocationCandidateIsRejectedBeforeItCanBePersisted() = runSuspend {
+        val persistence = FakePersistence(PersistedLocationSelection.Default())
+        val state = repository(
+            persistence = persistence,
+            providerResult = DeviceLocationResult.Success(
+                fix(latitude = 6.94, longitude = 79.85, acquiredAtEpochMillis = NOW + 1L),
+            ),
+        ).refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
+
+        assertEquals(LocationFallback.DEFAULT, state.fallback)
+        assertEquals(LocationSelectionWarning.INVALID_CURRENT_LOCATION, state.warning)
+        assertEquals(PersistedLocationSelection.Default(), persistence.selection)
+    }
+
+    @Test
     fun nonMaterialRefreshRetainsSavedCoordinatesAndAcquisitionTime() = runSuspend {
         val saved = deviceSelection(latitude = 6.94, longitude = 79.85, accuracy = 100.0)
         val candidate = fix(latitude = 6.9401, longitude = 79.8501, accuracy = 75.0)
@@ -207,6 +222,34 @@ class LocationSelectionRepositoryTest {
         provider.deliver(DeviceLocationResult.Success(fix(latitude = 6.94, longitude = 79.85)))
         assertTrue("cancelled refresh did not complete", completed.await(5, TimeUnit.SECONDS))
         assertEquals(LocationFallback.MANUAL, refreshResult?.getOrThrow()?.fallback)
+        assertTrue(persistence.selection is PersistedLocationSelection.ManualTown)
+    }
+
+    @Test
+    fun cancellationDuringRestoreCannotStartAProviderRequestAfterRestoreCompletes() {
+        val persistence = DeferredReadPersistence(PersistedLocationSelection.Default())
+        val provider = DeferredProvider()
+        val repository = LocationSelectionRepository(
+            persistence = persistence,
+            deviceLocationProvider = provider,
+            clock = Clock.fixed(Instant.ofEpochMilli(NOW), ZoneOffset.UTC),
+            zoneSource = ZoneSource { "Asia/Colombo" },
+        )
+        val completed = CountDownLatch(1)
+        val refresh: suspend () -> LocationSelectionState = {
+            repository.refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
+        }
+        refresh.startCoroutine(object : Continuation<LocationSelectionState> {
+            override val context = EmptyCoroutineContext
+            override fun resumeWith(result: Result<LocationSelectionState>) = completed.countDown()
+        })
+        assertTrue("restore did not begin", persistence.readStarted.await(5, TimeUnit.SECONDS))
+
+        runSuspend { repository.selectManualTown("geonames:1241622") }
+        persistence.releaseRead()
+
+        assertTrue("cancelled refresh did not complete", completed.await(5, TimeUnit.SECONDS))
+        assertEquals(0, provider.requestCount)
         assertTrue(persistence.selection is PersistedLocationSelection.ManualTown)
     }
 
@@ -316,11 +359,12 @@ class LocationSelectionRepositoryTest {
         latitude: Double,
         longitude: Double,
         accuracy: Double = 15.0,
+        acquiredAtEpochMillis: Long = NOW,
     ) = DeviceLocationFix(
         coordinates = GeoCoordinates(latitude, longitude),
         horizontalAccuracyMeters = accuracy,
         permissionPrecision = PermissionPrecision.PRECISE,
-        acquisitionEpochMillis = NOW,
+        acquisitionEpochMillis = acquiredAtEpochMillis,
         elapsedRealtimeMillis = 1_000L,
     )
 
@@ -378,12 +422,14 @@ class LocationSelectionRepositoryTest {
     private class DeferredProvider : DeviceLocationProvider {
         val requested = CountDownLatch(1)
         var cancelCount = 0
+        var requestCount = 0
         private var callback: ((DeviceLocationResult) -> Unit)? = null
 
         override fun requestCurrentLocation(
             request: DeviceLocationRequest,
             onResult: (DeviceLocationResult) -> Unit,
         ) {
+            requestCount += 1
             callback = onResult
             requested.countDown()
         }
@@ -394,6 +440,28 @@ class LocationSelectionRepositoryTest {
 
         fun deliver(result: DeviceLocationResult) {
             callback?.invoke(result)
+        }
+    }
+
+    private class DeferredReadPersistence(
+        selection: PersistedLocationSelection,
+    ) : FakePersistence(selection) {
+        val readStarted = CountDownLatch(1)
+        private var pendingRead: (() -> Unit)? = null
+        private var deferNextRead = true
+
+        override suspend fun read(): PersistedLocationSelectionRead {
+            if (!deferNextRead) return PersistedLocationSelectionRead(selection)
+            deferNextRead = false
+            return suspendCoroutine { continuation ->
+                pendingRead = { continuation.resume(PersistedLocationSelectionRead(selection)) }
+                readStarted.countDown()
+            }
+        }
+
+        fun releaseRead() {
+            requireNotNull(pendingRead).invoke()
+            pendingRead = null
         }
     }
 

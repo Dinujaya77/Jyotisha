@@ -1,6 +1,8 @@
 package io.github.dinujaya77.jyotisha.ui.location
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -12,6 +14,8 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import io.github.dinujaya77.jyotisha.data.location.LocationFallback
@@ -25,6 +29,8 @@ import io.github.dinujaya77.jyotisha.ui.components.CelestialSecondaryTextAction
 import io.github.dinujaya77.jyotisha.ui.components.CelestialUnavailablePanel
 import io.github.dinujaya77.jyotisha.ui.components.LabelledValuePresentation
 import io.github.dinujaya77.jyotisha.ui.components.ProvenanceStatusPresentation
+import io.github.dinujaya77.jyotisha.ui.components.PresentationStatusKind
+import io.github.dinujaya77.jyotisha.ui.components.StatusPresentation
 import io.github.dinujaya77.jyotisha.ui.components.UnavailablePanelPresentation
 import io.github.dinujaya77.jyotisha.ui.screens.CelestialScreenLayout
 import io.github.dinujaya77.jyotisha.ui.theme.celestialArchiveColors
@@ -119,6 +125,11 @@ internal fun LocationScreen(
                 .semantics { selected = presentation.selected },
         )
 
+        Column(
+            Modifier
+                .selectableGroup()
+                .testTag("location_town_group"),
+        ) {
         LocationSectionHeading(stringResource(R.string.location_town_heading))
         if (presentation.townSearchEnabled) {
             OutlinedTextField(
@@ -141,13 +152,21 @@ internal fun LocationScreen(
         } else {
             presentation.towns.forEach { town ->
                 CelestialSecondaryTextAction(
-                    label = town.label,
+                    label = if (town.selected) {
+                        stringResource(R.string.location_town_selected, town.label)
+                    } else {
+                        town.label
+                    },
                     onClick = { callbacks.onTownSelected(town.town.stableId) },
                     modifier = Modifier
                         .testTag("town_${town.town.geonamesId}")
-                        .semantics { selected = town.selected },
+                        .semantics {
+                            selected = town.selected
+                            role = Role.RadioButton
+                        },
                 )
             }
+        }
         }
 
         LocationSectionHeading(stringResource(R.string.location_default_heading))
@@ -170,6 +189,7 @@ internal fun RuntimeLocationScreen(
     state: LocationRuntimeState,
     onUseCurrent: () -> Unit,
     onRequestPermission: () -> Unit,
+    onRequestPrecisePermission: () -> Unit = {},
     onTownSelected: (String) -> Unit,
     onUseDefault: () -> Unit,
     onOpenMethod: () -> Unit,
@@ -188,9 +208,15 @@ internal fun RuntimeLocationScreen(
     }
     val selection = state.selection
     val unavailableReason = (selection?.warning as? LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE)
-        ?.reason
+        ?.reason ?: if (state.acquisition == LocationAcquisition.PERMISSION_UNAVAILABLE) {
+        DeviceLocationUnavailableReason.PERMISSION_DENIED
+    } else {
+        null
+    }
     val action = when {
         state.acquisition == LocationAcquisition.REQUEST_PERMISSION -> LocationAction.RequestPermission
+        state.acquisition == LocationAcquisition.PERMISSION_UNAVAILABLE -> LocationAction.OpenSystemSettings
+        state.acquisition == LocationAcquisition.ERROR -> LocationAction.RetryCurrentLocation
         unavailableReason in setOf(
             DeviceLocationUnavailableReason.SERVICES_DISABLED,
             DeviceLocationUnavailableReason.PERMISSION_DENIED,
@@ -199,10 +225,11 @@ internal fun RuntimeLocationScreen(
         unavailableReason != null -> LocationAction.RetryCurrentLocation
         else -> LocationAction.UseCurrentLocation
     }
-    if (selection?.isFirstUse == true && !showTownList) {
+    if (selection?.isFirstUse == true && selection.warning == null && !showTownList) {
         FirstUseRuntimeContent(
             action = action,
             acquiring = state.acquisition == LocationAcquisition.ACQUIRING,
+            permissionUnavailable = state.acquisition == LocationAcquisition.PERMISSION_UNAVAILABLE,
             onUseCurrent = onUseCurrent,
             onRequestPermission = onRequestPermission,
             onChooseTown = { showTownList = true },
@@ -231,6 +258,38 @@ internal fun RuntimeLocationScreen(
         null -> stringResource(R.string.location_selected_none)
     }
     val currentStatus = when {
+        state.acquisition == LocationAcquisition.PERMISSION_UNAVAILABLE -> CurrentLocationPresentation.Unavailable(
+            UnavailablePanelPresentation(
+                heading = stringResource(R.string.location_permission_unavailable_heading),
+                reason = stringResource(R.string.location_permission_unavailable_reason),
+                supportingText = stringResource(R.string.location_permission_unavailable_supporting),
+            ),
+        )
+        state.acquisition == LocationAcquisition.ERROR -> CurrentLocationPresentation.Unavailable(
+            UnavailablePanelPresentation(
+                heading = stringResource(R.string.location_runtime_error_heading),
+                reason = stringResource(R.string.location_runtime_error_reason),
+                supportingText = stringResource(R.string.location_runtime_error_supporting),
+                kind = PresentationStatusKind.Error,
+            ),
+        )
+        state.acquisition == LocationAcquisition.RESTORING -> CurrentLocationPresentation.Available(
+            ProvenanceStatusPresentation(
+                heading = stringResource(R.string.location_restoring_heading),
+                details = listOf(
+                    LabelledValuePresentation(
+                        label = stringResource(R.string.location_selected_status_label),
+                        value = stringResource(R.string.location_restoring_reason),
+                    ),
+                ),
+                status = StatusPresentation(
+                    label = stringResource(R.string.location_restoring_heading),
+                    message = stringResource(R.string.location_restoring_reason),
+                    kind = PresentationStatusKind.Information,
+                    loading = true,
+                ),
+            ),
+        )
         state.acquisition == LocationAcquisition.ACQUIRING -> CurrentLocationPresentation.Unavailable(
             UnavailablePanelPresentation(
                 heading = stringResource(R.string.location_acquiring_heading),
@@ -267,6 +326,7 @@ internal fun RuntimeLocationScreen(
     val warningText = selection?.warning?.let { warning ->
         when (warning) {
             LocationSelectionWarning.SAVED_DEVICE_STALE -> stringResource(R.string.location_warning_stale)
+            LocationSelectionWarning.LOW_ACCURACY -> stringResource(R.string.location_warning_low_accuracy)
             LocationSelectionWarning.DEVICE_DATA_REMOVED_FOR_PERMISSION ->
                 stringResource(R.string.location_warning_permission_changed)
             is LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE ->
@@ -289,7 +349,20 @@ internal fun RuntimeLocationScreen(
                     label = stringResource(currentLocationActionLabel(action)),
                     enabled = state.acquisition != LocationAcquisition.ACQUIRING,
                 ),
-            ),
+            ) + if (selection?.selectedLocation?.provenance?.permissionPrecision ==
+                io.github.dinujaya77.jyotisha.domain.location.PermissionPrecision.APPROXIMATE &&
+                state.acquisition == LocationAcquisition.IDLE
+            ) {
+                listOf(
+                    LocationActionPresentation(
+                        action = LocationAction.ImprovePrecision,
+                        label = stringResource(R.string.location_action_improve_precision),
+                        enabled = true,
+                    ),
+                )
+            } else {
+                emptyList()
+            },
             selectedLocation = ProvenanceStatusPresentation(
                 heading = stringResource(R.string.location_selected_heading),
                 details = listOf(
@@ -339,6 +412,7 @@ internal fun RuntimeLocationScreen(
                     LocationAction.RetryCurrentLocation,
                     -> onUseCurrent()
                     LocationAction.RequestPermission -> onRequestPermission()
+                    LocationAction.ImprovePrecision -> onRequestPrecisePermission()
                     LocationAction.OpenSystemSettings -> unavailableReason?.let(onOpenSystemSettings)
                     LocationAction.UseDefault -> onUseDefault()
                     else -> Unit
@@ -356,6 +430,7 @@ internal fun RuntimeLocationScreen(
 private fun FirstUseRuntimeContent(
     action: LocationAction,
     acquiring: Boolean,
+    permissionUnavailable: Boolean,
     onUseCurrent: () -> Unit,
     onRequestPermission: () -> Unit,
     onChooseTown: () -> Unit,
@@ -381,6 +456,13 @@ private fun FirstUseRuntimeContent(
             style = MaterialTheme.celestialArchiveType.body,
             color = MaterialTheme.celestialArchiveColors.contentSecondary,
         )
+        if (permissionUnavailable) {
+            Text(
+                text = stringResource(R.string.location_permission_unavailable_reason),
+                style = MaterialTheme.celestialArchiveType.body,
+                color = MaterialTheme.celestialArchiveColors.contentSecondary,
+            )
+        }
         CelestialPrimaryTextAction(
             label = stringResource(currentLocationActionLabel(action)),
             onClick = when (action) {
@@ -424,6 +506,7 @@ private fun currentLocationActionLabel(action: LocationAction): Int = when (acti
     LocationAction.RequestPermission -> R.string.location_action_request_permission
     LocationAction.RetryCurrentLocation -> R.string.location_action_retry_current
     LocationAction.OpenSystemSettings -> R.string.location_action_open_settings
+    LocationAction.ImprovePrecision -> R.string.location_action_improve_precision
     else -> R.string.location_action_use_current
 }
 

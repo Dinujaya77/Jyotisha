@@ -94,7 +94,10 @@ class LocationSelectionCodecTest {
 
         val migrated = LocationSelectionCodec.normalized(legacy)
 
-        assertEquals(PersistedLocationSelection.Default(), LocationSelectionCodec.decode(migrated).selection)
+        assertEquals(
+            PersistedLocationSelection.Default(TownCatalog.provenance.datasetVersion),
+            LocationSelectionCodec.decode(migrated).selection,
+        )
         assertEquals(
             LocationSelectionRecoveryWarning.RESET_TO_DEFAULT,
             LocationSelectionCodec.decode(migrated).recoveryWarning,
@@ -140,9 +143,13 @@ class LocationSelectionCodecTest {
         val decoded = LocationSelectionCodec.decode(replacement)
 
         assertEquals(LocationSelectionCodec.CURRENT_SCHEMA_VERSION, replacement[LocationSelectionPreferences.schemaVersion])
-        assertEquals(PersistedLocationSelection.Default(), decoded.selection)
+        assertEquals(PersistedLocationSelection.Default(TownCatalog.provenance.datasetVersion), decoded.selection)
         assertEquals(LocationSelectionRecoveryWarning.RESET_TO_DEFAULT, decoded.recoveryWarning)
         assertFalse(decoded.requiresRewrite)
+        assertEquals(
+            TownCatalog.provenance.datasetVersion,
+            replacement[LocationSelectionPreferences.defaultDatasetVersion],
+        )
     }
 
     @Test

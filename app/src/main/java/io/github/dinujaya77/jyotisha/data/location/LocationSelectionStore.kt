@@ -372,6 +372,7 @@ internal object LocationSelectionCodec {
     fun corruptionReplacementPreferences(): Preferences = preferencesOf(
         LocationSelectionPreferences.schemaVersion to CURRENT_SCHEMA_VERSION,
         LocationSelectionPreferences.activeMode to StoredMode.DEFAULT.name,
+        LocationSelectionPreferences.defaultDatasetVersion to TownCatalog.provenance.datasetVersion,
         LocationSelectionPreferences.recoveryWarning to LocationSelectionRecoveryWarning.RESET_TO_DEFAULT.name,
     )
 

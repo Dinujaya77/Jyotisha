@@ -1,6 +1,6 @@
 package io.github.dinujaya77.jyotisha.ui.location
 
-import io.github.dinujaya77.jyotisha.data.location.LocationSelectionRepository
+import io.github.dinujaya77.jyotisha.data.location.LocationSelectionOperations
 import io.github.dinujaya77.jyotisha.data.location.LocationSelectionState
 import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermission
 import java.util.concurrent.Executor
@@ -19,8 +19,11 @@ internal data class LocationRuntimeState(
 
 internal enum class LocationAcquisition {
     IDLE,
+    RESTORING,
     REQUEST_PERMISSION,
+    PERMISSION_UNAVAILABLE,
     ACQUIRING,
+    ERROR,
 }
 
 /**
@@ -28,18 +31,21 @@ internal enum class LocationAcquisition {
  * for DataStore/provider work and posts immutable snapshots back to the Compose main thread.
  */
 internal class LocationRuntimeController(
-    private val repository: LocationSelectionRepository,
+    private val repository: LocationSelectionOperations,
     private val permission: () -> ForegroundLocationPermission,
     private val mainExecutor: Executor,
     private val onState: (LocationRuntimeState) -> Unit,
     private val worker: ExecutorService = Executors.newSingleThreadExecutor(),
+    private val afterCurrentGenerationCheck: (() -> Unit)? = null,
 ) {
     private val generation = AtomicLong()
+    private val operationStartLock = Any()
 
     @Volatile
     private var lastState = LocationRuntimeState()
 
-    fun restore() = submit(LocationAcquisition.IDLE) { repository.restore(permission()) }
+    /** Local-only restore/reconciliation; it never starts permission or provider work. */
+    fun restore() = submit(LocationAcquisition.RESTORING) { repository.restore(permission()) }
 
     fun useCurrentLocation() {
         if (permission() == ForegroundLocationPermission.NONE) {
@@ -51,24 +57,54 @@ internal class LocationRuntimeController(
 
     fun onPermissionResult() {
         if (permission() == ForegroundLocationPermission.NONE) {
-            restore()
+            // Platform rationale signals cannot reliably distinguish a permanent denial.  Keep
+            // a neutral recovery state and wait for a user-triggered retry or Settings action.
+            submit(
+                acquisition = LocationAcquisition.PERMISSION_UNAVAILABLE,
+                completedAcquisition = LocationAcquisition.PERMISSION_UNAVAILABLE,
+            ) { repository.restore(permission()) }
         } else {
             useCurrentLocation()
         }
     }
 
-    fun selectTown(townStableId: String) = submit(LocationAcquisition.IDLE) {
+    /** The optional approximate-to-precise request is only exposed after approximate access. */
+    fun requestPrecisePermissionUpgrade() {
+        if (permission() == ForegroundLocationPermission.APPROXIMATE) {
+            publish(lastState.copy(acquisition = LocationAcquisition.REQUEST_PERMISSION))
+        }
+    }
+
+    fun selectTown(townStableId: String) = submit(
+        acquisition = LocationAcquisition.IDLE,
+        supersedesForegroundRequest = true,
+    ) {
         repository.selectManualTown(townStableId)
     }
 
-    fun selectDefault() = submit(LocationAcquisition.IDLE) { repository.selectDefault() }
+    fun selectDefault() = submit(
+        acquisition = LocationAcquisition.IDLE,
+        supersedesForegroundRequest = true,
+    ) { repository.selectDefault() }
 
-    fun reset() = submit(LocationAcquisition.IDLE) { repository.resetLocationData() }
+    fun reset() = submit(
+        acquisition = LocationAcquisition.IDLE,
+        supersedesForegroundRequest = true,
+    ) { repository.resetLocationData() }
 
     fun cancelForRouteExit() {
-        generation.incrementAndGet()
-        repository.cancelCurrentLocationRequest()
+        synchronized(operationStartLock) {
+            generation.incrementAndGet()
+            repository.cancelCurrentLocationRequest()
+        }
+        publish(lastState.copy(acquisition = LocationAcquisition.IDLE))
     }
+
+    /** Genuine backgrounding owns foreground cancellation; a retained controller can resume. */
+    fun onBackgrounded() = cancelForRouteExit()
+
+    /** Resume reconciles permission/privacy and restored state without silently acquiring. */
+    fun onForegrounded() = restore()
 
     fun close() {
         cancelForRouteExit()
@@ -77,22 +113,46 @@ internal class LocationRuntimeController(
 
     private fun submit(
         acquisition: LocationAcquisition,
+        completedAcquisition: LocationAcquisition = LocationAcquisition.IDLE,
+        supersedesForegroundRequest: Boolean = false,
         operation: suspend () -> LocationSelectionState,
     ) {
-        val token = generation.incrementAndGet()
+        val token = synchronized(operationStartLock) {
+            generation.incrementAndGet().also {
+                if (supersedesForegroundRequest) {
+                    // The repository owns provider cancellation.  This must happen on the
+                    // caller thread before the replacement selection is queued behind an
+                    // active refresh.
+                    repository.cancelCurrentLocationRequest()
+                }
+            }
+        }
         publish(lastState.copy(acquisition = acquisition))
         worker.execute {
-            operation.startCoroutine(object : Continuation<LocationSelectionState> {
-                override val context = EmptyCoroutineContext
+            synchronized(operationStartLock) {
+                if (generation.get() != token) return@execute
+                afterCurrentGenerationCheck?.invoke()
+                if (generation.get() != token) return@execute
+                operation.startCoroutine(object : Continuation<LocationSelectionState> {
+                    override val context = EmptyCoroutineContext
 
-                override fun resumeWith(result: Result<LocationSelectionState>) {
-                    if (generation.get() == token) {
-                        result.getOrNull()?.let { selection ->
-                            publish(LocationRuntimeState(selection = selection))
+                    override fun resumeWith(result: Result<LocationSelectionState>) {
+                        if (generation.get() == token) {
+                            val selection = result.getOrNull()
+                            publish(
+                                if (selection == null) {
+                                    LocationRuntimeState(
+                                        selection = lastState.selection,
+                                        acquisition = LocationAcquisition.ERROR,
+                                    )
+                                } else {
+                                    LocationRuntimeState(selection, completedAcquisition)
+                                },
+                            )
                         }
                     }
-                }
-            })
+                })
+            }
         }
     }
 

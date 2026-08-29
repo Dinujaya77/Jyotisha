@@ -32,6 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.isTraversalGroup
@@ -67,6 +70,7 @@ fun JyotishaApp() {
     }
     val dispatch: (ShellAction) -> Unit = { action -> state = reduceShellState(state, action) }
     val context = LocalContext.current.applicationContext
+    val lifecycleOwner = LocalLifecycleOwner.current
     var locationRuntimeState by remember { mutableStateOf(LocationRuntimeState()) }
     val locationController = remember(context) {
         LocationRuntimeController(
@@ -89,6 +93,17 @@ fun JyotishaApp() {
         locationController.restore()
         onDispose(locationController::close)
     }
+    DisposableEffect(locationController, lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> locationController.onBackgrounded()
+                Lifecycle.Event.ON_RESUME -> locationController.onForegrounded()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     BackHandler(enabled = state.canHandleBack) {
         dispatch(ShellAction.Back)
@@ -107,6 +122,12 @@ fun JyotishaApp() {
                     locationController = locationController,
                     locationRuntimeState = locationRuntimeState,
                     requestLocationPermission = {
+                        permissionLauncher.launch(
+                            LocationPermissionPolicy.permissionsToRequest(preciseAccessSought = true)
+                                .toTypedArray(),
+                        )
+                    },
+                    requestPreciseLocationPermission = {
                         permissionLauncher.launch(
                             LocationPermissionPolicy.permissionsToRequest(preciseAccessSought = true)
                                 .toTypedArray(),
@@ -134,6 +155,12 @@ fun JyotishaApp() {
                         locationController = locationController,
                         locationRuntimeState = locationRuntimeState,
                         requestLocationPermission = {
+                            permissionLauncher.launch(
+                                LocationPermissionPolicy.permissionsToRequest(preciseAccessSought = true)
+                                    .toTypedArray(),
+                            )
+                        },
+                        requestPreciseLocationPermission = {
                             permissionLauncher.launch(
                                 LocationPermissionPolicy.permissionsToRequest(preciseAccessSought = true)
                                     .toTypedArray(),
@@ -203,12 +230,14 @@ private fun ShellContent(
     locationController: LocationRuntimeController,
     locationRuntimeState: LocationRuntimeState,
     requestLocationPermission: () -> Unit,
+    requestPreciseLocationPermission: () -> Unit,
 ) {
     when (state.child) {
         ChildDestination.Location -> RuntimeLocationRoute(
             controller = locationController,
             state = locationRuntimeState,
             requestLocationPermission = requestLocationPermission,
+            requestPreciseLocationPermission = requestPreciseLocationPermission,
             onOpenMethod = {
                 dispatch(ShellAction.SelectTopLevel(TopLevelDestination.Method))
             },
@@ -282,6 +311,7 @@ private fun RuntimeLocationRoute(
     controller: LocationRuntimeController,
     state: LocationRuntimeState,
     requestLocationPermission: () -> Unit,
+    requestPreciseLocationPermission: () -> Unit,
     onOpenMethod: () -> Unit,
     onOpenAbout: () -> Unit,
     onBack: () -> Unit,
@@ -295,6 +325,10 @@ private fun RuntimeLocationRoute(
         state = state,
         onUseCurrent = controller::useCurrentLocation,
         onRequestPermission = requestLocationPermission,
+        onRequestPrecisePermission = {
+            controller.requestPrecisePermissionUpgrade()
+            requestPreciseLocationPermission()
+        },
         onTownSelected = controller::selectTown,
         onUseDefault = controller::selectDefault,
         onOpenMethod = onOpenMethod,
