@@ -102,6 +102,12 @@ WCAG calculations use the approved exact sRGB values. The weakest tested normal-
 
 The connected launcher-smoke deviation is recorded as an emulator-environment residual, not as evidence for API-family or physical-device release acceptance. V1-M9-01 through V1-M9-05 retain the mandatory task-specific obligations listed above.
 
+## M4 connected acceptance evidence
+
+| Test ID | Scope | Evidence | Result |
+|---|---|---|---|
+| T-M4-CONNECTED-API36 | V1-M4-01–05; ADR-002; UI-004; DEP-014 | API 36 `emulator-5554` via existing SDK ADB: debug and Android-test APK installation; cold launch/resumed `MainActivity`; focused deterministic location UI/storage instrumentation; live fallback/manual Colombo semantics; foreground/background/resume and denied-permission path; focused controller/repository/presentation regression suite; post-run Jyotisha FATAL/ANR log audit. | Passed 2026-09-05: focused connected 5/5; install/cold launch/resume passed; no Jyotisha FATAL EXCEPTION or ANR. Lifecycle/configuration, permission downgrade/revocation, supersession/late-result and stale preservation are covered by approved focused fakes; no real GPS movement was used. Complete API matrix remains V1-M9-02; physical/OEM evidence remains V1-M9-03. |
+
 ## SOLAR-001 planned verification
 
 | Test ID | Scope | Required evidence | Gate |
