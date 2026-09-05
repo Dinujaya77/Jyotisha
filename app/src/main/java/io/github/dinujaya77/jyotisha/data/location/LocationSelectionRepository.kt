@@ -62,8 +62,8 @@ data class LocationSelectionState(
     val fallback: LocationFallback,
     val isFirstUse: Boolean,
     val warning: LocationSelectionWarning? = null,
-    /** A saved-location quality fact that must remain visible alongside a refresh outcome. */
-    val advisory: LocationSelectionWarning? = null,
+    /** Saved-location quality facts that must remain visible alongside a refresh outcome. */
+    val advisories: Set<LocationSelectionWarning> = emptySet(),
 )
 
 enum class LocationFallback {
@@ -285,22 +285,18 @@ class LocationSelectionRepository(
                                 warning = LocationSelectionWarning.DEVICE_ZONE_UNAVAILABLE,
                             )
                         } else {
-                            savedDeviceState(fix, deviceZone).withWarning(
-                                recoveryWarning ?: if (
-                                    LocationPolicy.savedFixAge(
-                                        fix.acquisitionEpochMillis,
-                                        clock.millis(),
-                                    ) == SavedFixAge.STALE
-                                ) {
-                                    LocationSelectionWarning.SAVED_DEVICE_STALE
-                                } else if (fix.horizontalAccuracyMeters >
-                                    LocationPolicy.LOW_ACCURACY_WARNING_METERS
-                                ) {
-                                    LocationSelectionWarning.LOW_ACCURACY
-                                } else {
-                                    null
-                                },
-                            )
+                            savedDeviceState(fix, deviceZone)
+                                .withWarning(recoveryWarning)
+                                .withAdvisories(buildSet {
+                                    if (LocationPolicy.savedFixAge(
+                                            fix.acquisitionEpochMillis,
+                                            clock.millis(),
+                                        ) == SavedFixAge.STALE
+                                    ) add(LocationSelectionWarning.SAVED_DEVICE_STALE)
+                                    if (fix.horizontalAccuracyMeters >
+                                        LocationPolicy.LOW_ACCURACY_WARNING_METERS
+                                    ) add(LocationSelectionWarning.LOW_ACCURACY)
+                                })
                         }
                     }
                 }
@@ -520,14 +516,18 @@ class LocationSelectionRepository(
         warning: LocationSelectionWarning?,
     ) = copy(warning = warning)
 
+    private fun LocationSelectionState.withAdvisories(
+        advisories: Set<LocationSelectionWarning>,
+    ) = copy(advisories = advisories)
+
     private fun LocationSelectionState.withRefreshFailure(
         failure: LocationSelectionWarning,
     ) = copy(
         warning = failure,
-        advisory = advisory ?: warning.takeIf {
+        advisories = advisories + warning.takeIf {
             it == LocationSelectionWarning.SAVED_DEVICE_STALE ||
                 it == LocationSelectionWarning.LOW_ACCURACY
-        },
+        }.let { advisory -> advisory?.let(::setOf) ?: emptySet() },
     )
 
     private data class ActiveForegroundRequest(

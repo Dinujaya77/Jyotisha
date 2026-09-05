@@ -146,13 +146,41 @@ class LocationSelectionRepositoryTest {
         ).refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
 
         assertEquals(LocationFallback.SAVED_DEVICE, state.fallback)
-        assertEquals(LocationSelectionWarning.SAVED_DEVICE_STALE, state.advisory)
+        assertEquals(setOf(LocationSelectionWarning.SAVED_DEVICE_STALE), state.advisories)
         assertEquals(
             LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(DeviceLocationUnavailableReason.TIMEOUT),
             state.warning,
         )
         assertEquals(stale.acquiredAtEpochMillis, state.selectedLocation.provenance.acquisitionEpochMillis)
         assertEquals(stale.accuracyMeters, state.selectedLocation.provenance.horizontalAccuracyMeters)
+    }
+
+    @Test
+    fun staleLowAccuracySavedDeviceRetainsBothAdvisoriesAndRefreshFailure() = runSuspend {
+        val staleLowAccuracy = deviceSelection(
+            accuracy = 10_001.0,
+            acquiredAtEpochMillis = NOW - 25L * 60L * 60L * 1000L,
+        )
+
+        val state = repository(
+            selection = staleLowAccuracy,
+            providerResult = DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.TIMEOUT),
+        ).refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
+
+        assertEquals(LocationFallback.SAVED_DEVICE, state.fallback)
+        assertEquals(
+            setOf(
+                LocationSelectionWarning.SAVED_DEVICE_STALE,
+                LocationSelectionWarning.LOW_ACCURACY,
+            ),
+            state.advisories,
+        )
+        assertEquals(
+            LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(DeviceLocationUnavailableReason.TIMEOUT),
+            state.warning,
+        )
+        assertEquals(staleLowAccuracy.acquiredAtEpochMillis, state.selectedLocation.provenance.acquisitionEpochMillis)
+        assertEquals(staleLowAccuracy.accuracyMeters, state.selectedLocation.provenance.horizontalAccuracyMeters)
     }
 
     @Test

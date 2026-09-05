@@ -340,7 +340,7 @@ internal fun RuntimeLocationScreen(
             -> stringResource(R.string.location_warning_recovered)
         }
     }
-    val advisoryText = selection?.advisory?.let { advisory ->
+    val advisoryTexts = selection?.advisories.orEmpty().mapNotNull { advisory ->
         when (advisory) {
             LocationSelectionWarning.SAVED_DEVICE_STALE -> stringResource(R.string.location_warning_stale)
             LocationSelectionWarning.LOW_ACCURACY -> stringResource(R.string.location_warning_low_accuracy)
@@ -379,7 +379,12 @@ internal fun RuntimeLocationScreen(
                         label = stringResource(R.string.location_selected_status_label),
                         value = selectedDescription,
                     ),
-                ) + listOfNotNull(
+                ) + advisoryTexts.map { advisoryText ->
+                    LabelledValuePresentation(
+                        label = stringResource(R.string.location_selected_warning_label),
+                        value = advisoryText,
+                    )
+                } + listOfNotNull(
                     savedProvenance?.acquisitionEpochMillis?.let { acquiredAt ->
                         LabelledValuePresentation(
                             label = stringResource(R.string.location_selected_age_label),
@@ -393,12 +398,6 @@ internal fun RuntimeLocationScreen(
                         LabelledValuePresentation(
                             label = stringResource(R.string.location_selected_accuracy_label),
                             value = stringResource(R.string.location_selected_accuracy_value, accuracy),
-                        )
-                    },
-                    advisoryText?.let {
-                        LabelledValuePresentation(
-                            label = stringResource(R.string.location_selected_warning_label),
-                            value = it,
                         )
                     },
                     warningText?.let {
