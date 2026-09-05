@@ -6,7 +6,7 @@
 | Version | 1.0 |
 | Last updated | 2026-08-02 |
 | Owner role | Lead Coordinator |
-| Approval state | DA-001 Direction A and DA-004 final Version 1.0 UI Approved; DA-002 and DA-003 are superseded alternatives |
+| Approval state | DA-001 Direction A, DA-004 final Version 1.0 UI, and DA-004-A frozen nine-town UI-004 exception Approved; DA-002 and DA-003 are superseded alternatives |
 
 | ID | Date | Artifact/version | Decision | Approver | Conditions/evidence | Supersedes |
 |---|---|---|---|---|---|---|

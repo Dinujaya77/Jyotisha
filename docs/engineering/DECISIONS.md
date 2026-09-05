@@ -38,7 +38,7 @@
 - **Consequences:** No new location dependency/APK/Play-services coupling. Provider/OEM behavior and possible provider-level network assistance require API/OEM device evidence and disclosure.
 - **Testing and acceptance timing (owner decision 2026-08-29):** M4 acceptance requires automated/unit, lint/build, lifecycle/permission regression evidence and one representative connected Android emulator run when the environment permits. The complete API 26/30/31+/36 runtime/state matrix remains V1-M9-02; physical family-device, OEM/provider and performance/privacy evidence remains V1-M9-03. These later obligations are not weakened.
 - **Dependencies:** None beyond existing DEP-003.
-- **Approval record:** Approved under PA-002 on 2026-08-02; provider/OEM evidence remains required before implementation acceptance.
+- **Approval record:** Approved under PA-002 on 2026-08-02. M4 implementation acceptance uses the preceding deterministic automated and representative-emulator gate; the complete provider/OEM evidence remains mandatory under V1-M9-02/V1-M9-03.
 
 ## ADR-003 — Location usability, freshness, replacement, and privacy
 

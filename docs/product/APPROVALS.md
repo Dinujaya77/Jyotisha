@@ -6,7 +6,7 @@
 | Version | 1.3 |
 | Last updated | 2026-08-27 |
 | Owner role | Lead Coordinator |
-| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, DP-001 delivery plan, and the owner-authorized exact M4-04 catalogue data Approved; PA-003 Blocked |
+| Approval state | PA-001, Change Request CR-001, PA-002, DA-001, PA-004 SOLAR-001, DA-004 final UI, DA-004-A frozen nine-town UI-004 exception, DP-001 delivery plan, and the owner-authorized exact M4-04 catalogue data Approved; PA-003 Blocked |
 
 ## Confirmed stakeholder decisions
 
