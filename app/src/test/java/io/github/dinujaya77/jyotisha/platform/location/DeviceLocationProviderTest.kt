@@ -5,6 +5,8 @@ import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermissio
 import io.github.dinujaya77.jyotisha.domain.location.GeoCoordinates
 import io.github.dinujaya77.jyotisha.domain.location.LocationPolicy
 import io.github.dinujaya77.jyotisha.domain.location.PermissionPrecision
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -119,6 +121,26 @@ class DeviceLocationProviderTest {
         assertTrue(fixture.results.isEmpty())
 
         fixture.platform.deliver(fix())
+        assertTrue(fixture.results.isEmpty())
+    }
+
+    @Test
+    fun cancellationDuringPreflightPreventsPlatformAcquisition() {
+        val fixture = fixture()
+        fixture.platform.blockStateForRequest = true
+        val requestThread = Thread {
+            fixture.provider.requestCurrentLocation(request(), fixture.results::add)
+        }
+        requestThread.start()
+        assertTrue(fixture.platform.stateEntered.await(5, TimeUnit.SECONDS))
+
+        fixture.provider.cancelActiveRequest()
+        fixture.platform.releaseState.countDown()
+        requestThread.join(5_000)
+
+        assertFalse(requestThread.isAlive)
+        assertTrue(fixture.platform.lastCancellation!!.cancelled)
+        assertEquals(0, fixture.platform.requestCount)
         assertTrue(fixture.results.isEmpty())
     }
 
@@ -248,10 +270,17 @@ class DeviceLocationProviderTest {
         var requestCount = 0
         var stateFailure: RuntimeException? = null
         var requestFailure: RuntimeException? = null
+        var blockStateForRequest = false
+        val stateEntered = CountDownLatch(1)
+        val releaseState = CountDownLatch(1)
         var lastCancellation: FakeCancellation? = null
         var lastCallback: ((DeviceLocationFix?) -> Unit)? = null
 
         override fun stateFor(permission: ForegroundLocationPermission): LocationPlatformState {
+            if (blockStateForRequest) {
+                stateEntered.countDown()
+                check(releaseState.await(5, TimeUnit.SECONDS))
+            }
             stateFailure?.let { throw it }
             return state
         }

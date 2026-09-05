@@ -145,4 +145,10 @@ class ShellNavigationTest {
             reduceShellState(state, action),
         )
     }
+
+    @Test
+    fun locationRouteExitCancelsButConfigurationRecreationRetainsViewModelRequest() {
+        assertEquals(true, shouldCancelLocationForRouteExit(isChangingConfigurations = false))
+        assertEquals(false, shouldCancelLocationForRouteExit(isChangingConfigurations = true))
+    }
 }

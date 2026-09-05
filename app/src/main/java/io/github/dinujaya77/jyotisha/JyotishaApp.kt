@@ -306,6 +306,14 @@ private fun RuntimeLocationRoute(
     innerPadding: PaddingValues,
 ) {
     val context = LocalContext.current
+    val activity = context.findMainActivity()
+    DisposableEffect(controller, activity) {
+        onDispose {
+            if (shouldCancelLocationForRouteExit(activity.isChangingConfigurations)) {
+                controller.cancelForRouteExit()
+            }
+        }
+    }
     RuntimeLocationScreen(
         state = state,
         onUseCurrent = controller::useCurrentLocation,
@@ -323,6 +331,10 @@ private fun RuntimeLocationRoute(
         innerPadding = innerPadding,
     )
 }
+
+/** Route disposal is navigation exit except while the Activity is recreating for configuration. */
+internal fun shouldCancelLocationForRouteExit(isChangingConfigurations: Boolean): Boolean =
+    !isChangingConfigurations
 
 private fun openRequestedLocationSettings(
     context: Context,

@@ -86,34 +86,32 @@ internal class OneShotDeviceLocationProvider(
             return
         }
 
+        // Register cancellation before provider preflight.  Lifecycle or supersession work can
+        // otherwise cancel while stateFor() is running and leave nothing to cancel.
+        val cancellation = platform.createCancellation()
+        val token = synchronized(lock) {
+            nextToken += 1L
+            activeRequest = ActiveRequest(nextToken, cancellation, onResult)
+            nextToken
+        }
         val state = try {
             platform.stateFor(request.permission)
         } catch (_: SecurityException) {
-            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SECURITY_EXCEPTION))
+            complete(token, DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SECURITY_EXCEPTION))
             return
         } catch (_: IllegalArgumentException) {
-            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_PROVIDER))
+            complete(token, DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_PROVIDER))
             return
         }
+        if (!isActive(token)) return
         if (!state.locationEnabled) {
-            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SERVICES_DISABLED))
+            complete(token, DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SERVICES_DISABLED))
             return
         }
         val provider = selectProvider(state, request.permission)
         if (provider == null) {
-            onResult(DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.PROVIDER_UNAVAILABLE))
+            complete(token, DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.PROVIDER_UNAVAILABLE))
             return
-        }
-
-        val cancellation = platform.createCancellation()
-        val token = synchronized(lock) {
-            nextToken += 1L
-            activeRequest = ActiveRequest(
-                token = nextToken,
-                cancellation = cancellation,
-                onResult = onResult,
-            )
-            nextToken
         }
         val timeout = timeoutScheduler.schedule(LocationPolicy.CURRENT_LOCATION_TIMEOUT_MILLIS) {
             complete(
@@ -131,8 +129,11 @@ internal class OneShotDeviceLocationProvider(
         }
 
         try {
-            platform.requestCurrentLocation(provider, request.permission, cancellation) { fix ->
-                complete(token, classifyPlatformResult(fix))
+            synchronized(lock) {
+                if (activeRequest?.token != token) return
+                platform.requestCurrentLocation(provider, request.permission, cancellation) { fix ->
+                    complete(token, classifyPlatformResult(fix))
+                }
             }
         } catch (_: SecurityException) {
             complete(
@@ -186,6 +187,10 @@ internal class OneShotDeviceLocationProvider(
         request.timeout?.cancel()
         request.cancellation.cancel()
         request.onResult(result)
+    }
+
+    private fun isActive(token: Long): Boolean = synchronized(lock) {
+        activeRequest?.token == token
     }
 
     private data class ActiveRequest(
