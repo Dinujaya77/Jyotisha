@@ -44,14 +44,19 @@ internal class LocationRuntimeController(
     @Volatile
     private var lastState = LocationRuntimeState()
 
+    @Volatile
+    private var activePermission: ForegroundLocationPermission? = null
+
     /** Local-only restore/reconciliation; it never starts permission or provider work. */
     fun restore() = submit(LocationAcquisition.RESTORING) { repository.restore(permission()) }
 
     fun useCurrentLocation() {
-        if (permission() == ForegroundLocationPermission.NONE) {
+        val currentPermission = permission()
+        if (currentPermission == ForegroundLocationPermission.NONE) {
             publish(lastState.copy(acquisition = LocationAcquisition.REQUEST_PERMISSION))
         } else {
-            submit(LocationAcquisition.ACQUIRING) { repository.refreshCurrentLocation(permission()) }
+            activePermission = currentPermission
+            submit(LocationAcquisition.ACQUIRING) { repository.refreshCurrentLocation(currentPermission) }
         }
     }
 
@@ -103,8 +108,17 @@ internal class LocationRuntimeController(
     /** Genuine backgrounding owns foreground cancellation; a retained controller can resume. */
     fun onBackgrounded() = cancelForRouteExit()
 
-    /** Resume reconciles permission/privacy and restored state without silently acquiring. */
-    fun onForegrounded() = restore()
+    /** Resume preserves an active request across recreation unless its grant changed. */
+    fun onForegrounded() {
+        if (lastState.acquisition != LocationAcquisition.ACQUIRING) {
+            restore()
+            return
+        }
+        val currentPermission = permission()
+        if (currentPermission == activePermission) return
+        cancelForRouteExit()
+        restore()
+    }
 
     fun close() {
         cancelForRouteExit()

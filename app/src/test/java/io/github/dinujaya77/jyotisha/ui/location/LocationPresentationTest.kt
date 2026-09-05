@@ -1,5 +1,12 @@
 package io.github.dinujaya77.jyotisha.ui.location
 
+import io.github.dinujaya77.jyotisha.data.location.LocationFallback
+import io.github.dinujaya77.jyotisha.data.location.LocationSelectionState
+import io.github.dinujaya77.jyotisha.data.location.TownCatalog
+import io.github.dinujaya77.jyotisha.domain.location.LocationProvenance
+import io.github.dinujaya77.jyotisha.domain.location.LocationSource
+import io.github.dinujaya77.jyotisha.domain.location.SelectedLocation
+import io.github.dinujaya77.jyotisha.domain.location.SelectedLocationMode
 import io.github.dinujaya77.jyotisha.ui.preview.LocationPreviewState
 import io.github.dinujaya77.jyotisha.ui.preview.locationStateFixtures
 import org.junit.Assert.assertNotEquals
@@ -9,6 +16,15 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class LocationPresentationTest {
+    @Test
+    fun fallbackColomboIsNotPresentedAsAnExplicitManualTownSelection() {
+        val town = TownCatalog.defaultTown
+        val default = locationState(LocationFallback.DEFAULT, SelectedLocationMode.DEFAULT, LocationSource.DEFAULT)
+        val manual = locationState(LocationFallback.MANUAL, SelectedLocationMode.MANUAL, LocationSource.MANUAL)
+
+        assertFalse(isExplicitManualTownSelection(default, town.stableId))
+        assertTrue(isExplicitManualTownSelection(manual, town.stableId))
+    }
     @Test
     fun `V1-M3-03 preview matrix carries every approved static state and constraint`() {
         assertEquals(LocationPreviewState.entries, locationStateFixtures.map { it.state })
@@ -72,5 +88,26 @@ class LocationPresentationTest {
                 .value
             assertEquals(fixture.presentation.selected, selectionText.startsWith("Selected"))
         }
+    }
+
+    private fun locationState(
+        fallback: LocationFallback,
+        mode: SelectedLocationMode,
+        source: LocationSource,
+    ): LocationSelectionState {
+        val town = TownCatalog.defaultTown
+        return LocationSelectionState(
+            selectedLocation = SelectedLocation(
+                coordinates = io.github.dinujaya77.jyotisha.domain.location.GeoCoordinates(
+                    town.latitudeE6 / 1_000_000.0,
+                    town.longitudeE6 / 1_000_000.0,
+                ),
+                provenance = LocationProvenance(source, "Asia/Colombo"),
+            ),
+            selectedTown = town,
+            selectedMode = mode,
+            fallback = fallback,
+            isFirstUse = false,
+        )
     }
 }

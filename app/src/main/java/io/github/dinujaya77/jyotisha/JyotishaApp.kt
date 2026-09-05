@@ -2,11 +2,10 @@ package io.github.dinujaya77.jyotisha
 
 import android.Manifest
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -35,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.isTraversalGroup
@@ -47,6 +47,7 @@ import io.github.dinujaya77.jyotisha.ui.dashboard.DashboardScreen
 import io.github.dinujaya77.jyotisha.ui.dashboard.RuntimeDashboardPresentation
 import io.github.dinujaya77.jyotisha.ui.location.LocationRuntimeController
 import io.github.dinujaya77.jyotisha.ui.location.LocationRuntimeState
+import io.github.dinujaya77.jyotisha.ui.location.LocationRuntimeViewModel
 import io.github.dinujaya77.jyotisha.ui.location.RuntimeLocationScreen
 import io.github.dinujaya77.jyotisha.ui.method.MethodCallbacks
 import io.github.dinujaya77.jyotisha.ui.method.MethodScreen
@@ -55,13 +56,9 @@ import io.github.dinujaya77.jyotisha.ui.timeline.RuntimeTimelinePresentation
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineCallbacks
 import io.github.dinujaya77.jyotisha.ui.timeline.TimelineScreen
 import androidx.core.content.ContextCompat
-import io.github.dinujaya77.jyotisha.data.location.LocationSelectionRepository
-import io.github.dinujaya77.jyotisha.data.location.LocationSelectionStore
 import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermission
-import io.github.dinujaya77.jyotisha.platform.location.AndroidDeviceLocationProvider
 import io.github.dinujaya77.jyotisha.platform.location.LocationPermissionGrants
 import io.github.dinujaya77.jyotisha.platform.location.LocationPermissionPolicy
-import java.util.concurrent.Executor
 
 @Composable
 fun JyotishaApp() {
@@ -69,34 +66,25 @@ fun JyotishaApp() {
         mutableStateOf(ShellState())
     }
     val dispatch: (ShellAction) -> Unit = { action -> state = reduceShellState(state, action) }
-    val context = LocalContext.current.applicationContext
+    val activityContext = LocalContext.current
+    val context = activityContext.applicationContext
     val lifecycleOwner = LocalLifecycleOwner.current
-    var locationRuntimeState by remember { mutableStateOf(LocationRuntimeState()) }
-    val locationController = remember(context) {
-        LocationRuntimeController(
-            repository = LocationSelectionRepository(
-                persistence = LocationSelectionStore.applicationScoped(context),
-                deviceLocationProvider = AndroidDeviceLocationProvider.create(context),
-            ),
-            permission = { foregroundLocationPermission(context) },
-            mainExecutor = Executor { runnable -> Handler(Looper.getMainLooper()).post(runnable) },
-            onState = { locationRuntimeState = it },
-        )
-    }
+    val locationViewModel: LocationRuntimeViewModel = viewModel(
+        factory = LocationRuntimeViewModel.factory(context) { foregroundLocationPermission(context) },
+    )
+    val locationController = locationViewModel.controller
+    val locationRuntimeState = locationViewModel.state
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
         locationController.onPermissionResult()
     }
-    DisposableEffect(locationController) {
-        // Local restore is allowed at launch; it does not request a permission or provider fix.
-        locationController.restore()
-        onDispose(locationController::close)
-    }
     DisposableEffect(locationController, lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_STOP -> locationController.onBackgrounded()
+                Lifecycle.Event.ON_STOP -> if (!activityContext.findMainActivity().isChangingConfigurations) {
+                    locationController.onBackgrounded()
+                }
                 Lifecycle.Event.ON_RESUME -> locationController.onForegrounded()
                 else -> Unit
             }
@@ -318,9 +306,6 @@ private fun RuntimeLocationRoute(
     innerPadding: PaddingValues,
 ) {
     val context = LocalContext.current
-    DisposableEffect(controller) {
-        onDispose { controller.cancelForRouteExit() }
-    }
     RuntimeLocationScreen(
         state = state,
         onUseCurrent = controller::useCurrentLocation,
@@ -380,6 +365,15 @@ private fun foregroundLocationPermission(context: Context): ForegroundLocationPe
             ) == PackageManager.PERMISSION_GRANTED,
         ),
     )
+
+private fun Context.findMainActivity(): MainActivity {
+    var current = this
+    while (current is ContextWrapper) {
+        if (current is MainActivity) return current
+        current = current.baseContext
+    }
+    error("JyotishaApp requires MainActivity as its host.")
+}
 
 private val TopLevelDestination.label: Int
     @StringRes get() = when (this) {

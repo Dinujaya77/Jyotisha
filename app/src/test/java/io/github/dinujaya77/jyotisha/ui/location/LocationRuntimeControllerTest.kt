@@ -88,6 +88,27 @@ class LocationRuntimeControllerTest {
     }
 
     @Test
+    fun configurationRecreationResumeKeepsAnActiveForegroundRequest() {
+        val repository = CallbackOnCancellationRepository()
+        val controller = LocationRuntimeController(
+            repository = repository,
+            permission = { ForegroundLocationPermission.PRECISE },
+            mainExecutor = Executor { it.run() },
+            onState = {},
+            worker = Executors.newSingleThreadExecutor(),
+        )
+
+        controller.useCurrentLocation()
+        assertTrue(repository.refreshStarted.await(5, TimeUnit.SECONDS))
+        controller.onForegrounded()
+
+        assertEquals(0, repository.cancelCount)
+        controller.onBackgrounded()
+        assertEquals(1, repository.cancelCount)
+        controller.close()
+    }
+
+    @Test
     fun precisePermissionUpgradeRequestsPermissionOnlyForApproximateAccess() {
         ForegroundLocationPermission.entries.forEach { currentPermission ->
             val repository = DeferredRestoreRepository()

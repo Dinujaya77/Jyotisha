@@ -138,6 +138,24 @@ class LocationSelectionRepositoryTest {
     }
 
     @Test
+    fun failedRefreshOfStaleSavedDeviceRetainsQualityAdvisoryAndFailure() = runSuspend {
+        val stale = deviceSelection(acquiredAtEpochMillis = NOW - 25L * 60L * 60L * 1000L)
+        val state = repository(
+            selection = stale,
+            providerResult = DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.TIMEOUT),
+        ).refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
+
+        assertEquals(LocationFallback.SAVED_DEVICE, state.fallback)
+        assertEquals(LocationSelectionWarning.SAVED_DEVICE_STALE, state.advisory)
+        assertEquals(
+            LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(DeviceLocationUnavailableReason.TIMEOUT),
+            state.warning,
+        )
+        assertEquals(stale.acquiredAtEpochMillis, state.selectedLocation.provenance.acquisitionEpochMillis)
+        assertEquals(stale.accuracyMeters, state.selectedLocation.provenance.horizontalAccuracyMeters)
+    }
+
+    @Test
     fun successfulForegroundRefreshSelectsOneCurrentDevicePayload() = runSuspend {
         val persistence = FakePersistence(PersistedLocationSelection.ManualTown("geonames:1241622", NOW))
         val candidate = fix(latitude = 6.94, longitude = 79.85)
@@ -347,11 +365,12 @@ class LocationSelectionRepositoryTest {
         longitude: Double = 79.85,
         accuracy: Double = 15.0,
         precision: PermissionPrecision = PermissionPrecision.PRECISE,
+        acquiredAtEpochMillis: Long = NOW,
     ) = PersistedLocationSelection.Device(
         coordinates = GeoCoordinates(latitude, longitude),
         accuracyMeters = accuracy,
         permissionPrecision = precision,
-        acquiredAtEpochMillis = NOW,
+        acquiredAtEpochMillis = acquiredAtEpochMillis,
         source = LocationSource.CURRENT_DEVICE,
     )
 

@@ -340,6 +340,15 @@ internal fun RuntimeLocationScreen(
             -> stringResource(R.string.location_warning_recovered)
         }
     }
+    val advisoryText = selection?.advisory?.let { advisory ->
+        when (advisory) {
+            LocationSelectionWarning.SAVED_DEVICE_STALE -> stringResource(R.string.location_warning_stale)
+            LocationSelectionWarning.LOW_ACCURACY -> stringResource(R.string.location_warning_low_accuracy)
+            else -> null
+        }
+    }
+    val savedProvenance = selection?.selectedLocation?.provenance
+        ?.takeIf { selection.fallback == LocationFallback.SAVED_DEVICE }
     LocationScreen(
         presentation = LocationPresentation(
             currentLocation = currentStatus,
@@ -370,12 +379,35 @@ internal fun RuntimeLocationScreen(
                         label = stringResource(R.string.location_selected_status_label),
                         value = selectedDescription,
                     ),
-                ) + listOfNotNull(warningText?.let {
+                ) + listOfNotNull(
+                    savedProvenance?.acquisitionEpochMillis?.let { acquiredAt ->
+                        LabelledValuePresentation(
+                            label = stringResource(R.string.location_selected_age_label),
+                            value = stringResource(
+                                R.string.location_selected_age_value,
+                                ((System.currentTimeMillis() - acquiredAt).coerceAtLeast(0L) / 60_000L),
+                            ),
+                        )
+                    },
+                    savedProvenance?.horizontalAccuracyMeters?.let { accuracy ->
+                        LabelledValuePresentation(
+                            label = stringResource(R.string.location_selected_accuracy_label),
+                            value = stringResource(R.string.location_selected_accuracy_value, accuracy),
+                        )
+                    },
+                    advisoryText?.let {
+                        LabelledValuePresentation(
+                            label = stringResource(R.string.location_selected_warning_label),
+                            value = it,
+                        )
+                    },
+                    warningText?.let {
                     LabelledValuePresentation(
                         label = stringResource(R.string.location_selected_warning_label),
                         value = it,
                     )
-                }),
+                },
+                ),
             ),
             selected = selection != null,
             townCatalogue = UnavailablePanelPresentation(
@@ -398,7 +430,7 @@ internal fun RuntimeLocationScreen(
                 TownSelectionPresentation(
                     town = town,
                     label = label,
-                    selected = selection?.selectedTown?.stableId == town.stableId,
+                    selected = isExplicitManualTownSelection(selection, town.stableId),
                 )
             },
             townSearchEnabled = true,
@@ -425,6 +457,12 @@ internal fun RuntimeLocationScreen(
         innerPadding = innerPadding,
     )
 }
+
+internal fun isExplicitManualTownSelection(
+    selection: io.github.dinujaya77.jyotisha.data.location.LocationSelectionState?,
+    townStableId: String,
+): Boolean = selection?.fallback == LocationFallback.MANUAL &&
+    selection.selectedTown?.stableId == townStableId
 
 @Composable
 private fun FirstUseRuntimeContent(

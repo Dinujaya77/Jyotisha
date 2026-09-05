@@ -101,6 +101,10 @@
     <string name="location_default_runtime_explanation">Use Colombo when you prefer the reviewed default or a current-location request is unavailable.</string>
     <string name="location_action_use_default">Use Colombo default</string>
     <string name="location_selected_warning_label">Location status</string>
+    <string name="location_selected_age_label">Saved age</string>
+    <string name="location_selected_accuracy_label">Reported accuracy</string>
+    <string name="location_selected_age_value">%1$d minutes old</string>
+    <string name="location_selected_accuracy_value">%1$.0f m</string>
     <string name="location_warning_stale">Saved device location is stale.</string>
     <string name="location_warning_low_accuracy">Reported location accuracy is low. Choose a town if you need a more specific location.</string>
     <string name="location_warning_permission_changed">Saved device location was removed after a permission change.</string>

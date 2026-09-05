@@ -62,6 +62,8 @@ data class LocationSelectionState(
     val fallback: LocationFallback,
     val isFirstUse: Boolean,
     val warning: LocationSelectionWarning? = null,
+    /** A saved-location quality fact that must remain visible alongside a refresh outcome. */
+    val advisory: LocationSelectionWarning? = null,
 )
 
 enum class LocationFallback {
@@ -177,7 +179,7 @@ class LocationSelectionRepository(
                 ForegroundRequestResult.Cancelled -> restore(currentPermission)
 
                 is ForegroundRequestResult.Result -> when (val value = result.value) {
-                    is DeviceLocationResult.Unavailable -> prior.withWarning(
+                    is DeviceLocationResult.Unavailable -> prior.withRefreshFailure(
                         LocationSelectionWarning.CURRENT_LOCATION_UNAVAILABLE(value.reason),
                     )
 
@@ -517,6 +519,16 @@ class LocationSelectionRepository(
     private fun LocationSelectionState.withWarning(
         warning: LocationSelectionWarning?,
     ) = copy(warning = warning)
+
+    private fun LocationSelectionState.withRefreshFailure(
+        failure: LocationSelectionWarning,
+    ) = copy(
+        warning = failure,
+        advisory = advisory ?: warning.takeIf {
+            it == LocationSelectionWarning.SAVED_DEVICE_STALE ||
+                it == LocationSelectionWarning.LOW_ACCURACY
+        },
+    )
 
     private data class ActiveForegroundRequest(
         val generation: Long,
