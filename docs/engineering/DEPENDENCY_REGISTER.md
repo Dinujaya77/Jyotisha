@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-08-29 |
 | Owner role | Android Architect |
 | Approval state | DEP-011–DEP-013 implemented and verified under V1-M1-03; DEP-014 is implemented under V1-M4-03 and awaits corrective QA/Lead acceptance; PA-004 approves SOLAR-001 with zero additional Android/Gradle dependencies |
 
@@ -23,7 +23,7 @@
 | DEP-011 | AndroidX Lifecycle ViewModel KTX | `androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2` | ViewModel and coroutine-aware state holder | Apache-2.0 AndroidX; no new permission/data flow | Added and verified under V1-M1-03 |
 | DEP-012 | AndroidX Lifecycle ViewModel Compose | `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2` | Obtain/use ViewModel from Compose | Apache-2.0 AndroidX; Compose bridge only | Added and verified under V1-M1-03 |
 | DEP-013 | AndroidX Lifecycle Runtime Compose | `androidx.lifecycle:lifecycle-runtime-compose:2.9.2` | Lifecycle-aware `StateFlow` collection | Apache-2.0 AndroidX; avoids collecting UI state while stopped | Added and verified under V1-M1-03 |
-| DEP-014 | AndroidX DataStore Preferences | `androidx.datastore:datastore-preferences:1.2.1` | Transactional asynchronous versioned location record in `noBackupFilesDir` | AndroidX; complete location-data directory must be excluded/tested for backup/transfer | Implemented under V1-M4-03; corrective QA/Lead acceptance pending |
+| DEP-014 | AndroidX DataStore Preferences | `androidx.datastore:datastore-preferences:1.2.1` | Direct transactional asynchronous versioned location record in `noBackupFilesDir` | Apache-2.0 AndroidX; complete location-data directory must be excluded/tested for backup/transfer | Implemented under V1-M4-03; corrective QA/Lead acceptance pending |
 
 New dependencies require an ADR or documented approval, purpose, alternatives, maintenance health, license, security/privacy impact, size/performance cost, version source, and verification plan.
 
@@ -35,6 +35,8 @@ New dependencies require an ADR or documented approval, purpose, alternatives, m
 | DEP-012 | Apache-2.0 AndroidX POM; same maintained Lifecycle 2.9.2 provenance | Verified with Compose BOM 2024.09.00; serialization 1.7.3 and Compose runtime 1.7.8 resolved transitively; no Navigation/Hilt | Compose adapter only; no location/storage/network behavior; APK comparison non-isolated | Completed under V1-M1-03: resolution graph, licence/advisory review, compile/device smoke and size record |
 | DEP-013 | Apache-2.0 AndroidX POM; same maintained Lifecycle 2.9.2 provenance | Verified against resolved Compose runtime 1.7.8 and API-26 compile/metadata | No new permission/data flow; runtime/connected smoke passed on API 36; API-26 runtime remains later evidence | Completed under V1-M1-03: resolution graph, licence/advisory review, build/runtime and size record |
 | DEP-014 | Apache-2.0 AndroidX; DataStore 1.2.1 is the approved stable coordinate | Declared through the version catalogue; resolved dependency evidence, including transitive `kotlinx-coroutines-core-jvm:1.9.0`, is required. No direct coroutine artifact is declared. | Persists sensitive coordinates locally; dedicated directory exclusion/migration/corruption controls required; APK/I/O and device backup/transfer proof remain M4/M9 evidence | Corrective verification: resolution/insight, licence/advisory review, JVM migration/corruption/future/revocation tests, lint/build, installed-path/static backup checks; device transfer proof remains M9-owned |
+
+DEP-014 reconciliation (2026-08-29): `androidx.datastore:datastore-preferences:1.2.1` is a direct `implementation` dependency and resolves at 1.2.1. Relevant resolved transitive runtime artifacts include `androidx.datastore:datastore-preferences-core:1.2.1`, `androidx.datastore:datastore-core-android:1.2.1`, and `org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0`; coroutines core JVM is transitive only and is not declared directly. AndroidX DataStore is Apache-2.0 and is obtained from the official AndroidX/Google Maven provenance; its minSdk 21 support is compatible with the app's minSdk 26. Implementation is complete but M4 remains In Review pending corrective QA, Lead acceptance, and the required connected evidence.
 
 “Expected” is not acceptance evidence. Phase C must record measured dependency and APK/transitive changes before Lead acceptance; architecture approval alone adds no artifact.
 

@@ -22,6 +22,8 @@
 
 ## Owner catalogue-data decision
 
+On 2026-08-29 the owner also approved DA-004-A: the UI-004 V1 town-only presentation exception for this frozen nine-town catalogue only. It does not authorize inferred province/region values or a catalogue expansion; [DESIGN_APPROVALS](../design/DESIGN_APPROVALS.md) is the design-approval record.
+
 On 2026-08-27, the owner approved only the exact V1-M4-04 product-data subset: the nine public GeoNames LK rows for Colombo, Kandy, Galle, Jaffna, Trincomalee, Kurunegala, Anuradhapura, Badulla, and Ratnapura; stable IDs, WGS84 microdegree coordinates, fixed `Asia/Colombo`, Colombo default mapping, and the frozen GeoNames source facts recorded in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md). This decision supersedes the earlier exact-town-data pending state for those rows only.
 
 It does not authorize V1-M4-05, UI or picker assembly, repository wiring, location-provider changes, runtime networking/downloads/geocoding, Sinhala labels, another data source, any town outside the nine approved rows, or release acceptance.
