@@ -37,9 +37,13 @@ internal class LocationRuntimeController(
     private val onState: (LocationRuntimeState) -> Unit,
     private val worker: ExecutorService = Executors.newSingleThreadExecutor(),
     private val afterCurrentGenerationCheck: (() -> Unit)? = null,
+    private val beforeCompletionCommit: (() -> Unit)? = null,
 ) {
     private val generation = AtomicLong()
     private val operationStartLock = Any()
+
+    /** The generation whose completion has already crossed the completion linearization point. */
+    private var committedGeneration: Long? = null
 
     @Volatile
     private var lastState = LocationRuntimeState()
@@ -103,8 +107,8 @@ internal class LocationRuntimeController(
         synchronized(operationStartLock) {
             generation.incrementAndGet()
             repository.cancelCurrentLocationRequest()
+            publishLocked(lastState.copy(acquisition = LocationAcquisition.IDLE))
         }
-        publish(lastState.copy(acquisition = LocationAcquisition.IDLE))
     }
 
     /** Genuine backgrounding owns foreground cancellation; a retained controller can resume. */
@@ -135,15 +139,16 @@ internal class LocationRuntimeController(
     ) {
         val token = synchronized(operationStartLock) {
             generation.incrementAndGet().also {
+                committedGeneration = null
                 if (supersedesForegroundRequest) {
                     // The repository owns provider cancellation.  This must happen on the
                     // caller thread before the replacement selection is queued behind an
                     // active refresh.
                     repository.cancelCurrentLocationRequest()
                 }
+                publishLocked(lastState.copy(acquisition = acquisition))
             }
         }
-        publish(lastState.copy(acquisition = acquisition))
         worker.execute {
             if (generation.get() != token) return@execute
             afterCurrentGenerationCheck?.invoke()
@@ -159,9 +164,16 @@ internal class LocationRuntimeController(
                     override val context = EmptyCoroutineContext
 
                     override fun resumeWith(result: Result<LocationSelectionState>) {
-                        if (generation.get() == token) {
+                        // This hook is intentionally before the shared lock. Tests use it to
+                        // pause at the old check-then-act boundary and let cancellation or a
+                        // replacement generation win before completion becomes authoritative.
+                        beforeCompletionCommit?.invoke()
+                        synchronized(operationStartLock) {
+                            if (generation.get() != token || committedGeneration == token) return
+
+                            committedGeneration = token
                             val selection = result.getOrNull()
-                            publish(
+                            publishLocked(
                                 if (selection == null) {
                                     LocationRuntimeState(
                                         selection = lastState.selection,
@@ -179,6 +191,13 @@ internal class LocationRuntimeController(
     }
 
     private fun publish(state: LocationRuntimeState) {
+        synchronized(operationStartLock) {
+            publishLocked(state)
+        }
+    }
+
+    /** Must be called while operationStartLock is held. */
+    private fun publishLocked(state: LocationRuntimeState) {
         lastState = state
         mainExecutor.execute { onState(state) }
     }

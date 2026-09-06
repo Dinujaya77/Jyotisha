@@ -72,6 +72,80 @@ class LocationRuntimeControllerTest {
     }
 
     @Test
+    fun cancellationBetweenCompletionEligibilityAndCommitCannotPublishCurrentDeviceState() {
+        val repository = PausableCompletionRepository()
+        val completionEligible = CountDownLatch(1)
+        val releaseCompletion = CountDownLatch(1)
+        val states = Collections.synchronizedList(mutableListOf<LocationRuntimeState>())
+        val controller = LocationRuntimeController(
+            repository = repository,
+            permission = { ForegroundLocationPermission.PRECISE },
+            mainExecutor = Executor { it.run() },
+            onState = states::add,
+            worker = Executors.newSingleThreadExecutor(),
+            beforeCompletionCommit = {
+                completionEligible.countDown()
+                releaseCompletion.await(5, TimeUnit.SECONDS)
+            },
+        )
+
+        controller.useCurrentLocation()
+        assertTrue(repository.refreshStarted.await(5, TimeUnit.SECONDS))
+        val completionThread = Thread { repository.completeCurrentDevice() }
+        completionThread.start()
+        assertTrue(completionEligible.await(5, TimeUnit.SECONDS))
+
+        controller.onBackgrounded()
+        releaseCompletion.countDown()
+        completionThread.join(5_000)
+
+        assertTrue(repository.refreshCompleted.await(5, TimeUnit.SECONDS))
+        assertTrue(
+            synchronized(states) {
+                states.none { it.selection?.selectedMode == SelectedLocationMode.CURRENT_DEVICE }
+            },
+        )
+        controller.close()
+    }
+
+    @Test
+    fun supersessionBetweenCompletionEligibilityAndCommitCannotPublishOldGeneration() {
+        val repository = PausableCompletionRepository()
+        val completionEligible = CountDownLatch(1)
+        val releaseCompletion = CountDownLatch(1)
+        val states = Collections.synchronizedList(mutableListOf<LocationRuntimeState>())
+        val controller = LocationRuntimeController(
+            repository = repository,
+            permission = { ForegroundLocationPermission.PRECISE },
+            mainExecutor = Executor { it.run() },
+            onState = states::add,
+            worker = Executors.newSingleThreadExecutor(),
+            beforeCompletionCommit = {
+                completionEligible.countDown()
+                releaseCompletion.await(5, TimeUnit.SECONDS)
+            },
+        )
+
+        controller.useCurrentLocation()
+        assertTrue(repository.refreshStarted.await(5, TimeUnit.SECONDS))
+        val completionThread = Thread { repository.completeCurrentDevice() }
+        completionThread.start()
+        assertTrue(completionEligible.await(5, TimeUnit.SECONDS))
+
+        controller.selectDefault()
+        releaseCompletion.countDown()
+        completionThread.join(5_000)
+
+        assertTrue(repository.selectionCompleted.await(5, TimeUnit.SECONDS))
+        assertTrue(
+            synchronized(states) {
+                states.none { it.selection?.selectedMode == SelectedLocationMode.CURRENT_DEVICE }
+            },
+        )
+        controller.close()
+    }
+
+    @Test
     fun backgroundingCancelsAndSuppressesAnAcquisitionQueuedBehindRestore() {
         val repository = DeferredRestoreRepository()
         val controller = controller(repository, ForegroundLocationPermission.PRECISE)
@@ -559,6 +633,84 @@ class LocationRuntimeControllerTest {
             events += name
             selectionCompleted.countDown()
             return defaultState()
+        }
+
+        private fun currentDeviceState(): LocationSelectionState {
+            val town = TownCatalog.defaultTown
+            return LocationSelectionState(
+                selectedLocation = SelectedLocation(
+                    coordinates = io.github.dinujaya77.jyotisha.domain.location.GeoCoordinates(
+                        town.latitudeE6 / 1_000_000.0,
+                        town.longitudeE6 / 1_000_000.0,
+                    ),
+                    provenance = LocationProvenance(
+                        source = LocationSource.CURRENT_DEVICE,
+                        zoneId = "Asia/Colombo",
+                        horizontalAccuracyMeters = 25.0,
+                        permissionPrecision = PermissionPrecision.PRECISE,
+                        acquisitionEpochMillis = 0L,
+                    ),
+                ),
+                selectedTown = null,
+                selectedMode = SelectedLocationMode.CURRENT_DEVICE,
+                fallback = LocationFallback.CURRENT_DEVICE,
+                isFirstUse = false,
+            )
+        }
+
+        private fun defaultState(): LocationSelectionState {
+            val town = TownCatalog.defaultTown
+            return LocationSelectionState(
+                selectedLocation = SelectedLocation(
+                    coordinates = io.github.dinujaya77.jyotisha.domain.location.GeoCoordinates(
+                        town.latitudeE6 / 1_000_000.0,
+                        town.longitudeE6 / 1_000_000.0,
+                    ),
+                    provenance = LocationProvenance(
+                        source = LocationSource.DEFAULT,
+                        zoneId = "Asia/Colombo",
+                        datasetVersion = TownCatalog.provenance.datasetVersion,
+                    ),
+                ),
+                selectedTown = town,
+                selectedMode = SelectedLocationMode.DEFAULT,
+                fallback = LocationFallback.DEFAULT,
+                isFirstUse = false,
+            )
+        }
+    }
+
+    private class PausableCompletionRepository : LocationSelectionOperations {
+        val refreshStarted = CountDownLatch(1)
+        val refreshCompleted = CountDownLatch(1)
+        val selectionCompleted = CountDownLatch(1)
+        private var refreshContinuation: Continuation<LocationSelectionState>? = null
+
+        override suspend fun restore(currentPermission: ForegroundLocationPermission) = defaultState()
+
+        override suspend fun refreshCurrentLocation(
+            currentPermission: ForegroundLocationPermission,
+        ): LocationSelectionState = suspendCoroutine { continuation ->
+            refreshContinuation = continuation
+            refreshStarted.countDown()
+        }
+
+        override suspend fun selectManualTown(townStableId: String) = defaultState()
+
+        override suspend fun selectDefault(): LocationSelectionState {
+            selectionCompleted.countDown()
+            return defaultState()
+        }
+
+        override suspend fun resetLocationData() = defaultState()
+
+        override fun cancelCurrentLocationRequest() = Unit
+
+        fun completeCurrentDevice() {
+            val continuation = requireNotNull(refreshContinuation)
+            refreshContinuation = null
+            refreshCompleted.countDown()
+            continuation.resume(currentDeviceState())
         }
 
         private fun currentDeviceState(): LocationSelectionState {
