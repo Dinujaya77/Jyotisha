@@ -61,7 +61,7 @@ DEP-014 reconciliation (2026-08-29): `androidx.datastore:datastore-preferences:1
 | Proto DataStore / Room | Not present | Typed/database capabilities exceed the single small record | Rejected as disproportionate |
 | Navigation Compose / Hilt | Not present | Useful at larger scale, but three destinations and manual construction do not justify dependencies | Rejected for V1 unless later evidence changes scope |
 
-No dependency was added in Phase A or B. Under the later explicitly started V1-M1-03 task, DEP-011–DEP-013 were added and verified. DEP-014 remains approved in principle only and still requires its own authorized implementation task and complete evidence.
+No dependency was added in Phase A or B. Under the later explicitly started V1-M1-03 task, DEP-011–DEP-013 were added and verified. DEP-014 was subsequently implemented under V1-M4-03 with its implementation/evidence recorded above; M4 remains In Review pending corrective verification, final independent QA, and Lead acceptance.
 
 Direct coroutine APIs must not rely silently on transitive artifacts. Before implementation, the dependency task must either register/approve exact production and test coroutine artifacts with resolved versions, licenses and transitive evidence, or constrain the design to APIs exposed by already approved direct dependencies. No coroutine dependency is approved or added by this reconciliation.
 

@@ -86,7 +86,7 @@
 - **Recovery/migration:** Pure versioned migrations. Unknown newer schema, corruption, invalid values, or impossible timestamps reset only location preferences to labelled Colombo default and emit one recovery warning. Migrations never silently widen retention.
 - **Reset:** User action deletes the full record and returns to default.
 - **Backup:** Store the DataStore under credential-protected `noBackupFilesDir/location-data/`. Retain explicit exclusions of the complete directory/domain, including temporary/replacement/companion artifacts, from legacy Auto Backup and Android 12+ cloud/device transfer as defence in depth. Verify installed paths and clean-device restore/transfer behavior; disable app backup if exclusion cannot be proven.
-- **Dependencies:** DEP-014 DataStore Preferences approved in principle under PA-002; not added.
+- **Dependencies:** DEP-014 DataStore Preferences was approved in principle under PA-002 and subsequently implemented under V1-M4-03; corrective verification and final independent QA/Lead acceptance remain pending.
 - **Approval record:** Approved under PA-002 on 2026-08-02.
 
 ## ADR-006 — SDK support baseline
