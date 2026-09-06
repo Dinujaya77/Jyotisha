@@ -147,8 +147,39 @@ class ShellNavigationTest {
     }
 
     @Test
-    fun locationRouteExitCancelsButConfigurationRecreationRetainsViewModelRequest() {
-        assertEquals(true, shouldCancelLocationForRouteExit(isChangingConfigurations = false))
-        assertEquals(false, shouldCancelLocationForRouteExit(isChangingConfigurations = true))
+    fun onlyLogicalLocationRouteExitOwnsCancellation() {
+        val location = reduceShellState(ShellState(), ShellAction.OpenLocation)
+
+        assertEquals(
+            true,
+            isLocationRouteExit(
+                location,
+                reduceShellState(location, ShellAction.SelectTopLevel(TopLevelDestination.Method)),
+            ),
+        )
+        assertEquals(
+            true,
+            isLocationRouteExit(
+                location,
+                reduceShellState(location, ShellAction.OpenAboutFromLocation),
+            ),
+        )
+        assertEquals(
+            true,
+            isLocationRouteExit(location, ShellState(child = ChildDestination.Settings)),
+        )
+        assertEquals(false, isLocationRouteExit(location, location))
+        // Compact/expanded recomposition and configuration recreation retain the same route.
+        assertEquals(false, isLocationRouteExit(location, location.copy()))
+        assertEquals(
+            false,
+            isLocationRouteExit(
+                location,
+                reduceShellState(
+                    reduceShellState(location, ShellAction.OpenAboutFromLocation),
+                    ShellAction.Back,
+                ),
+            ),
+        )
     }
 }

@@ -1,15 +1,34 @@
 package io.github.dinujaya77.jyotisha.ui.location
 
+import io.github.dinujaya77.jyotisha.ChildDestination
+import io.github.dinujaya77.jyotisha.ShellAction
+import io.github.dinujaya77.jyotisha.ShellState
+import io.github.dinujaya77.jyotisha.reduceShellState
+import io.github.dinujaya77.jyotisha.transitionShellState
 import io.github.dinujaya77.jyotisha.data.location.LocationFallback
+import io.github.dinujaya77.jyotisha.data.location.LocationSelectionPersistence
+import io.github.dinujaya77.jyotisha.data.location.LocationSelectionRepository
 import io.github.dinujaya77.jyotisha.data.location.LocationSelectionOperations
 import io.github.dinujaya77.jyotisha.data.location.LocationSelectionState
+import io.github.dinujaya77.jyotisha.data.location.PersistedLocationSelection
+import io.github.dinujaya77.jyotisha.data.location.PersistedLocationSelectionRead
 import io.github.dinujaya77.jyotisha.data.location.TownCatalog
 import io.github.dinujaya77.jyotisha.domain.location.ForegroundLocationPermission
+import io.github.dinujaya77.jyotisha.domain.location.DeviceLocationFix
 import io.github.dinujaya77.jyotisha.domain.location.LocationProvenance
 import io.github.dinujaya77.jyotisha.domain.location.LocationSource
 import io.github.dinujaya77.jyotisha.domain.location.PermissionPrecision
 import io.github.dinujaya77.jyotisha.domain.location.SelectedLocation
 import io.github.dinujaya77.jyotisha.domain.location.SelectedLocationMode
+import io.github.dinujaya77.jyotisha.platform.location.LocationPlatform
+import io.github.dinujaya77.jyotisha.platform.location.LocationPlatformCancellation
+import io.github.dinujaya77.jyotisha.platform.location.LocationPlatformState
+import io.github.dinujaya77.jyotisha.platform.location.LocationTimeoutScheduler
+import io.github.dinujaya77.jyotisha.platform.location.OneShotDeviceLocationProvider
+import io.github.dinujaya77.jyotisha.platform.location.TimeoutHandle
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneOffset
 import java.util.concurrent.CountDownLatch
 import java.util.Collections
 import java.util.concurrent.Executor
@@ -125,6 +144,93 @@ class LocationRuntimeControllerTest {
         assertEquals(0, repository.cancelCount)
 
         controller.cancelForRouteExit()
+        assertEquals(1, repository.cancelCount)
+        controller.close()
+    }
+
+    @Test
+    fun viewModelClearCancelsAnAcquisitionThatIsStillStarting() {
+        val repository = CallbackOnCancellationRepository()
+        val controller = LocationRuntimeController(
+            repository = repository,
+            permission = { ForegroundLocationPermission.PRECISE },
+            mainExecutor = Executor { it.run() },
+            onState = {},
+            worker = Executors.newSingleThreadExecutor(),
+        )
+
+        controller.useCurrentLocation()
+        assertTrue(repository.refreshStarted.await(5, TimeUnit.SECONDS))
+
+        controller.close()
+
+        assertEquals(1, repository.cancelCount)
+    }
+
+    @Test
+    fun backgroundDuringProviderPreflightCancelsBeforePlatformAcquisitionStarts() {
+        val fixture = controllerPreflightFixture()
+
+        fixture.controller.useCurrentLocation()
+        assertTrue(fixture.platform.preflightEntered.await(5, TimeUnit.SECONDS))
+
+        fixture.controller.onBackgrounded()
+        fixture.platform.releasePreflight()
+        fixture.controller.close()
+
+        assertTrue(fixture.worker.awaitTermination(5, TimeUnit.SECONDS))
+        assertTrue(fixture.platform.cancellation!!.cancelled)
+        assertEquals(0, fixture.platform.platformRequestCount)
+    }
+
+    @Test
+    fun viewModelClearDuringProviderPreflightCancelsBeforePlatformAcquisitionStarts() {
+        val fixture = controllerPreflightFixture()
+
+        fixture.controller.useCurrentLocation()
+        assertTrue(fixture.platform.preflightEntered.await(5, TimeUnit.SECONDS))
+
+        fixture.controller.close()
+        fixture.platform.releasePreflight()
+
+        assertTrue(fixture.worker.awaitTermination(5, TimeUnit.SECONDS))
+        assertTrue(fixture.platform.cancellation!!.cancelled)
+        assertEquals(0, fixture.platform.platformRequestCount)
+    }
+
+    @Test
+    fun locationToSettingsShellExitCancelsWhileSameLocationRouteDoesNot() {
+        val repository = CallbackOnCancellationRepository()
+        val controller = LocationRuntimeController(
+            repository = repository,
+            permission = { ForegroundLocationPermission.PRECISE },
+            mainExecutor = Executor { it.run() },
+            onState = {},
+            worker = Executors.newSingleThreadExecutor(),
+        )
+        val settings = ShellState(child = ChildDestination.Settings)
+        val locationFromSettings = reduceShellState(settings, ShellAction.OpenLocation)
+
+        controller.useCurrentLocation()
+        assertTrue(repository.refreshStarted.await(5, TimeUnit.SECONDS))
+
+        assertEquals(
+            locationFromSettings,
+            transitionShellState(
+                locationFromSettings,
+                ShellAction.OpenLocation,
+                controller::cancelForRouteExit,
+            ),
+        )
+        assertEquals(0, repository.cancelCount)
+        assertEquals(
+            settings,
+            transitionShellState(
+                locationFromSettings,
+                ShellAction.Back,
+                controller::cancelForRouteExit,
+            ),
+        )
         assertEquals(1, repository.cancelCount)
         controller.close()
     }
@@ -264,6 +370,97 @@ class LocationRuntimeControllerTest {
         onState = {},
         worker = Executors.newSingleThreadExecutor(),
     )
+
+    private fun controllerPreflightFixture(): ControllerPreflightFixture {
+        val platform = BlockingPreflightPlatform()
+        val worker = Executors.newSingleThreadExecutor()
+        val repository = LocationSelectionRepository(
+            persistence = DefaultPersistence(),
+            deviceLocationProvider = OneShotDeviceLocationProvider(
+                platform = platform,
+                timeoutScheduler = NoOpTimeoutScheduler(),
+            ),
+            clock = Clock.fixed(Instant.ofEpochMilli(1_800_000_000_000L), ZoneOffset.UTC),
+            zoneSource = { "Asia/Colombo" },
+        )
+        return ControllerPreflightFixture(
+            controller = LocationRuntimeController(
+                repository = repository,
+                permission = { ForegroundLocationPermission.PRECISE },
+                mainExecutor = Executor { it.run() },
+                onState = {},
+                worker = worker,
+            ),
+            platform = platform,
+            worker = worker,
+        )
+    }
+
+    private data class ControllerPreflightFixture(
+        val controller: LocationRuntimeController,
+        val platform: BlockingPreflightPlatform,
+        val worker: java.util.concurrent.ExecutorService,
+    )
+
+    private class DefaultPersistence : LocationSelectionPersistence {
+        override suspend fun read() = PersistedLocationSelectionRead(PersistedLocationSelection.Default())
+        override suspend fun selectDevice(selection: PersistedLocationSelection.Device) = true
+        override suspend fun selectDeviceIfCurrent(
+            selection: PersistedLocationSelection.Device,
+            mayWrite: () -> Boolean,
+        ) = mayWrite()
+        override suspend fun selectManualTown(townId: String, selectedAtEpochMillis: Long) = true
+        override suspend fun selectDefault(datasetVersion: String?) = true
+        override suspend fun resetLocationData() = Unit
+    }
+
+    private class BlockingPreflightPlatform : LocationPlatform {
+        val preflightEntered = CountDownLatch(1)
+        var cancellation: FakePlatformCancellation? = null
+        var platformRequestCount = 0
+        private val release = CountDownLatch(1)
+
+        override fun stateFor(permission: ForegroundLocationPermission): LocationPlatformState {
+            preflightEntered.countDown()
+            release.await(5, TimeUnit.SECONDS)
+            return LocationPlatformState(
+                apiLevel = 36,
+                locationEnabled = true,
+                enabledProviders = setOf("fused"),
+                bestProvider = "fused",
+            )
+        }
+
+        override fun createCancellation(): LocationPlatformCancellation =
+            FakePlatformCancellation().also { cancellation = it }
+
+        override fun requestCurrentLocation(
+            provider: String,
+            permission: ForegroundLocationPermission,
+            cancellation: LocationPlatformCancellation,
+            onLocation: (DeviceLocationFix?) -> Unit,
+        ) {
+            platformRequestCount += 1
+        }
+
+        override fun elapsedRealtimeMillis() = 1_000_000L
+
+        fun releasePreflight() = release.countDown()
+    }
+
+    private class FakePlatformCancellation : LocationPlatformCancellation {
+        var cancelled = false
+        override fun cancel() {
+            cancelled = true
+        }
+    }
+
+    private class NoOpTimeoutScheduler : LocationTimeoutScheduler {
+        override fun schedule(delayMillis: Long, action: () -> Unit): TimeoutHandle =
+            object : TimeoutHandle {
+                override fun cancel() = Unit
+            }
+    }
 
     private class DeferredRestoreRepository : LocationSelectionOperations {
         val restoreStarted = CountDownLatch(1)

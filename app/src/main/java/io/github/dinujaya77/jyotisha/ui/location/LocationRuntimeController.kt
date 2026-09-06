@@ -56,7 +56,9 @@ internal class LocationRuntimeController(
             publish(lastState.copy(acquisition = LocationAcquisition.REQUEST_PERMISSION))
         } else {
             activePermission = currentPermission
-            submit(LocationAcquisition.ACQUIRING) { repository.refreshCurrentLocation(currentPermission) }
+            submit(LocationAcquisition.ACQUIRING) { mayStart ->
+                repository.refreshCurrentLocation(currentPermission, mayStart)
+            }
         }
     }
 
@@ -129,7 +131,7 @@ internal class LocationRuntimeController(
         acquisition: LocationAcquisition,
         completedAcquisition: LocationAcquisition = LocationAcquisition.IDLE,
         supersedesForegroundRequest: Boolean = false,
-        operation: suspend () -> LocationSelectionState,
+        operation: suspend (mayStart: () -> Boolean) -> LocationSelectionState,
     ) {
         val token = synchronized(operationStartLock) {
             generation.incrementAndGet().also {
@@ -143,11 +145,17 @@ internal class LocationRuntimeController(
         }
         publish(lastState.copy(acquisition = acquisition))
         worker.execute {
-            synchronized(operationStartLock) {
-                if (generation.get() != token) return@execute
-                afterCurrentGenerationCheck?.invoke()
-                if (generation.get() != token) return@execute
-                operation.startCoroutine(object : Continuation<LocationSelectionState> {
+            if (generation.get() != token) return@execute
+            afterCurrentGenerationCheck?.invoke()
+            if (generation.get() != token) return@execute
+            // Do not hold operationStartLock through a synchronous provider preflight.  The
+            // gate is carried into the repository/provider registration handshake, so a
+            // lifecycle cancellation that wins here cannot later start acquisition.
+            val gatedOperation: suspend () -> LocationSelectionState = {
+                operation { generation.get() == token }
+            }
+            gatedOperation.startCoroutine(
+                object : Continuation<LocationSelectionState> {
                     override val context = EmptyCoroutineContext
 
                     override fun resumeWith(result: Result<LocationSelectionState>) {
@@ -165,8 +173,8 @@ internal class LocationRuntimeController(
                             )
                         }
                     }
-                })
-            }
+                },
+            )
         }
     }
 

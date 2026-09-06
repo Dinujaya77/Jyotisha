@@ -65,7 +65,6 @@ fun JyotishaApp() {
     var state by rememberSaveable(stateSaver = ShellState.Saver) {
         mutableStateOf(ShellState())
     }
-    val dispatch: (ShellAction) -> Unit = { action -> state = reduceShellState(state, action) }
     val activityContext = LocalContext.current
     val context = activityContext.applicationContext
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -74,6 +73,9 @@ fun JyotishaApp() {
     )
     val locationController = locationViewModel.controller
     val locationRuntimeState = locationViewModel.state
+    val dispatch: (ShellAction) -> Unit = { action ->
+        state = transitionShellState(state, action, locationController::cancelForRouteExit)
+    }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
@@ -306,14 +308,6 @@ private fun RuntimeLocationRoute(
     innerPadding: PaddingValues,
 ) {
     val context = LocalContext.current
-    val activity = context.findMainActivity()
-    DisposableEffect(controller, activity) {
-        onDispose {
-            if (shouldCancelLocationForRouteExit(activity.isChangingConfigurations)) {
-                controller.cancelForRouteExit()
-            }
-        }
-    }
     RuntimeLocationScreen(
         state = state,
         onUseCurrent = controller::useCurrentLocation,
@@ -332,9 +326,18 @@ private fun RuntimeLocationRoute(
     )
 }
 
-/** Route disposal is navigation exit except while the Activity is recreating for configuration. */
-internal fun shouldCancelLocationForRouteExit(isChangingConfigurations: Boolean): Boolean =
-    !isChangingConfigurations
+/** Only a logical navigation transition, never adaptive subtree disposal, owns route exit. */
+internal fun isLocationRouteExit(previous: ShellState, next: ShellState): Boolean =
+    previous.child == ChildDestination.Location && next.child != ChildDestination.Location
+
+/** Applies one shell action and transfers cancellation only when the logical route exits. */
+internal fun transitionShellState(
+    state: ShellState,
+    action: ShellAction,
+    cancelLocationForRouteExit: () -> Unit,
+): ShellState = reduceShellState(state, action).also { next ->
+    if (isLocationRouteExit(state, next)) cancelLocationForRouteExit()
+}
 
 private fun openRequestedLocationSettings(
     context: Context,

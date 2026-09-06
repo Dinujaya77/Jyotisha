@@ -40,6 +40,11 @@ interface LocationSelectionPersistence {
 interface LocationSelectionOperations {
     suspend fun restore(currentPermission: ForegroundLocationPermission): LocationSelectionState
     suspend fun refreshCurrentLocation(currentPermission: ForegroundLocationPermission): LocationSelectionState
+    /** Caller-owned gate for a refresh queued behind controller lifecycle work. */
+    suspend fun refreshCurrentLocation(
+        currentPermission: ForegroundLocationPermission,
+        mayStart: () -> Boolean,
+    ): LocationSelectionState = refreshCurrentLocation(currentPermission)
     suspend fun selectManualTown(townStableId: String): LocationSelectionState
     suspend fun selectDefault(): LocationSelectionState
     suspend fun resetLocationData(): LocationSelectionState
@@ -168,14 +173,25 @@ class LocationSelectionRepository(
      */
     override suspend fun refreshCurrentLocation(
         currentPermission: ForegroundLocationPermission,
+    ): LocationSelectionState = refreshCurrentLocation(currentPermission) { true }
+
+    override suspend fun refreshCurrentLocation(
+        currentPermission: ForegroundLocationPermission,
+        mayStart: () -> Boolean,
     ): LocationSelectionState {
         val requestGeneration = startForegroundRequest()
         try {
             val prior = restore(currentPermission)
             // Restore may have overlapped an explicit cancellation or another selection.  Do not
             // start a provider request after that newer action has won.
-            if (!isForegroundRequestCurrent(requestGeneration)) return restore(currentPermission)
-            return when (val result = awaitCurrentLocation(currentPermission, requestGeneration)) {
+            if (!isForegroundRequestCurrent(requestGeneration) || !mayStart()) {
+                return restore(currentPermission)
+            }
+            return when (val result = awaitCurrentLocation(
+                permission = currentPermission,
+                requestGeneration = requestGeneration,
+                mayStart = mayStart,
+            )) {
                 ForegroundRequestResult.Cancelled -> restore(currentPermission)
 
                 is ForegroundRequestResult.Result -> when (val value = result.value) {
@@ -414,6 +430,7 @@ class LocationSelectionRepository(
     private suspend fun awaitCurrentLocation(
         permission: ForegroundLocationPermission,
         requestGeneration: Long,
+        mayStart: () -> Boolean,
     ): ForegroundRequestResult = suspendCoroutine { continuation ->
         val shouldStart = synchronized(requestLock) {
             val active = activeForegroundRequest
@@ -429,9 +446,18 @@ class LocationSelectionRepository(
         if (!shouldStart) {
             continuation.resume(ForegroundRequestResult.Cancelled)
         } else {
-            deviceLocationProvider.requestCurrentLocation(DeviceLocationRequest(permission)) { result ->
-                completeForegroundRequest(requestGeneration, ForegroundRequestResult.Result(result))
-            }
+            deviceLocationProvider.requestCurrentLocation(
+                request = DeviceLocationRequest(permission),
+                onResult = { result ->
+                    completeForegroundRequest(requestGeneration, ForegroundRequestResult.Result(result))
+                },
+                // This check is repeated by the production provider while it holds the same
+                // lock used by cancellation at platform registration.  A cancellation that
+                // wins after continuation registration therefore cannot start acquisition.
+                mayStart = {
+                    mayStart() && isForegroundRequestCurrent(requestGeneration)
+                },
+            )
         }
     }
 

@@ -7,6 +7,7 @@ import io.github.dinujaya77.jyotisha.domain.location.LocationPolicy
 import io.github.dinujaya77.jyotisha.domain.location.PermissionPrecision
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -145,6 +146,50 @@ class DeviceLocationProviderTest {
     }
 
     @Test
+    fun cancelledCallerGateBeforeRegistrationNeverStartsPlatformAcquisition() {
+        val fixture = fixture()
+        val cancelled = AtomicBoolean(true)
+
+        fixture.provider.requestCurrentLocation(
+            request(),
+            fixture.results::add,
+            mayStart = { !cancelled.get() },
+        )
+
+        assertEquals(0, fixture.platform.requestCount)
+        assertTrue(fixture.platform.lastCancellation!!.cancelled)
+        assertTrue(fixture.results.isEmpty())
+    }
+
+    @Test
+    fun cancellationAtPlatformRegistrationBoundaryCancelsTheAtomicallyActiveRequest() {
+        val fixture = fixture()
+        fixture.platform.blockPlatformRequest = true
+        val requestThread = Thread {
+            fixture.provider.requestCurrentLocation(request(), fixture.results::add)
+        }
+        requestThread.start()
+        assertTrue(fixture.platform.platformRequestEntered.await(5, TimeUnit.SECONDS))
+
+        val cancellationEntered = CountDownLatch(1)
+        val cancellationThread = Thread {
+            cancellationEntered.countDown()
+            fixture.provider.cancelActiveRequest()
+        }
+        cancellationThread.start()
+        assertTrue(cancellationEntered.await(5, TimeUnit.SECONDS))
+        fixture.platform.releasePlatformRequest.countDown()
+
+        requestThread.join(5_000)
+        cancellationThread.join(5_000)
+        assertFalse(requestThread.isAlive)
+        assertFalse(cancellationThread.isAlive)
+        assertEquals(1, fixture.platform.requestCount)
+        assertTrue(fixture.platform.lastCancellation!!.cancelled)
+        assertTrue(fixture.results.isEmpty())
+    }
+
+    @Test
     fun supersedingRequestCancelsFirstAndOnlySecondCanComplete() {
         val fixture = fixture()
         val firstResults = mutableListOf<DeviceLocationResult>()
@@ -271,8 +316,11 @@ class DeviceLocationProviderTest {
         var stateFailure: RuntimeException? = null
         var requestFailure: RuntimeException? = null
         var blockStateForRequest = false
+        var blockPlatformRequest = false
         val stateEntered = CountDownLatch(1)
         val releaseState = CountDownLatch(1)
+        val platformRequestEntered = CountDownLatch(1)
+        val releasePlatformRequest = CountDownLatch(1)
         var lastCancellation: FakeCancellation? = null
         var lastCallback: ((DeviceLocationFix?) -> Unit)? = null
 
@@ -296,6 +344,10 @@ class DeviceLocationProviderTest {
             onLocation: (DeviceLocationFix?) -> Unit,
         ) {
             requestCount += 1
+            if (blockPlatformRequest) {
+                platformRequestEntered.countDown()
+                check(releasePlatformRequest.await(5, TimeUnit.SECONDS))
+            }
             lastCallback = onLocation
             requestFailure?.let { throw it }
         }

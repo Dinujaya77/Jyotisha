@@ -272,7 +272,7 @@ class LocationSelectionRepositoryTest {
     }
 
     @Test
-    fun cancellationDuringRestoreCannotStartAProviderRequestAfterRestoreCompletes() {
+    fun cancellationBeforeProviderRegistrationCannotStartAProviderRequestAfterRestoreCompletes() {
         val persistence = DeferredReadPersistence(PersistedLocationSelection.Default())
         val provider = DeferredProvider()
         val repository = LocationSelectionRepository(
@@ -296,6 +296,55 @@ class LocationSelectionRepositoryTest {
 
         assertTrue("cancelled refresh did not complete", completed.await(5, TimeUnit.SECONDS))
         assertEquals(0, provider.requestCount)
+        assertTrue(persistence.selection is PersistedLocationSelection.ManualTown)
+    }
+
+    @Test
+    fun cancellationDuringProviderPreflightCannotStartPlatformAcquisition() {
+        val provider = PreflightProvider()
+        val repository = LocationSelectionRepository(
+            persistence = FakePersistence(PersistedLocationSelection.Default()),
+            deviceLocationProvider = provider,
+            clock = Clock.fixed(Instant.ofEpochMilli(NOW), ZoneOffset.UTC),
+            zoneSource = ZoneSource { "Asia/Colombo" },
+        )
+        val completed = CountDownLatch(1)
+
+        val refreshThread = startRefresh(repository, completed)
+        assertTrue("provider preflight did not begin", provider.preflightEntered.await(5, TimeUnit.SECONDS))
+
+        repository.cancelCurrentLocationRequest()
+        provider.releasePreflight()
+
+        assertTrue("cancelled refresh did not complete", completed.await(5, TimeUnit.SECONDS))
+        refreshThread.join(5_000)
+        assertEquals(1, provider.cancelCount)
+        assertEquals(0, provider.platformRequestCount)
+    }
+
+    @Test
+    fun manualSupersessionDuringProviderPreflightCannotStartOrPublishOlderRequest() {
+        val persistence = FakePersistence(PersistedLocationSelection.Default())
+        val provider = PreflightProvider()
+        val repository = LocationSelectionRepository(
+            persistence = persistence,
+            deviceLocationProvider = provider,
+            clock = Clock.fixed(Instant.ofEpochMilli(NOW), ZoneOffset.UTC),
+            zoneSource = ZoneSource { "Asia/Colombo" },
+        )
+        val completed = CountDownLatch(1)
+
+        val refreshThread = startRefresh(repository, completed)
+        assertTrue("provider preflight did not begin", provider.preflightEntered.await(5, TimeUnit.SECONDS))
+
+        val manual = runSuspend { repository.selectManualTown("geonames:1241622") }
+        provider.releasePreflight()
+
+        assertTrue("superseded refresh did not complete", completed.await(5, TimeUnit.SECONDS))
+        refreshThread.join(5_000)
+        assertEquals(LocationFallback.MANUAL, manual.fallback)
+        assertEquals(1, provider.cancelCount)
+        assertEquals(0, provider.platformRequestCount)
         assertTrue(persistence.selection is PersistedLocationSelection.ManualTown)
     }
 
@@ -488,6 +537,50 @@ class LocationSelectionRepositoryTest {
         fun deliver(result: DeviceLocationResult) {
             callback?.invoke(result)
         }
+    }
+
+    /** Forces the repository/provider ownership handoff without a timing-based race. */
+    private class PreflightProvider : DeviceLocationProvider {
+        val preflightEntered = CountDownLatch(1)
+        var cancelCount = 0
+        var platformRequestCount = 0
+        private val release = CountDownLatch(1)
+
+        override fun requestCurrentLocation(
+            request: DeviceLocationRequest,
+            onResult: (DeviceLocationResult) -> Unit,
+        ) = error("The repository must use the cancellable startup handshake.")
+
+        override fun requestCurrentLocation(
+            request: DeviceLocationRequest,
+            onResult: (DeviceLocationResult) -> Unit,
+            mayStart: () -> Boolean,
+        ) {
+            preflightEntered.countDown()
+            check(release.await(5, TimeUnit.SECONDS))
+            if (mayStart()) platformRequestCount += 1
+        }
+
+        override fun cancelActiveRequest() {
+            cancelCount += 1
+        }
+
+        fun releasePreflight() = release.countDown()
+    }
+
+    private fun startRefresh(
+        repository: LocationSelectionRepository,
+        completed: CountDownLatch,
+    ): Thread {
+        val refresh: suspend () -> LocationSelectionState = {
+            repository.refreshCurrentLocation(ForegroundLocationPermission.PRECISE)
+        }
+        return Thread {
+            refresh.startCoroutine(object : Continuation<LocationSelectionState> {
+                override val context = EmptyCoroutineContext
+                override fun resumeWith(result: Result<LocationSelectionState>) = completed.countDown()
+            })
+        }.also(Thread::start)
     }
 
     private class DeferredReadPersistence(

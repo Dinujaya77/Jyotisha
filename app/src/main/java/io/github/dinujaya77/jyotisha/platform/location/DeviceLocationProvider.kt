@@ -33,6 +33,19 @@ interface DeviceLocationProvider {
         onResult: (DeviceLocationResult) -> Unit,
     )
 
+    /**
+     * Starts a request only while its caller still owns it.  The production implementation
+     * evaluates [mayStart] at the platform registration boundary; the default preserves the
+     * small test/provider seam for implementations which do not have a separate preflight.
+     */
+    fun requestCurrentLocation(
+        request: DeviceLocationRequest,
+        onResult: (DeviceLocationResult) -> Unit,
+        mayStart: () -> Boolean,
+    ) {
+        if (mayStart()) requestCurrentLocation(request, onResult)
+    }
+
     fun cancelActiveRequest()
 }
 
@@ -79,6 +92,12 @@ internal class OneShotDeviceLocationProvider(
     override fun requestCurrentLocation(
         request: DeviceLocationRequest,
         onResult: (DeviceLocationResult) -> Unit,
+    ) = requestCurrentLocation(request, onResult) { true }
+
+    override fun requestCurrentLocation(
+        request: DeviceLocationRequest,
+        onResult: (DeviceLocationResult) -> Unit,
+        mayStart: () -> Boolean,
     ) {
         cancelActiveRequest()
         if (request.permission == ForegroundLocationPermission.NONE) {
@@ -93,6 +112,10 @@ internal class OneShotDeviceLocationProvider(
             nextToken += 1L
             activeRequest = ActiveRequest(nextToken, cancellation, onResult)
             nextToken
+        }
+        if (!mayStart()) {
+            abandon(token)
+            return
         }
         val state = try {
             platform.stateFor(request.permission)
@@ -128,11 +151,18 @@ internal class OneShotDeviceLocationProvider(
             }
         }
 
-        try {
+        val started = try {
             synchronized(lock) {
-                if (activeRequest?.token != token) return
-                platform.requestCurrentLocation(provider, request.permission, cancellation) { fix ->
-                    complete(token, classifyPlatformResult(fix))
+                if (activeRequest?.token != token || !mayStart()) {
+                    false
+                } else {
+                    // Holding the same lock as cancellation makes this ownership transition
+                    // atomic: cancellation either prevents this call or cancels an already
+                    // registered platform request immediately after this block.
+                    platform.requestCurrentLocation(provider, request.permission, cancellation) { fix ->
+                        complete(token, classifyPlatformResult(fix))
+                    }
+                    true
                 }
             }
         } catch (_: SecurityException) {
@@ -140,12 +170,15 @@ internal class OneShotDeviceLocationProvider(
                 token,
                 DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.SECURITY_EXCEPTION),
             )
+            return
         } catch (_: IllegalArgumentException) {
             complete(
                 token,
                 DeviceLocationResult.Unavailable(DeviceLocationUnavailableReason.INVALID_PROVIDER),
             )
+            return
         }
+        if (!started) abandon(token)
     }
 
     override fun cancelActiveRequest() {
@@ -187,6 +220,15 @@ internal class OneShotDeviceLocationProvider(
         request.timeout?.cancel()
         request.cancellation.cancel()
         request.onResult(result)
+    }
+
+    /** Ends a request rejected by the caller-owned start gate without publishing a result. */
+    private fun abandon(token: Long) {
+        val request = synchronized(lock) {
+            activeRequest?.takeIf { it.token == token }?.also { activeRequest = null }
+        } ?: return
+        request.timeout?.cancel()
+        request.cancellation.cancel()
     }
 
     private fun isActive(token: Long): Boolean = synchronized(lock) {
