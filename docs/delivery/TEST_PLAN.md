@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.2 |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-09-20 |
 | Owner role | QA Reviewer |
 | Approval state | PA-001/CR-001 strategy and PA-004 SOLAR-001 test obligations are approved; no implementation task is authorized by this document |
 
@@ -107,6 +107,7 @@ The connected launcher-smoke deviation is recorded as an emulator-environment re
 | Test ID | Scope | Evidence | Result |
 |---|---|---|---|
 | T-M4-CONNECTED-API36 | V1-M4-01–05; ADR-002; UI-004; DEP-014 | API 36 `emulator-5554` via existing SDK ADB: debug and Android-test APK installation; cold launch/resumed `MainActivity`; focused deterministic location UI/storage instrumentation; live fallback/manual Colombo semantics; foreground/background/resume and denied-permission path; focused controller/repository/presentation regression suite; post-run Jyotisha FATAL/ANR log audit. | Passed 2026-09-05: focused connected 5/5 using `./gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.github.dinujaya77.jyotisha.data.location.LocationStoragePolicyTest,io.github.dinujaya77.jyotisha.ui.location.LocationPreviewPresentationTest`: `LocationStoragePolicyTest.dataStoreFileUsesCredentialProtectedNoBackupLocationDataDirectory`, `LocationStoragePolicyTest.legacyCloudAndDeviceTransferRulesExcludeTheCompleteLocationDataDirectory`, `LocationPreviewPresentationTest.v1M303_allSyntheticStatesRenderSemanticsAndDispatchMappedActions`, `LocationPreviewPresentationTest.v1M405_runtimeLocationActionsExposeTheReviewedTownsDefaultAndPermissionPath`, and `LocationPreviewPresentationTest.v1M405_firstUseAndRecoveryActionsAreLiveAndExplicit`. Install/cold launch/resume passed; no Jyotisha FATAL EXCEPTION or ANR. Route exit, configuration recreation, background cancellation, permission downgrade/revocation, supersession/late-result, and stale/low-accuracy preservation are covered by deterministic focused JVM fakes; no real GPS movement was used. Complete API matrix remains V1-M9-02; physical/OEM evidence remains V1-M9-03. |
+| T-M4-FINAL-ACCEPTANCE | V1-M4-01–05; final concurrency correction | Focused controller/provider/repository race suite; complete M4 focused suite; complete JVM suite; lint; debug and Android-test APK builds; diff, dependency, Manifest, privacy, scope, source, documentation, and ancestry audits. | PASS: focused M4 JVM 79/79; full JVM 125/125; lint 0 errors; both APK builds passed; audits passed; final QA found zero unresolved Critical, High, or Medium findings. The owner accepted the recorded evidence after the final completion/cancellation linearization correction. A fresh Gradle rerun was unavailable during closure because of the host usage-limit/Gradle-cache environment; no result is represented as freshly rerun. Complete API/state coverage remains V1-M9-02 and physical/OEM/device-transfer evidence remains V1-M9-03. |
 
 ## SOLAR-001 planned verification
 
@@ -133,4 +134,4 @@ VC-001–VC-019 remain the PA-001 deterministic, astronomical, location, lifecyc
 
 ## Delivery-plan test gate
 
-PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. The bounded M1 foundation, M2 design-system evidence, and V1-M3-01 through V1-M3-04 static-product-UI evidence above are implemented. M1, M2, and M3 are Done, explicitly Lead/owner accepted, and incorporated into `dev`; accepted M3 evidence is recorded through `3d9d9d2`. M4 and later test execution begins only through an explicitly started task. Task results do not bypass independent QA, Lead acceptance, milestone integration, or later task-specific release gates.
+PA-004 approves the SOLAR-001 test obligations and DP-001 approves their assignment to focused tasks in `TASKS.md` and `TRACEABILITY_MATRIX.md`; neither automatically starts implementation. M1 through M4 are Done, explicitly Lead/owner accepted, and incorporated into `dev`; the M4 acceptance evidence is recorded above. M5 and later test execution begins only through an explicitly started task. Task results do not bypass independent QA, Lead acceptance, milestone integration, or later task-specific release gates.

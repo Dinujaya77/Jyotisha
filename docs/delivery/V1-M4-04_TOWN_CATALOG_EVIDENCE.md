@@ -38,7 +38,7 @@ The full per-row hash is the snapshot SHA-256 in the evidence header. Nominatim 
 
 - `:app:testDebugUnitTest --tests "io.github.dinujaya77.jyotisha.data.location.TownCatalogTest"`: PASS, 4/4.
 - `:app:assembleDebug`: PASS.
-- `:app:lintDebug`: FAIL — one pre-existing V1-M4-02 `MissingPermission` error at `AndroidLocationPlatform.kt:70`, present from baseline `af430fc`; lint reported 22 warnings and zero V1-M4-04-owned errors. No out-of-scope provider change was made.
+- Historical V1-M4-04 task run: `:app:lintDebug` failed on one pre-existing V1-M4-02 `MissingPermission` error at `AndroidLocationPlatform.kt:70`, present from baseline `af430fc`; it reported 22 warnings and zero V1-M4-04-owned errors. Later corrective work resolved the error, and the recorded final M4 lint result passed with zero errors. No out-of-scope provider change was made by V1-M4-04.
 
 The catalogue contains exactly these nine owner-approved public towns. Every
 `futureSinhalaNameResourceKey` is explicitly `null`; no Sinhala resource is included. No private

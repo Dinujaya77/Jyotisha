@@ -37,8 +37,8 @@ sealed interface PersistedLocationSelection {
     ) : PersistedLocationSelection
 
     /**
-     * M4-04 has not approved a catalogue/default version yet, so provenance is intentionally
-     * absent until supplied by that task. A later approved value is retained without coordinates.
+     * Default provenance retains the approved M4-04 catalogue version without coordinates.
+     * A null value remains supported only for migration and first-use recovery.
      */
     data class Default(
         val datasetVersion: String? = null,

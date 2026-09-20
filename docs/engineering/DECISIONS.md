@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 0.7 |
-| Last updated | 2026-08-06 |
+| Last updated | 2026-09-20 |
 | Owner role | Android Architect |
 | Approval state | ADR-001–ADR-009, PA-004 SOLAR-001, DA-004 UI, and DP-001 delivery are Approved; implementation still requires explicit task start and evidence |
 
@@ -86,7 +86,7 @@
 - **Recovery/migration:** Pure versioned migrations. Unknown newer schema, corruption, invalid values, or impossible timestamps reset only location preferences to labelled Colombo default and emit one recovery warning. Migrations never silently widen retention.
 - **Reset:** User action deletes the full record and returns to default.
 - **Backup:** Store the DataStore under credential-protected `noBackupFilesDir/location-data/`. Retain explicit exclusions of the complete directory/domain, including temporary/replacement/companion artifacts, from legacy Auto Backup and Android 12+ cloud/device transfer as defence in depth. Verify installed paths and clean-device restore/transfer behavior; disable app backup if exclusion cannot be proven.
-- **Dependencies:** DEP-014 DataStore Preferences was approved in principle under PA-002 and subsequently implemented under V1-M4-03; corrective verification and final independent QA/Lead acceptance remain pending.
+- **Dependencies:** DEP-014 DataStore Preferences 1.2.1 was approved under PA-002, implemented under V1-M4-03, verified, and accepted with M4. `kotlinx-coroutines-core-jvm:1.9.0` remains transitive-only; complete device-transfer evidence remains V1-M9-03-owned.
 - **Approval record:** Approved under PA-002 on 2026-08-02.
 
 ## ADR-006 — SDK support baseline
@@ -106,7 +106,7 @@
 - **Decision:** One app module/activity; domain/data/platform/UI packages; pure domain; immutable ViewModel `StateFlow`; atomic complete snapshots; manual composition root. Use a small sealed destination state for top-level Dashboard/Now, Hora Timeline/Day, and Method, plus bounded Location, Settings, and About/privacy child routes. Navigation Compose is not required.
 - **Lifecycle/time:** Injectable clock/zone; resume reconciliation; visible-only date/time/time-zone/provider observation; calculation snapshot separate from acquisition state; countdown does not rerun astronomy.
 - **Failures:** Typed domain/platform/storage failures; no raw exception reaches UI.
-- **Dependencies:** Lifecycle ViewModel KTX, Lifecycle ViewModel Compose, and Lifecycle Runtime Compose 2.9.2 were added and verified under V1-M1-03. Preferences DataStore 1.2.1 remains approved in principle but is not added until V1-M4-03 satisfies its register prerequisites.
+- **Dependencies:** Lifecycle ViewModel KTX, Lifecycle ViewModel Compose, and Lifecycle Runtime Compose 2.9.2 were added and verified under V1-M1-03. Preferences DataStore 1.2.1 was later added, verified, and accepted under V1-M4-03 after satisfying its register prerequisites; coroutines core JVM 1.9.0 is transitive-only.
 - **Rejected additions:** Hilt/DI, Navigation Compose, Room/database, solar library, Play Services Location, network, analytics, crash uploader, or logging framework.
 - **Performance:** Cold calculation/usable-location render under one second on the slowest approved family device; calculations and storage off-main.
 - **Security/release:** No Internet/background-location permissions; signing keys/properties outside Git; family APK ownership/update/fingerprint process remains release planning.

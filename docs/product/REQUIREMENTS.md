@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.1 |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-09-20 |
 | Owner role | Business Analyst |
 | Approval state | FR-001–FR-011 and NFR-001–NFR-014 approved under PA-001; FR-012–FR-015 and NFR-015 approved under Change Request CR-001 |
 
@@ -311,6 +311,6 @@ These deltas took effect when Change Request CR-001 was approved on 2026-08-02; 
 
 ## Approval and dependency gates
 
-PA-001 approves the original baseline identified above. Change Request CR-001 approves the amended product requirements and Option C allocation. PA-002 approves ADR-001–ADR-009 and DEP-011–DEP-014 in principle; DA-001 selects Direction A; PA-004 approves normative `SOLAR-001`; DA-004 approves the final Version 1.0 UI; DP-001 approves M1–M9 and 39 tasks. M1, M2, and M3 are Done, explicitly Lead/owner accepted, and incorporated into `dev`. DEP-011–DEP-013 and the permanent identity are implemented; V1-M3-01 through V1-M3-04 supply approved static presentation only. DEP-014, CP-003/RK, exact town data/default coordinates, direct coroutine decisions, M4 and later implementation, and all release verification retain their task-specific gates.
+PA-001 approves the original baseline identified above. Change Request CR-001 approves the amended product requirements and Option C allocation. PA-002 approves ADR-001–ADR-009 and DEP-011–DEP-014 in principle; DA-001 selects Direction A; PA-004 approves normative `SOLAR-001`; DA-004 approves the final Version 1.0 UI; DP-001 approves M1–M9 and 39 tasks. M1 through M4 are Done, explicitly Lead/owner accepted, and incorporated into `dev`. DEP-011–DEP-014, the permanent identity, the approved exact nine-town catalogue/default, and V1-M4-01 through V1-M4-05 are implemented and verified; coroutines core JVM 1.9.0 remains transitive-only. CP-003/RK, M5 and later implementation, and all task-specific M9/release verification retain their gates.
 
 Before release: complete independent astronomical comparison, nominate and complete traditional Sri Lankan validation for every enabled timing system, test actual family devices, complete privacy/security/accessibility checks, and document signed-APK delivery. Expected results must never be altered merely to make tests pass. Fixed Kala/Panchama is implementation-blocked until the following-sunrise mismatch has an approved rule; nighttime Rahu is outside this amendment's recommended V1.0 scope.

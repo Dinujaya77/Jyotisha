@@ -4,7 +4,7 @@
 |---|---|
 | Status | Approved |
 | Version | 1.0 |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-09-20 |
 | Owner role | Lead Coordinator; UI/UX Designer reviewed read-only |
 | Approval state | DA-004 Approved through exact phrase `APPROVE VERSION 1.0 UI` received 2026-08-02 |
 
@@ -196,4 +196,4 @@ Screenshot tests use deterministic clocks, public/synthetic coordinates, fixed z
 - [x] Independent final QA/recheck recorded in delivery status with zero open findings.
 - [x] Repository owner supplied `APPROVE VERSION 1.0 UI` on 2026-08-02.
 
-DA-004 and DP-001 were approved before coding began. M1, M2, and M3 are Done, explicitly Lead/owner accepted, and incorporated into `dev`. V1-M3-01 through V1-M3-04 supply the approved static Dashboard, Timeline, Method, first-use/Location, Settings and About UI using M2 tokens/components. V1-M4-01 through V1-M4-05 are implementation-complete and M4 remains In Review pending final independent QA, without Lead acceptance or merge; M5 and later tasks remain unstarted (or Blocked where recorded). Final manual accessibility, localization, visual and physical-device evidence remains mandatory under its approved task-specific M9/release gates.
+DA-004 and DP-001 were approved before coding began. M1 through M4 are Done, explicitly Lead/owner accepted, and incorporated into `dev`. V1-M3-01 through V1-M3-04 supply the approved static Dashboard, Timeline, Method, first-use/Location, Settings and About UI using M2 tokens/components; V1-M4-01 through V1-M4-05 supply the accepted runtime location/settings behavior. M5 and later tasks remain unstarted (or Blocked where recorded). Final manual accessibility, localization, visual and physical-device evidence remains mandatory under its approved task-specific M9/release gates.

@@ -4,7 +4,7 @@
 |---|---|
 | Status | Partially Complete |
 | Version | 1.3 |
-| Last updated | 2026-08-27 |
+| Last updated | 2026-09-20 |
 | Owner role | Business Analyst |
 | Approval state | SRC-001–SRC-011 roles approved under PA-001; SRC-012–SRC-018 roles recorded under CR-001; PA-004 canonical source-role set SRC-004 plus SRC-019–SRC-027 approved on 2026-08-02; traditional authority remains pending |
 
@@ -37,7 +37,7 @@
 | SRC-025 | [NOAA General Solar Position Calculations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF) | Official two-page technical note | East-positive longitude, equation-of-time/declination summary, `90.833°` approximate event equation | Incomplete implementation contract and `90.833°` differs from approved `90.8333°`; not used unchanged | Explanatory/rejected role approved under PA-004 |
 | SRC-026 | [Solarpositioning Java library](https://github.com/KlausBrunner/solarpositioning) | MIT Java library candidate | Candidate C maintenance, SPA/Grena support, test claims, Java/runtime and `0.833°` convention | No runtime deps, but exact profile/Android/API 26 compatibility and artifact 2.0.13 evidence are incomplete | Rejected-V1 record approved under PA-004 |
 | SRC-027 | [NREL SPA software distribution page](https://midcdmz.nrel.gov/spa/) | Official software/distribution notice | Separates published SPA algorithm from downloadable implementation | C software states internal/noncommercial use, no redistribution, notice obligations; do not port/package | Rejected-production-code role approved under PA-004; validation context only |
-| SRC-028 | GeoNames `LK.zip` product-catalogue snapshot, `geonames-lk-2026-08-27T015014Z` | Frozen CC BY 4.0 WGS84 product-data source | The exact nine owner-approved offline Sri Lankan town rows and Colombo default | Snapshot URL/hash/extraction/review are frozen in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md); no runtime GeoNames service/geocoder; distinct from validation-only SRC-023 | Owner-approved product data 2026-08-27; V1-M4-04 In Review |
+| SRC-028 | GeoNames `LK.zip` product-catalogue snapshot, `geonames-lk-2026-08-27T015014Z` | Frozen CC BY 4.0 WGS84 product-data source | The exact nine owner-approved offline Sri Lankan town rows and Colombo default | Snapshot URL/hash/extraction/review are frozen in [V1-M4-04 Town Catalogue Evidence](../delivery/V1-M4-04_TOWN_CATALOG_EVIDENCE.md); no runtime GeoNames service/geocoder; distinct from validation-only SRC-023 | Owner-approved product data 2026-08-27; V1-M4-04 Done and accepted with M4 |
 
 ## SOLAR-001 source-control records
 
